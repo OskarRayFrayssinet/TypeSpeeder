@@ -11,35 +11,14 @@ public class TypeSpeederApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TypeSpeederApplication.class, args);
-        System.out.println(Arrays.toString(wordList()));
+
+        System.out.println(hello());
     }
 
     @Bean
-    public static String[] wordList() {
-        return new String[] {
-            "hej",
-            "på",
-            "dig",
-            "hur",
-            "mår",
-            "du",
-            "jag",
-            "är",
-            "en",
-            "robot",
-            "som",
-            "skriver",
-            "snabbt",
-            "och",
-            "bra",
-            "på",
-            "att",
-            "skriva",
-            "ord",
-            "och",
-            "text",
-
-        };
+    public static String hello() {
+        return "Hello, Spring!";
     }
 }
+
 
