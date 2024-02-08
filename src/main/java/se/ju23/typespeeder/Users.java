@@ -25,9 +25,7 @@ public class Users {
     @Basic
     @Column(name = "level", nullable = false)
     private int level;
-    @Basic
-    @Column(name = "userscol5", nullable = true, length = 45)
-    private String userscol5;
+
     @OneToMany(mappedBy = "usersByUserId")
     private Collection<Attempt> attemptsByUserId;
 
@@ -79,14 +77,6 @@ public class Users {
         this.level = level;
     }
 
-    public String getUserscol5() {
-        return userscol5;
-    }
-
-    public void setUserscol5(String userscol5) {
-        this.userscol5 = userscol5;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -100,7 +90,6 @@ public class Users {
         if (email != null ? !email.equals(users.email) : users.email != null) return false;
         if (password != null ? !password.equals(users.password) : users.password != null) return false;
         if (alias != null ? !alias.equals(users.alias) : users.alias != null) return false;
-        if (userscol5 != null ? !userscol5.equals(users.userscol5) : users.userscol5 != null) return false;
 
         return true;
     }
@@ -113,8 +102,19 @@ public class Users {
         result = 31 * result + (alias != null ? alias.hashCode() : 0);
         result = 31 * result + xp;
         result = 31 * result + level;
-        result = 31 * result + (userscol5 != null ? userscol5.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "userId=" + userId +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", alias='" + alias + '\'' +
+                ", xp=" + xp +
+                ", level=" + level +
+                '}';
     }
 
     public Collection<Attempt> getAttemptsByUserId() {

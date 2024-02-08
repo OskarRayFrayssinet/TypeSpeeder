@@ -1,12 +1,13 @@
 package se.ju23.typespeeder;
 
+import org.springframework.stereotype.Component;
+
 import javax.swing.*;
 import java.util.Scanner;
 
-public class InputOutput implements IO{
-    private Scanner scanner;
-    public InputOutput(Scanner scanner){
-        this.scanner = scanner;
+@Component public class InputOutput implements IO{
+    private Scanner scanner = new Scanner(System.in);
+    public InputOutput(){
     }
 
     @Override
