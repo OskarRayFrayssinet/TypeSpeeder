@@ -11,11 +11,11 @@ public class TypeSpeederApplication {
 
         System.out.println("Välkommen till TypeSpeeder!");
 
-        logIn();
+        User.logIn();
 
         int menuChoise = 0;
         switch (menuChoise) {
-            case 0 -> logOut();
+            case 0 -> User.logOut();
             case 1 -> playGame();
             case 2 -> showRankingList();
             case 3 -> showNewsAndUpdates();
@@ -25,12 +25,6 @@ public class TypeSpeederApplication {
         }
     }
 
-    public static void logIn(){
-        System.out.println("Ange användarnamn och lösenord.");
-    }
-
-    public static void logOut(){
-    }
 
     public static void playGame(){
 
