@@ -1,20 +1,17 @@
 package se.ju23.typespeeder.data.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import se.ju23.typespeeder.data.model.Player;
 import se.ju23.typespeeder.data.repo.PlayerRepo;
 
 import java.util.List;
 
-@Service
+@Component
 public class PlayerService {
-    private final PlayerRepo playerRepo;
-
     @Autowired
-    public PlayerService(PlayerRepo playerRepo) {
-        this.playerRepo = playerRepo;
-    }
+    private PlayerRepo playerRepo;
 
     public Player savePlayer(Player player){
         return playerRepo.save(player);
@@ -35,12 +32,12 @@ public class PlayerService {
     public void deletePlayer(String logName){
         Player existPlayer = getPlayerByLogName(logName);
         if(existPlayer != null){
-            playerRepo.deleteByName(logName);
+            playerRepo.deleteByLogName(logName);
         }
     }
 
     public Player getPlayerByLogName(String logName){
-        return playerRepo.findByName(logName).orElse(null);
+        return playerRepo.findByLogName(logName).orElse(null);
     }
 
     public List<Player> getAllPlayers(){
