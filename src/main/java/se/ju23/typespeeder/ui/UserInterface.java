@@ -1,62 +1,48 @@
 package se.ju23.typespeeder.ui;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.entity.ResultRepository;
+import se.ju23.typespeeder.entity.UserRepository;
+import se.ju23.typespeeder.util.UserInput;
+
 import java.util.Scanner;
-
-public class UserInterface implements IO {
+@Component
+public class UserInterface {
     private final Scanner input = new Scanner(System.in);
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ResultRepository resultRepository;
+    @Autowired
+    private UserService userService;
 
-    @Override
-    public void loginUser(String username, String password) {
+    private static void menu(){
 
-    }
+        int menuChoice;
+        do{
+            System.out.println("""
+                
+                Vänligen välj en siffra!
+                
+                Huvudmeny
+                ----------------------------
+                 1. Logga in
+                 2. Skapa konto
+                 3. Spela
+                 0. Avsluta
+                ----------------------------""");
 
-    @Override
-    public void updateUsername(String oldUsername, String newUsername) {
+            menuChoice = UserInput.readInt(0, 3);
 
-    }
+            switch(menuChoice){
+                //case 1 -> loginUser();
+                //case 2 -> ();
+                //case 3 -> ();
+                case 0 -> System.out.println("\nExiting program...");
+            }
 
-    @Override
-    public void updatePassword(String username, String newPassword) {
 
-    }
-
-    @Override
-    public void updateDisplayName(String username, String newDisplayName) {
-
-    }
-
-    @Override
-    public void displayMainMenu() {
-
-    }
-
-    @Override
-    public void displaySettingsMenu() {
-
-    }
-
-    @Override
-    public void displayLanguageSelectionMenu() {
-
-    }
-
-    @Override
-    public void displayRankings() {
-
-    }
-
-    @Override
-    public void displayPlayerStats(String username) {
-
-    }
-
-    @Override
-    public void displayNewsUpdates() {
-
-    }
-
-    @Override
-    public void displayPatchNotes() {
-
+        } while(menuChoice != 0);
     }
 }

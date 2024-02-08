@@ -9,28 +9,20 @@ public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int result;
-    private int userId;
-    // Konstruktor
-    public Result(int id, int result, int userId) {
-        this.id = id;
-        this.result = result;
-        this.userId = userId;
 
-    }
+    private int result;
+
+    @ManyToOne
+    @JoinColumn(name = "userid", referencedColumnName = "id")
+    private User user;
 
     public Result() {}
 
-
-
-    // Getter och Setter för id
-    public int getId() {
-        return id;
+    public Result(int result, User user) {
+        this.result = result;
+        this.user = user;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
     public int getResult() {
         return result;
     }
@@ -39,8 +31,27 @@ public class Result {
         this.result = result;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "id=" + id +
+                ", result=" + result +
+                ", user=" + user +
+                '}';
+    }
 
 
-    // Övriga metoder efter behov
 }
 

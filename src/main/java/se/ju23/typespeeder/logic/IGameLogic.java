@@ -1,7 +1,9 @@
 package se.ju23.typespeeder.logic;
 
-public interface IGameLogic {
+import org.springframework.stereotype.Component;
 
+@Component
+public interface IGameLogic {
 
         // Hantera olika typer av utmaningar och svårighetsgrader
         void initializeGameLevel(int level);

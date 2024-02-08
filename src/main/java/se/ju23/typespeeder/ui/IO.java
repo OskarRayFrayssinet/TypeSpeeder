@@ -1,5 +1,9 @@
 package se.ju23.typespeeder.ui;
 
+import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.entity.UserRepository;
+
+@Component
 public interface IO {
 
     // Inloggning
