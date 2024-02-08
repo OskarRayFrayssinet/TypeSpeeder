@@ -12,7 +12,8 @@ public class PointParam {
     @Column(name = "id", nullable = false)
     private int id;
     @Basic
-    @Column(name = "attempt_id", nullable = false)
+    @Column(name = "attempt_id", insertable=false, updatable=false)
+    //@Column(name = "attempt_id", nullable = false)
     private int attemptId;
     @Basic
     @Column(name = "speed", nullable = false)

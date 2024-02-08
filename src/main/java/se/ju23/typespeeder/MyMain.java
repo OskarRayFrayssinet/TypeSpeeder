@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Component public class MyMain implements CommandLineRunner {
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+
 
     }
 }
