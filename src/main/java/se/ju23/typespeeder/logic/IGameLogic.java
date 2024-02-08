@@ -24,6 +24,8 @@ public interface IGameLogic {
 
         // Välja språk för spelet (kan också hanteras av ett UserInterface interface)
         void setLanguage(String language);
+
+        void startGame();
 }
 
 

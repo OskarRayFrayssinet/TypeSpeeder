@@ -61,4 +61,8 @@ public class GameLogic implements IGameLogic{
     public void setLanguage(String language) {
 
     }
+    @Override
+    public void startGame() {
+
+    }
 }
