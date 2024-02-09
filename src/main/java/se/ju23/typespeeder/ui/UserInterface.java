@@ -1,4 +1,4 @@
-package se.ju23.typespeeder;
+/*package se.ju23.typespeeder.ui;
 
 import java.util.Scanner;
 
@@ -28,4 +28,4 @@ public class UserInterface {
 
         } while(menuChoice != 0);
     }
-}
+}*/
