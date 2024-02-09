@@ -69,7 +69,7 @@ public class UserInput {
         }
     }
     return intValue;
-}
+    }
 
 
     public static double readDouble() {

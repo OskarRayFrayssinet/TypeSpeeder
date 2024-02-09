@@ -1,11 +1,9 @@
 package se.ju23.typespeeder.ui;
 
-import org.springframework.stereotype.Component;
-import se.ju23.typespeeder.entity.UserRepository;
+import org.springframework.stereotype.Service;
 
-@Component
-public interface IO {
-
+import java.util.List;
+public interface MenuService {
     // Inloggning
     void loginUser(String username, String password);
 
@@ -15,7 +13,8 @@ public interface IO {
     void updateDisplayName(String username, String newDisplayName); // Det namn som syns för andra spelare
 
     // Menyhantering
-    void displayMainMenu();
+    void displayMenu();
+    List<String> getMenuOptions();
     void displaySettingsMenu();
     void displayLanguageSelectionMenu();
 
@@ -28,5 +27,7 @@ public interface IO {
     void displayPatchNotes();
 
 }
+
+
 
 
