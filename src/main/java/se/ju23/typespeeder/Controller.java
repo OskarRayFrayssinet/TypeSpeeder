@@ -36,7 +36,9 @@ import java.sql.SQLException;
             switch (status){
                 case VERIFIED, PLAYING_GAME -> io.addString(playable.printMenu());
                 case OK -> status = playable.playAgain(io.yesNo(playable.printMenu()));
-                case NO_USER_FOUND -> io.addString(playable.printLoginText());
+                case NO_USER_FOUND -> {
+                    io.addString(playable.printLoginText());
+                }
             }
             switch (status){
                 case EXIT -> io.exit();
