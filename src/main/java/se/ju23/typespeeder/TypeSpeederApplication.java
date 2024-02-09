@@ -20,7 +20,7 @@ public class TypeSpeederApplication {
             case 2 -> showRankingList();
             case 3 -> showNewsAndUpdates();
             case 4 -> changeLanguage();
-            case 5 -> updateProfile();
+            case 5 -> User.updateProfile();
             default -> System.out.println("Felaktig inmatning, försök igen.");
         }
     }
@@ -42,9 +42,6 @@ public class TypeSpeederApplication {
 
     }
 
-    public static void updateProfile(){
-
-    }
 
 
 }
