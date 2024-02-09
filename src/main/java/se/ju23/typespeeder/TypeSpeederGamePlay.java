@@ -12,6 +12,9 @@ public class TypeSpeederGamePlay implements Playable{
     public int currentId = 0;
     public int tries = 3;
     public String currentEmail = "";
+    public String currentAlias = "";
+    public int currentXp = 0;
+    public int currentLevel = 0;
 
     public TypeSpeederGamePlay() {
     }
@@ -23,9 +26,11 @@ public class TypeSpeederGamePlay implements Playable{
 
         Optional<Users> users = uRepo.findByEmailAndPassword(email,password);
         if (users.isPresent()){
-            currentEmail = email;
             Users found = users.get();
-            System.out.println(found);
+            currentEmail = found.getEmail();
+            currentAlias = found.getAlias();
+            currentXp = found.getXp();
+            currentLevel = found.getLevel();
             return Status.VERIFIED;
         } else if (tries == 1){
             return Status.EXIT;
@@ -37,7 +42,12 @@ public class TypeSpeederGamePlay implements Playable{
 
     @Override
     public String printMenu() {
-        return null;
+        return "Alias " + currentAlias +
+                " --" +
+                " XP " + currentXp +
+                "\n1. Game Languange\n" +
+                "2. Select game\n" +
+                "3. Show your stats";
     }
 
 
