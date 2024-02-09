@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -33,7 +32,7 @@ public class TypeSpeederGamePlay implements Playable{
     }
 
     @Override
-    public String printIntroOutroText() {
+    public String printMenu() {
         return null;
     }
 
