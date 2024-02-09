@@ -47,7 +47,8 @@ public class TypeSpeederGamePlay implements Playable{
                 " XP " + currentXp +
                 "\n1. Game Languange\n" +
                 "2. Select game\n" +
-                "3. Show your stats";
+                "3. Show your stats" +
+                "Your choice: ";
     }
 
 
@@ -67,7 +68,7 @@ public class TypeSpeederGamePlay implements Playable{
     }
 
     @Override
-    public Status playGame(String input) throws SQLException {
+    public Status playGame(int input) {
         return null;
     }
 

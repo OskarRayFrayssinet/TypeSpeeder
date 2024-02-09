@@ -17,11 +17,30 @@ import java.util.Scanner;
 
     @Override
     public String getString() {
-        return scanner.nextLine();
+        String inputString = "";
+        while (true) {
+            inputString = scanner.nextLine().trim();
+            if (inputString.isEmpty()) {
+                System.out.println("Du måste ange något!");
+            } else {
+                return inputString;
+            }
+        }
+
+    }
+    public int getInt(){
+        while (true) {
+            try {
+                int intOnly = Integer.parseInt(getString());
+                return intOnly;
+            } catch (NumberFormatException e) {
+                System.out.print(" Vänligen skriv in ett heltal:");
+            }
+        }
     }
 
     public void addString(String message){
-        System.out.println(message);
+        System.out.print(message);
     }
 
     @Override

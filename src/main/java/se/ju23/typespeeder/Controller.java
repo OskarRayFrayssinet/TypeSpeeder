@@ -28,8 +28,7 @@ import java.sql.SQLException;
                 String password = io.getString();
                 status = playable.checkUser(email, password);
             } else {
-                io.addString(playable.printMenu());
-                String input = io.getString();
+                int input = io.getInt();
                 status = playable.playGame(input);
             }
 
