@@ -10,12 +10,11 @@ import java.util.Scanner;
 @Component
 public class UserInterface {
     private final Scanner input = new Scanner(System.in);
+
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ResultRepository resultRepository;
-    @Autowired
-    private UserService userService;
+    public UserService userService(UserRepository userRepository, ResultRepository resultRepository) {
+        return new UserService(userRepository, resultRepository);
+    }
 
     private static void menu(){
 

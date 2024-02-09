@@ -9,10 +9,8 @@ import se.ju23.typespeeder.entity.UserRepository;
 public class UserService implements IO {
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ResultRepository resultRepository;
-
+    public UserService(UserRepository userRepository, ResultRepository resultRepository) {
+    }
 
     @Override
     public void loginUser(String username, String password) {}
