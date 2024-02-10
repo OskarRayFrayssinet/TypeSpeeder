@@ -39,11 +39,11 @@ public class Menu implements MenuService {
     @Override
     public List<String> getMenuOptions() {
         return Arrays.asList(
-                "1. Logga in",                  // Alternativ för att logga in
-                "2. Konto Hantering",           // Hantera konto (uppdatera information, osv)
-                "3. Språkval (Svenska/Engelska)", // Välja språk för spelet
-                "4. Spela",                     // Starta eller fortsätta ett spel
-                "5. Nyheter och Patch-information" // Information om uppdateringar och nyheter
+                "1. Logga in",
+                "2. Konto Hantering",
+                "3. Språkval (Svenska/Engelska)",
+                "4. Spela",
+                "5. Nyheter och Patch-information"
         );
     }
 
