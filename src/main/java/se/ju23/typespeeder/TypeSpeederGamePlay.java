@@ -3,14 +3,15 @@ package se.ju23.typespeeder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class TypeSpeederGamePlay implements Playable{
 
     public int currentId = 0;
     public int tries = 3;
+    public int currentGameId = 0;
+    public String currentGameText = "";
     public String currentEmail = "";
     public String currentAlias = "";
     public int currentXp = 0;
@@ -77,13 +78,43 @@ public class TypeSpeederGamePlay implements Playable{
         }
         return stringBuilder.toString();
     }
-    public String getGameById(int id){
-        List<Tasks> tasksList = tRepo.findByTaskId(id);
+    public String activeInGame(int id){
         StringBuilder stringBuilder = new StringBuilder();
+        currentGameId = id;
+        List<Tasks> tasksList = tRepo.findByTaskId(id);
         for (Tasks tasks : tasksList){
-            stringBuilder.append(tasks.getActualTask());
+            currentGameText = tasks.getActualTask();
+        }
+        List<String> textInWords = Arrays.asList(currentGameText.split("\\s+"));
+        List<String> textWithYellowWords = addYellowHighlight(textInWords, generateRandomWords(currentGameText, 7));
+        for (String t : textWithYellowWords){
+            stringBuilder.append(t).append(" ");
         }
         return stringBuilder.toString();
+    }
+    private static List<String> addYellowHighlight(List<String> textInWords, List<String> randomWords) {
+        for (int i = 0; i < randomWords.size(); i++) {
+            String a = randomWords.get(i);
+            for (int j = 0; j < textInWords.size(); j++) {
+                if (textInWords.get(j).equals(a)){
+                    String highlightedWord = "\u001B[33m" + a + "\u001B[0m";
+                    textInWords.set(j, highlightedWord);
+                }
+            }
+        }
+        return textInWords;
+    }
+    private static List<String> generateRandomWords(String text, int numberOfWords) {
+        String[] words = text.split("\\s+");
+        Random random = new Random();
+        List<String> randomWordsList = new ArrayList<>();
+
+        for (int i = 0; i < numberOfWords; i++) {
+            int randomIndex = random.nextInt(words.length);
+            randomWordsList.add(words[randomIndex]);
+        }
+
+        return randomWordsList;
     }
 
     @Override

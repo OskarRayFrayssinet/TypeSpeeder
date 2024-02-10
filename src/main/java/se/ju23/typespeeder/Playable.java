@@ -10,7 +10,7 @@ public interface Playable {
     String currentEmail();
     String printGames();
     Status playingGame(int input);
-    String getGameById(int id);
+    String activeInGame(int id);
     int currentId();
     String noUserFoundText();
 }

@@ -39,7 +39,7 @@ import java.sql.SQLException;
                 case ACTIVE_IN_GAME -> {
                     io.addString(playable.printGames());
                     int input = io.getInt();
-                    io.addString(playable.getGameById(input));
+                    io.addString(playable.activeInGame(input));
                     //status = playable.playingGame(input);
                 }
                 case OK -> status = playable.playAgain(io.yesNo(playable.printMenu()));
