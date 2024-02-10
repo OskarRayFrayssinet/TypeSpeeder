@@ -3,7 +3,7 @@ package se.ju23.typespeeder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -20,6 +20,8 @@ public class TypeSpeederGamePlay implements Playable{
     }
     @Autowired
     UsersRepo uRepo;
+    @Autowired
+    TasksRepo tRepo;
     public Status checkUser(String email, String password) {
 
 
@@ -45,7 +47,8 @@ public class TypeSpeederGamePlay implements Playable{
         return "Alias " + currentAlias +
                 " --" +
                 " XP " + currentXp +
-                "\n1. Game Languange\n" +
+                "\n0.Sign out and exit" +
+                "1. Game Languange\n" +
                 "2. Select game\n" +
                 "3. Show your stats" +
                 "Your choice: ";
@@ -60,15 +63,40 @@ public class TypeSpeederGamePlay implements Playable{
         } else if (currentEmail.equals("1")){
             tries--;
             currentEmail = "";
-            return "User Not found, Tries left: " + tries;
+            return "User Not found, Tries left: " + tries + "\n";
         } else {
             currentEmail = "2";
             return "Skriv användarnamn: ";
         }
     }
+    public String printGames(){
+        List<Tasks> tasksList = tRepo.findAll();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < tasksList.size(); i++) {
+            stringBuilder.append((i + 1)).append(". ").append(tasksList.get(i).getTaskName()).append("\n");
+        }
+        return stringBuilder.toString();
+    }
+    public String getGameById(int id){
+        List<Tasks> tasksList = tRepo.findByTaskId(id);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Tasks tasks : tasksList){
+            stringBuilder.append(tasks.getActualTask());
+        }
+        return stringBuilder.toString();
+    }
 
     @Override
-    public Status playGame(int input) {
+    public Status standbyInGame(int input) {
+        Status status = null;
+        switch (input){
+            case 0 -> status = Status.EXIT;
+            //case 1 -> status = setLanguage();
+            case 2 -> status = Status.ACTIVE_IN_GAME;
+        }
+        return status;
+    }
+    public Status playingGame(int input){
         return null;
     }
 

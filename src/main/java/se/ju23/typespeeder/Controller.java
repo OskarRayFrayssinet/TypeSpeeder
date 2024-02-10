@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 @Component public class Controller implements Controllable {
     Playable playable;
+    MenuService menuService = new Menu();
     IO io;
 
     public Controller(Playable playable, IO io) {
@@ -29,12 +30,18 @@ import java.sql.SQLException;
                 status = playable.checkUser(email, password);
             } else {
                 int input = io.getInt();
-                status = playable.playGame(input);
+                status = playable.standbyInGame(input);
             }
 
 
             switch (status){
-                case VERIFIED, PLAYING_GAME -> io.addString(playable.printMenu());
+                case VERIFIED -> io.addString(menuService.displayMenu());
+                case ACTIVE_IN_GAME -> {
+                    io.addString(playable.printGames());
+                    int input = io.getInt();
+                    io.addString(playable.getGameById(input));
+                    //status = playable.playingGame(input);
+                }
                 case OK -> status = playable.playAgain(io.yesNo(playable.printMenu()));
                 case NO_USER_FOUND -> {
                     io.addString(playable.printLoginText());
@@ -46,6 +53,7 @@ import java.sql.SQLException;
                     io.clear();
                     io.addString(playable.printMenu());
                 }
+                //case PLAYING_GAME ->
             }
         }
     }
