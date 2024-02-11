@@ -4,7 +4,9 @@ import se.ju23.typespeeder.enums.Language;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
+Scanner scanner = new Scanner(System.in);
 public class Menu implements MenuService {
     @Override
     public List<String> getMenuOptions(Language language) {
