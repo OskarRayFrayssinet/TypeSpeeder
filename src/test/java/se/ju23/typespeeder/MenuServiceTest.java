@@ -8,12 +8,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import org.mockito.Mockito;
+import se.ju23.typespeeder.menu.MenuService;
 
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MenuTest {
+public class MenuServiceTest {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -31,7 +32,7 @@ public class MenuTest {
     @Test
     public void testClassExists() {
         try {
-            Class<?> clazz = Class.forName("se.ju23.typespeeder.Menu");
+            Class<?> clazz = Class.forName("se.ju23.typespeeder.menu.MenuService");
             assertNotNull(clazz, "The class 'Menu' should exist.");
         } catch (ClassNotFoundException e) {
             fail("The class 'Menu' does not exist.", e);
@@ -41,7 +42,7 @@ public class MenuTest {
     @Test
     public void testMethodExists() {
         try {
-            Class<?> clazz = Class.forName("se.ju23.typespeeder.Menu");
+            Class<?> clazz = Class.forName("se.ju23.typespeeder.menu.MenuService");
             Method method = clazz.getMethod("displayMenu");
             assertNotNull(method, "The method 'displayMenu()' should exist in the class 'Menu'.");
         } catch (ClassNotFoundException e) {
@@ -54,7 +55,7 @@ public class MenuTest {
     @Test
     public void testMenuImplementsInterface() {
         try {
-            Class<?> menuClass = Class.forName("se.ju23.typespeeder.Menu");
+            Class<?> menuClass = Class.forName("se.ju23.typespeeder.menu.MenuService");
             boolean implementsInterface = false;
 
             Class<?>[] interfaces = menuClass.getInterfaces();
@@ -73,7 +74,7 @@ public class MenuTest {
 
     @Test
     public void testDisplayMenuCallsGetMenuOptionsAndReturnsAtLeastFive() {
-        Menu menuMock = Mockito.spy(new Menu());
+        MenuService menuMock = Mockito.spy(new MenuService());
         menuMock.displayMenu();
         verify(menuMock, times(1)).getMenuOptions();
         assertTrue(menuMock.getMenuOptions().size() >= 5, "'getMenuOptions()' should return at least 5 alternatives.");
@@ -81,14 +82,14 @@ public class MenuTest {
 
     @Test
     public void menuShouldHaveAtLeastFiveOptions() {
-        Menu menu = new Menu();
+        MenuService menu = new MenuService();
         List<String> options = menu.getMenuOptions();
         assertTrue(options.size() >= 5, "The menu should contain at least 5 alternatives.");
     }
 
     @Test
     public void menuShouldPrintAtLeastFiveOptions() {
-        new Menu().displayMenu();
+        new MenuService().displayMenu();
         long count = outContent.toString().lines().count();
         assertTrue(count >= 5, "The menu should print out at least 5 alternatives.");
     }
