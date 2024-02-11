@@ -5,9 +5,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
 
 @Component public class MyMain implements CommandLineRunner {
     private final Playable tg;

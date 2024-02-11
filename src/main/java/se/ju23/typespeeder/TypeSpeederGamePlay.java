@@ -9,13 +9,15 @@ import java.util.*;
 public class TypeSpeederGamePlay implements Playable{
 
     public int currentId = 0;
-    public int tries = 3;
-    public int currentGameId = 0;
+
+    public int currentGameTaskId = 0;
     public String currentGameText = "";
     public String currentEmail = "";
     public String currentAlias = "";
     public int currentXp = 0;
     public int currentLevel = 0;
+    MenuService menuService;
+
 
     public TypeSpeederGamePlay() {
     }
@@ -35,52 +37,24 @@ public class TypeSpeederGamePlay implements Playable{
             currentXp = found.getXp();
             currentLevel = found.getLevel();
             return Status.VERIFIED;
-        } else if (tries == 1){
-            return Status.EXIT;
-        }else {
-            currentEmail = "1";
+        } else {
+            setCurrentEmail("1");
             return Status.NO_USER_FOUND;
         }
     }
 
-    @Override
-    public String printMenu() {
-        return "Alias " + currentAlias +
-                " --" +
-                " XP " + currentXp +
-                "\n0.Sign out and exit" +
-                "1. Game Languange\n" +
-                "2. Select game\n" +
-                "3. Show your stats" +
-                "Your choice: ";
-    }
 
-
-    @Override
-    public String printLoginText() {
-
-        if (currentEmail.equals("2")){
-            return "Skriv Lösenord";
-        } else if (currentEmail.equals("1")){
-            tries--;
-            currentEmail = "";
-            return "User Not found, Tries left: " + tries + "\n";
-        } else {
-            currentEmail = "2";
-            return "Skriv användarnamn: ";
-        }
-    }
     public String printGames(){
         List<Tasks> tasksList = tRepo.findAll();
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < tasksList.size(); i++) {
             stringBuilder.append((i + 1)).append(". ").append(tasksList.get(i).getTaskName()).append("\n");
         }
-        return stringBuilder.toString();
+        return "0. Go back\n" + stringBuilder.toString();
     }
     public String activeInGame(int id){
         StringBuilder stringBuilder = new StringBuilder();
-        currentGameId = id;
+        currentGameTaskId = id;
         List<Tasks> tasksList = tRepo.findByTaskId(id);
         for (Tasks tasks : tasksList){
             currentGameText = tasks.getActualTask();
@@ -118,14 +92,31 @@ public class TypeSpeederGamePlay implements Playable{
     }
 
     @Override
-    public Status standbyInGame(int input) {
+    public Status standbyInMainMenu(int input) {
         Status status = null;
         switch (input){
             case 0 -> status = Status.EXIT;
             //case 1 -> status = setLanguage();
             case 2 -> status = Status.ACTIVE_IN_GAME;
+            case 4 -> status = Status.IN_GAME_SETTINGS;
         }
         return status;
+    }
+    @Override
+    public Status standbyInSettingsMenu(int input){
+        Status status = null;
+        switch (input){
+            case 1 -> status = Status.CHANGING_ALIAS;
+        }
+        return status;
+    }
+    @Override
+    public void setNewAlias(String input){
+        List<Users> aliasFromDB = uRepo.findByAlias(getCurrentAlias());
+        for (Users u : aliasFromDB){
+            u.setAlias(input);
+            uRepo.save(u);
+        }
     }
     public Status playingGame(int input){
         return null;
@@ -137,9 +128,15 @@ public class TypeSpeederGamePlay implements Playable{
     }
 
     @Override
-    public String currentEmail() {
+    public String getCurrentEmail() {
         return currentEmail;
     }
+
+    @Override
+    public void setCurrentEmail(String newCurrentEmail) {
+        currentEmail = newCurrentEmail;
+    }
+
 
     @Override
     public int currentId() {
@@ -149,5 +146,20 @@ public class TypeSpeederGamePlay implements Playable{
     @Override
     public String noUserFoundText() {
         return null;
+    }
+
+    @Override
+    public String getCurrentAlias() {
+        return currentAlias;
+    }
+
+    @Override
+    public int getCurrentXp() {
+        return currentXp;
+    }
+
+    @Override
+    public int getCurrentLevel() {
+        return currentLevel;
     }
 }
