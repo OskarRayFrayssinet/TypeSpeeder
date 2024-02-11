@@ -2,7 +2,7 @@ package se.ju23.typespeeder;
 
 import java.util.List;
 
-public class Menu {
+public class Menu implements MenuService {
     List<String>MenuOptions;
     public void displayMenu() {
 
