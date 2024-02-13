@@ -1,7 +1,5 @@
 package se.ju23.typespeeder;
 import org.junit.jupiter.api.Test;
-
-import java.awt.*;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
