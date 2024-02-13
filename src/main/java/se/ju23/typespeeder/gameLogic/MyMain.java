@@ -1,8 +1,11 @@
-package se.ju23.typespeeder;
+package se.ju23.typespeeder.gameLogic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.gameLogic.Controllable;
+import se.ju23.typespeeder.gameLogic.Playable;
+import se.ju23.typespeeder.userInterfaces.IO;
 
 import java.sql.SQLException;
 
@@ -10,6 +13,7 @@ import java.sql.SQLException;
     private final Playable tg;
     private final IO io;
     private final Controllable c;
+
 
     @Autowired
     public MyMain(Playable tg, IO io, Controllable c){
