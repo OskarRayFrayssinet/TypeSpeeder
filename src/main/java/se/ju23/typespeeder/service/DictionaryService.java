@@ -32,6 +32,7 @@ public class DictionaryService {
         englishDictionary.addWord("Culture");
         englishDictionary.addWord("Technology");
         englishDictionary.addWord("Science");
+        englishDictionary.addWord("Science");
         return englishDictionary;
     }
 
