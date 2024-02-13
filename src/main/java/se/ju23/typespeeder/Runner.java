@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.awt.*;
 
 @Component
-public class Runner implements Runnable{
+public class Runner implements Runnable {
     @Override
     public void run() {
 

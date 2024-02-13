@@ -3,25 +3,39 @@ package se.ju23.typespeeder;
 public class TypeSpeederGame {
     private String typeGoal;
     private String typeInput;
-    public void generateTypingString(){
+    private long startTimerInMillis;
+    private long endTimerInMillis;
+    private long timerInMillis;
+    public void generateTypingString() {
 
     }
-    public void checkTypingAccuracy(){
+    public void checkTypingAccuracy() {
 
     }
-    public void generateRatingScore(){
+    public void generateRatingScore() {
 
     }
-    public void logIn(){
+    public void logIn() {
+
+        verifyUsername();
+        verifyPassword();
+    }
+    public void verifyUsername() {
 
     }
-    public void addPlayerAccount(){
+    public void verifyPassword() {
 
     }
-    public void startTimer(){
+    public void addPlayerAccount() {
 
     }
-    public void endTimer(){
-        
+    public void startTimer() {
+        startTimerInMillis = System.currentTimeMillis();
+    }
+    public void endTimer() {
+        endTimerInMillis = System.currentTimeMillis();
+    }
+    public void calcTimerResult() {
+        timerInMillis = endTimerInMillis - startTimerInMillis;
     }
 }
