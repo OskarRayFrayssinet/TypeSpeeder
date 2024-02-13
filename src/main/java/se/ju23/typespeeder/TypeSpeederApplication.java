@@ -5,20 +5,35 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.awt.*;
+import java.util.Scanner;
+
 @SpringBootApplication
 public class TypeSpeederApplication implements CommandLineRunner {
+    public static Scanner input = new Scanner(System.in);
+    //public static Window window;
 
     public static void main(String[] args) {
         SpringApplication.run(TypeSpeederApplication.class, args);
+
 
 
     }
     @Override
     public void run(String... args) throws Exception {
 
-        User.logIn();
+        System.setProperty("java.awt.headless", "false");
+        Window window = new Window("TypeSpeeder");
 
-        int menuChoice = 0;
+
+        //User.logIn();
+
+        window.addString("1. Play the Game\n");
+        window.addString("Ange siffran för ditt val: ");
+
+
+        int menuChoice = input.nextInt();
+        input.nextLine();
         switch (menuChoice) {
             case 0 -> User.logOut();
             case 1 -> Menu.playGame();
