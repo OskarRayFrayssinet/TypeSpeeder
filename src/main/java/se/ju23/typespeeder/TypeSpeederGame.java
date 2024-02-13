@@ -1,5 +1,9 @@
 package se.ju23.typespeeder;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class TypeSpeederGame {
     private String typeGoal;
     private String typeInput;
@@ -15,17 +19,7 @@ public class TypeSpeederGame {
     public void generateRatingScore() {
 
     }
-    public void logIn() {
 
-        verifyUsername();
-        verifyPassword();
-    }
-    public void verifyUsername() {
-
-    }
-    public void verifyPassword() {
-
-    }
     public void addPlayerAccount() {
 
     }
