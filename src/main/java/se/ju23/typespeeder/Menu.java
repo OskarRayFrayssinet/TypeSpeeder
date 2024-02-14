@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import se.ju23.typespeeder.IO.IO;
+import se.ju23.typespeeder.logic.GameController;
 import se.ju23.typespeeder.logic.TypingGame;
 
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ public class Menu implements MenuService {
 
     @Autowired
     TypingGame typingGame;
-
 
     public Menu() {
         this.menuOptions = new ArrayList<>();
@@ -64,17 +64,10 @@ public class Menu implements MenuService {
         }
     }
 
-    public void selectMenuOptions() {
+    public int selectMenuOptions() {
         System.out.println(ANSI_DARK_GREY + "Please select one of the following options by entering the number:  " + ANSI_RESET);
         int userInput = io.getValidIntegerInput(io.returnScanner(), 1, 6);
-        switch (userInput) {
-            case 1 -> typingGame.generateWords();
-            case 2 -> System.out.println("Leaderboards");
-            case 3 -> System.out.println("News");
-            case 4 -> System.out.println("Edit users");
-            case 5 -> displayLoginMenu();
-            case 6 -> System.exit(0);
+        return userInput;
         }
     }
-}
 
