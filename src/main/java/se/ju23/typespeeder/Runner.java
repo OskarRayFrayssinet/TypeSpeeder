@@ -22,6 +22,7 @@ public class Runner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         while(true) {
+            menu.printTypeSpeederAnsi();
             menu.startMenu();
 
             if (menu.getLoggedInPlayer() == null) {
