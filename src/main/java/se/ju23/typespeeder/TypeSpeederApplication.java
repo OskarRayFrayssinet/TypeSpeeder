@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Scanner;
 
@@ -23,9 +24,10 @@ public class TypeSpeederApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         System.setProperty("java.awt.headless", "false");
+
         Window window = new Window("TypeSpeeder");
 
-
+        Menu.displayMenu();
         //User.logIn();
 
         window.addString("1. Play the Game\n");

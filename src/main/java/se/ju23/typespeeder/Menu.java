@@ -11,13 +11,20 @@ import java.io.FileReader;
 import java.io.FileInputStream;
 
 public class Menu implements MenuService {
-    List<String>MenuOptions;
+    static List<String>MenuOptions;
     public static Window window;
     public static final String YELLOW = "\u001B[33m";
 
-    public void displayMenu() {
+    public static void displayMenu() {
 
         System.out.println("Välkommen till TypeSpeeder!");
+        MenuOptions.add("1. Play the Game");
+        MenuOptions.add("2. Ranking list");
+        MenuOptions.add("3. News and Updates");
+        MenuOptions.add("4. Change languages");
+        MenuOptions.add("5. Profile");
+        //System.out.println(MenuOptions);
+
 
     }
 
