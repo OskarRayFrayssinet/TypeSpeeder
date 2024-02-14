@@ -17,7 +17,7 @@ public interface Playable {
     void setNewAlias(String input);
 
 
-    void setNewEmail(String newEmail);
+    void setNewUsername(String newEmail);
 
     boolean checkCurrentEmail(String input);
 

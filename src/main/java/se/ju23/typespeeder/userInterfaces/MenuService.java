@@ -5,7 +5,7 @@ import java.util.List;
 public interface MenuService {
     String printChangeLanguageText();
 
-    String displayMenu();
+    void displayMenu();
 
     String printLoginText();
 
@@ -15,7 +15,7 @@ public interface MenuService {
 
     String getPasswordChangeText();
 
-    String getEmailChangeText();
+    String getUsernameChangeText();
 
     List<String> getMenuOptions();
 

@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.gameLogic.Playable;
 import se.ju23.typespeeder.gameLogic.Translatable;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 @Component public class InputOutput implements IO {
@@ -61,25 +59,24 @@ import java.util.Scanner;
 
     public void addString(String message){
         String a = message;
-        StringBuilder stringBuilder = new StringBuilder();
         if (playable.getCurrentLanguage(0).equals("1")){
             try {
                 a = translatable.translate(message,"sv");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
             String translatedText = a.replaceAll("(\\d+)\\.\\s*", "\n$1. ");
-
             System.out.print(translatedText);
         } else {
             System.out.print(a);
         }
 
     }
+    //Game Text Output
     public void addStringWithoutTranslation(String message){
         System.out.print(message);
     }
+
 
     @Override
     public void clear() {

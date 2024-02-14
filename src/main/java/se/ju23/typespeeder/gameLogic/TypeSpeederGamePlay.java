@@ -30,6 +30,7 @@ public class TypeSpeederGamePlay implements Playable {
 
     public TypeSpeederGamePlay(Translatable translator) {
         this.translator = translator;
+
     }
 
     @Autowired
@@ -81,16 +82,13 @@ public class TypeSpeederGamePlay implements Playable {
             } catch (Exception e) {
                 throw new RuntimeException();
             }
-
         }
 
         List<String> textInWords = Arrays.asList(currentGameText.split("\\s+"));
-        List<String> textWithYellowWords = addYellowHighlight(textInWords, generateRandomWords(currentGameText, 7));
+        List<String> textWithYellowWords = addYellowHighlight(textInWords, generateRandomWords(currentGameText));
         for (String t : textWithYellowWords) {
             stringBuilder.append(t).append(" ");
         }
-
-
         return stringBuilder.toString();
     }
 
@@ -117,12 +115,12 @@ public class TypeSpeederGamePlay implements Playable {
         return textInWords;
     }
 
-    private static List<String> generateRandomWords(String text, int numberOfWords) {
+    private static List<String> generateRandomWords(String text) {
         String[] words = text.split("\\s+");
         Random random = new Random();
         List<String> randomWordsList = new ArrayList<>();
 
-        for (int i = 0; i < numberOfWords; i++) {
+        for (int i = 0; i < 7; i++) {
             int randomIndex = random.nextInt(words.length);
             randomWordsList.add(words[randomIndex]);
         }
@@ -162,7 +160,7 @@ public class TypeSpeederGamePlay implements Playable {
         switch (input) {
             case 1 -> status = Status.CHANGING_ALIAS;
             case 2 -> status = Status.CHANGING_PASSWORD;
-            case 3 -> status = Status.CHANGING_EMAIL;
+            case 3 -> status = Status.CHANGING_USERNAME;
         }
         return status;
     }
@@ -174,25 +172,20 @@ public class TypeSpeederGamePlay implements Playable {
             uRepo.save(u);
             currentAlias[0] = input;
             currentAlias[1] = "1";
-
         }
     }
     @Override
-    public void setNewEmail(String newEmail) {
+    public void setNewUsername(String newUsername) {
         Optional<Users> emailFromDB = uRepo.findByUserId(getCurrentId());
         if (emailFromDB.isPresent()) {
             Users found = emailFromDB.get();
-            found.setEmail(newEmail);
+            found.setEmail(newUsername);
             uRepo.save(found);
             currentEmail[1] = "1";
-
         }
     }
-
     @Override
     public boolean checkCurrentEmail(String input) {
-
-
         if (Objects.equals(input, getCurrentEmail(0))) {
             currentEmail[1] = input;
             return true;
@@ -202,7 +195,6 @@ public class TypeSpeederGamePlay implements Playable {
         }
 
     }
-
     @Override
     public boolean checkIfUserNameIsBusy(String input) {
         Optional<Users> checkIfBusy = uRepo.findByEmail(input);
@@ -214,7 +206,6 @@ public class TypeSpeederGamePlay implements Playable {
             return false;
         }
     }
-
     @Override
     public void setNewPassword(String newPassword) {
         Optional<Users> passwordFromDB = uRepo.findById(getCurrentId());
@@ -225,10 +216,8 @@ public class TypeSpeederGamePlay implements Playable {
             currentPassword[1] = "1";
         }
     }
-
     @Override
     public boolean checkCurrentPassword(String input) {
-
         if (Objects.equals(input, getPassword(0))) {
             currentPassword[1] = input;
             return true;
@@ -237,26 +226,21 @@ public class TypeSpeederGamePlay implements Playable {
             return false;
         }
     }
-
     @Override
     public String getCurrentLanguage(int place) {
         return currentLanguage[place];
     }
-
     public Status playingGame(int input) {
         return null;
     }
-
     @Override
     public Status playAgain(boolean b) {
         return null;
     }
-
     @Override
     public String getCurrentEmail(int place) {
         return currentEmail[place];
     }
-
     @Override
     public void setCurrentEmail(String input) {
         currentEmail[0] = input;

@@ -37,7 +37,9 @@ import java.sql.SQLException;
 
                 status = playable.checkUser(email, password);
             } else {
-                io.addString(menuService.displayMenu());
+                menuService.displayMenu();
+
+                //io.addString(menuService.displayMenu());
                 int input = io.getInt();
                 status = playable.standbyInMainMenu(input);
             }
@@ -68,9 +70,11 @@ import java.sql.SQLException;
                 case EXIT -> io.exit();
                 case CONTINUANCE ->{
                     io.clear();
-                    io.addString(menuService.displayMenu());
+                    menuService.displayMenu();
+                    //io.addString(menuService.displayMenu());
                 }
                 case CHANGING_ALIAS -> {
+
                     if (playable.getCurrentAlias(1).equals("1")){
                         io.addString(menuService.getUserNameChangeText());
                     } else {
@@ -97,25 +101,25 @@ import java.sql.SQLException;
                         }
                     }
                 }
-                case CHANGING_EMAIL -> {
+                case CHANGING_USERNAME -> {
                     if (playable.getCurrentEmail(1).equals("1")){
-                        io.addString(menuService.getEmailChangeText());
+                        io.addString(menuService.getUsernameChangeText());
                     } else {
-                        io.addString(menuService.getEmailChangeText());
+                        io.addString(menuService.getUsernameChangeText());
                         String checkCurrentEmail = io.getString();
                         boolean checked = playable.checkCurrentEmail(checkCurrentEmail);
                         if (checked) {
-                            io.addString(menuService.getEmailChangeText());
+                            io.addString(menuService.getUsernameChangeText());
                             String newEmail = io.getString();
                             boolean checkIfBusy = playable.checkIfUserNameIsBusy(newEmail);
                             if (checkIfBusy){
-                                playable.setNewEmail(newEmail);
-                                io.addString(menuService.getEmailChangeText());
+                                playable.setNewUsername(newEmail);
+                                io.addString(menuService.getUsernameChangeText());
                             } else {
-                                io.addString(menuService.getEmailChangeText());
+                                io.addString(menuService.getUsernameChangeText());
                             }
                         } else {
-                            io.addString(menuService.getEmailChangeText());
+                            io.addString(menuService.getUsernameChangeText());
                         }
                     }
                 }

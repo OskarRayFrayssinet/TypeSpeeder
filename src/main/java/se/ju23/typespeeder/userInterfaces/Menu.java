@@ -8,19 +8,26 @@ import se.ju23.typespeeder.gameLogic.Translator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Component public class Menu implements MenuService {
     Playable playable;
+    Translatable translatable;
 
+    private String language = "";
     private int tries = 3;
     @Autowired
     public void setPlayable(Playable playable) {
         this.playable = playable;
     }
+    @Autowired
+    public void setTranslatable(Translatable translatable) {
+        this.translatable = translatable;
+    }
 
 
     public Menu() {
-
     }
     @Override
     //Login menu first to be shown
@@ -41,34 +48,50 @@ import java.util.List;
 
         return toReturn;
     }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     @Override
     public String printChangeLanguageText(){
         if (playable.getCurrentLanguage(2).equals("3")){
             return "Changed";
         } else if (playable.getCurrentLanguage(0).equals("1")) {
-            return "Byta till Engelska? y/n: ";
+            return "Byta spelspråk till Engelska? y/n: ";
         } else {
             return "Change game language to Swedish? y/n: ";
         }
     }
     @Override
     //Main menu
-    public String displayMenu() {
-        //String textToReturn = null;
-        getMenuOptions();
+    //Only in English
+    public void displayMenu() {
+        String textToReturn = null;
+        String translatedText;
         StringBuilder stringBuilder = new StringBuilder();
         for (String option : getMenuOptions()){
             stringBuilder.append(option);
-        }/*
-        if (playable.getCurrentLanguage(0).equals("1")){
+        }
+
+        System.out.println(stringBuilder);
+
+/*
+        if (language.equals("1")){
             try {
-                textToReturn = translatable.translate(stringBuilder.toString(), "sv");
+                translatedText = translatable.translate(stringBuilder.toString(), "sv");
+                textToReturn = translatedText.replaceAll("(\\d+)\\.\\s*", "\n$1. ");
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            textToReturn = stringBuilder.toString();
         }
-        */
-        return stringBuilder.toString();
+       */
+
+
+
 
     }
     @Override
@@ -125,7 +148,7 @@ import java.util.List;
         return stringBuilder.toString();
     }
     @Override
-    public String getEmailChangeText(){
+    public String getUsernameChangeText(){
         List<String> menuOptions = new ArrayList<>();
         if (playable.getCurrentEmail(1).equals("1")){
             menuOptions.add("\u001B[1mUSERNAME CHANGED\n" +
