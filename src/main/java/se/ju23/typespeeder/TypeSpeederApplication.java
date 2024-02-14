@@ -27,7 +27,7 @@ public class TypeSpeederApplication implements CommandLineRunner {
 
         Window window = new Window("TypeSpeeder");
 
-        Menu.displayMenu();
+        //Menu.displayMenu();
         //User.logIn();
 
         window.addString("1. Play the Game\n");

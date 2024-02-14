@@ -21,8 +21,8 @@ public class Window{
         window.setLayout(new BorderLayout());
         text = new JTextArea();
         text.setEditable(false);
-        text.setBackground(new Color(255, 220, 220));
-        text.setForeground(Color.BLUE);
+        text.setBackground(new Color(173, 216, 230));
+        text.setForeground(Color.MAGENTA.darker());
         text.setFont(new Font(Font.MONOSPACED, Font.BOLD, 18));
         window.add(new JScrollPane(text), BorderLayout.CENTER);
         sPanel = new JPanel();
@@ -32,8 +32,8 @@ public class Window{
         inString.setFont(new Font("Sansserif", Font.BOLD, 18));
         inString.requestFocusInWindow();
         go = new JButton("Send");
-        go.setForeground(Color.RED.darker());
-        go.setBackground(Color.WHITE);
+        go.setForeground(Color.BLACK);
+        go.setBackground(Color.GREEN);
         mq = new ArrayBlockingQueue<>(100);
         ActionListener goAction = new GoListener();
         go.addActionListener(goAction);
@@ -41,7 +41,7 @@ public class Window{
 
         sPanel.add(inString, BorderLayout.CENTER);
         sPanel.add(go, BorderLayout.EAST);
-        window.setSize(350, 800);
+        window.setSize(350, 500);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLocationByPlatform(true);
         window.setVisible(true);
