@@ -1,8 +1,9 @@
-package se.ju23.typespeeder;
+package se.ju23.typespeeder.classesFromDB;
 
 import jakarta.persistence.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 public class Attempt {
@@ -22,6 +23,14 @@ public class Attempt {
     @Basic
     @Column(name = "total_points", nullable = false)
     private int totalPoints;
+    @Basic
+    @Column(name = "solution")
+    private String solution;
+    @Basic
+    @Column(name = "user_outcome")
+    private String userOutcome;
+
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private Users usersByUserId;
@@ -63,6 +72,22 @@ public class Attempt {
         this.totalPoints = totalPoints;
     }
 
+    public String getSolution() {
+        return solution;
+    }
+
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
+
+    public String getUserOutcome() {
+        return userOutcome;
+    }
+
+    public void setUserOutcome(String userOutcome) {
+        this.userOutcome = userOutcome;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,6 +99,8 @@ public class Attempt {
         if (userId != attempt.userId) return false;
         if (taskId != attempt.taskId) return false;
         if (totalPoints != attempt.totalPoints) return false;
+        if (!Objects.equals(solution, attempt.solution)) return false;
+        if (!Objects.equals(userOutcome, attempt.userOutcome)) return false;
 
         return true;
     }
@@ -84,6 +111,8 @@ public class Attempt {
         result = 31 * result + userId;
         result = 31 * result + taskId;
         result = 31 * result + totalPoints;
+        result = 31 * result + (solution != null ? solution.hashCode() : 0);
+        result = 31 * result + (userOutcome != null ? userOutcome.hashCode() : 0);
         return result;
     }
 

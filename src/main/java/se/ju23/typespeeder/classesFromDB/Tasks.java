@@ -1,4 +1,4 @@
-package se.ju23.typespeeder;
+package se.ju23.typespeeder.classesFromDB;
 
 import jakarta.persistence.*;
 
@@ -16,9 +16,6 @@ public class Tasks {
     @Basic
     @Column(name = "actual_task", nullable = false, length = 8000)
     private String actualTask;
-    @Basic
-    @Column(name = "solution", nullable = false, length = 1000)
-    private String solution;
     @OneToMany(mappedBy = "tasksByTaskId")
     private Collection<Attempt> attemptsByTaskId;
 
@@ -46,13 +43,6 @@ public class Tasks {
         this.actualTask = actualTask;
     }
 
-    public String getSolution() {
-        return solution;
-    }
-
-    public void setSolution(String solution) {
-        this.solution = solution;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -64,7 +54,7 @@ public class Tasks {
         if (taskId != tasks.taskId) return false;
         if (taskName != null ? !taskName.equals(tasks.taskName) : tasks.taskName != null) return false;
         if (actualTask != null ? !actualTask.equals(tasks.actualTask) : tasks.actualTask != null) return false;
-        if (solution != null ? !solution.equals(tasks.solution) : tasks.solution != null) return false;
+
 
         return true;
     }
@@ -74,7 +64,6 @@ public class Tasks {
         int result = taskId;
         result = 31 * result + (taskName != null ? taskName.hashCode() : 0);
         result = 31 * result + (actualTask != null ? actualTask.hashCode() : 0);
-        result = 31 * result + (solution != null ? solution.hashCode() : 0);
         return result;
     }
 

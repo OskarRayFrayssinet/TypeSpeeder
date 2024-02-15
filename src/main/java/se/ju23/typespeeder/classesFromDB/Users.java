@@ -1,18 +1,19 @@
-package se.ju23.typespeeder;
+package se.ju23.typespeeder.classesFromDB;
 
 import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
 @Entity
-public class Users {
+@Component public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "user_id", nullable = false)
     private int userId;
     @Basic
     @Column(name = "email", nullable = false, length = 200)
-    private String email;
+    private String email; //Username
     @Basic
     @Column(name = "password", nullable = false, length = 45)
     private String password;
