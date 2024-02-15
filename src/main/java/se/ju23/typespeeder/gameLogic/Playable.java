@@ -4,6 +4,10 @@ public interface Playable {
 
     Status checkUser(String username, String password);
 
+    void calculatePoints(String userAnswer);
+
+    String beforeGameStartsText();
+
     Status standbyInMainMenu(int input);
 
     void setLanguage();
@@ -12,7 +16,7 @@ public interface Playable {
     Status playAgain(boolean b);
     String getCurrentEmail(int place);
     void setCurrentEmail(String newCurrentEmail);
-    String printGames();
+    String printListOfGames();
 
     void setNewAlias(String input);
 

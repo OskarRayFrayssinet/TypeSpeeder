@@ -5,12 +5,14 @@ public interface IO {
 
     String getString();
 
+    String getEnter();
+
     String getYesOrNo();
 
     int getInt();
 
     void addString(String s);
-    void addStringWithoutTranslation(String s);
+    void addGameText(String s);
 
     void clear();
 

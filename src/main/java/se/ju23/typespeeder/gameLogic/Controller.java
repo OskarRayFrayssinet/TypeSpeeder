@@ -56,12 +56,17 @@ import java.sql.SQLException;
                     }
                 }
                 case ACTIVE_IN_GAME -> {
-                    io.addString(playable.printGames());
+                    io.addString(playable.printListOfGames());
                     int input = io.getInt();
                     if (input == 0){
                         status = Status.VERIFIED;
                     } else {
-                        io.addStringWithoutTranslation(playable.activeInGame(input));
+                        io.addString(playable.beforeGameStartsText());
+                        io.getEnter();
+                        io.addGameText(playable.activeInGame(input));
+                        String answer = io.getString();
+                        playable.calculatePoints(answer);
+
                     }
                 }
                 case NO_USER_FOUND -> io.addString(menuService.printLoginText());
