@@ -6,9 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-Scanner scanner = new Scanner(System.in);
 public class Menu implements MenuService {
+
+    Scanner scanner = new Scanner(System.in);
+
     @Override
+    public List<String> getMenuOptions() {
+        return getMenuOptions(Language.ENGLISH);
+    }
+
     public List<String> getMenuOptions(Language language) {
         List<String> options = new ArrayList<>();
         if (language == Language.ENGLISH) {
@@ -26,18 +32,17 @@ public class Menu implements MenuService {
         }
         return options;
     }
+
     @Override
-    public void displayMenu(){
-        System.out.println("Choose your language:");
-        System.out.println("1. English");
-        System.out.println("2. Swedish");
-        int choice = scanner.nextInt();
-        Language language = (choice == 1) ? Language.ENGLISH : Language.SWEDISH;
-        List<String> options = getMenuOptions(language);
+    public void displayMenu() {
+        int menuOption = 1;
+        ArrayList<String> options = new ArrayList<>(getMenuOptions());
 
         System.out.println("Menu options:");
         for (String o : options) {
             System.out.println(o);
         }
     }
+
+
 }

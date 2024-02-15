@@ -2,6 +2,9 @@ package se.ju23.typespeeder.classer;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "players")
 public class Players {
@@ -17,20 +20,22 @@ public class Players {
     private String password;
     @Column (name = "level")
     private int level;
+    @Column (name = "role")
+    private String role;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "playerID")
+    private List<Resultat>resultat = new ArrayList<>();
 
     public Players() {
     }
 
-    public Players(int id, String nickname, String username, String password, int level ){
-        this.id = id;
+    public Players(String nickname, String username, String password, int level, String role ){
         this.nickname = nickname;
         this.username = username;
         this.password = password;
         this.level = level;
-    }
-
-    public int getId() {
-        return id;
+        this.role = role;
     }
 
     public String getNickname() {
@@ -65,6 +70,22 @@ public class Players {
         this.level = level;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public List<Resultat>getResultat() {
+        return resultat;
+    }
+
+    public void setResultat(List<Resultat> resultat) {
+        this.resultat = resultat;
+    }
+
     @Override
     public String toString() {
         return "Players{" +
@@ -73,6 +94,7 @@ public class Players {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", level=" + level +
+                ", role='" + role + '\'' +
                 '}';
     }
 }
