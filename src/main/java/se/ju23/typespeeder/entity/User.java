@@ -1,8 +1,13 @@
 package se.ju23.typespeeder.entity;
 
+import jakarta.persistence.*;
 
+@Entity
+@Table
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userid;
     private String username;
     private String password;
