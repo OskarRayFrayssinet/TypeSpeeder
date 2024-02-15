@@ -2,11 +2,18 @@ package se.ju23.typespeeder;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
+
+import java.util.Scanner;
 
 
 @Entity
+@Table(name = "user")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String username;
     private String password;
@@ -34,13 +41,6 @@ public class User {
         this.username = username;
     }
 
-    public static void logIn() {
-
-    }
-
-    public static void logOut() {
-
-    }
 
     public static void updateProfile() {
     }
