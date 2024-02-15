@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.io.IOException;
 import java.util.List;
 
 import java.io.ByteArrayOutputStream;
@@ -72,7 +74,7 @@ class MenuTest {
     }
 
     @Test
-    public void testDisplayMenuCallsGetMenuOptionsAndReturnsAtLeastFive() {
+    public void testDisplayMenuCallsGetMenuOptionsAndReturnsAtLeastFive() throws IOException {
         Menu menuMock = Mockito.spy(new Menu());
         menuMock.displayMenu();
         verify(menuMock, times(1)).getMenuOptions();
@@ -87,7 +89,7 @@ class MenuTest {
     }
 
     @Test
-    public void menuShouldPrintAtLeastFiveOptions() {
+    public void menuShouldPrintAtLeastFiveOptions() throws IOException {
         new Menu().displayMenu();
         long count = outContent.toString().lines().count();
         assertTrue(count >= 5, "The menu should print out at least 5 alternatives.");
