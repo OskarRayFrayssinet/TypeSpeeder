@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
@@ -12,6 +12,7 @@ public class Main {
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/typespeeder";
     private static final String JDBC_USER = "NG";
     private static final String JDBC_PASS = "Husby164";
+
     private static String loggedInAnvandarnamn = null;
     private static GameChallenges gameChallenges = new GameChallenges(scanner);
 
