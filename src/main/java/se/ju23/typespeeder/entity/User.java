@@ -25,8 +25,7 @@ public class User {
     public User() {}
 
     public User(String username, String password, String playername, long xp,
-                int level,
-                boolean isAdmin) {
+                int level, boolean isAdmin) {
         this.username = username;
         this.password = password;
         this.playername = playername;
@@ -67,16 +66,8 @@ public class User {
         return xp;
     }
 
-    public void setXp(long xp) {
-        this.xp = xp;
-    }
-
     public int getLevel() {
         return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
     }
 
     public boolean isAdmin() {
@@ -98,8 +89,6 @@ public class User {
     public void addResult(Result result) {
         results.add(result);
     }
-
-
 
 }
 
