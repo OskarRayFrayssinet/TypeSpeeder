@@ -258,6 +258,7 @@ public class Main {
         int choice = scanner.nextInt();
         scanner.nextLine(); // Hantera newline efter int-input
         return choice == 1;
+
     }
 
 
