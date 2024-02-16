@@ -1,13 +1,5 @@
 package se.ju23.typespeeder;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Component;
-
-import java.sql.*;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Scanner;
 import javax.swing.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
