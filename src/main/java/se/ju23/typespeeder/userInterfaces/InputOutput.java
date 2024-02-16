@@ -70,7 +70,7 @@ import java.util.Scanner;
 
     public void addString(String message){
         String a = message;
-        if (playable.getCurrentLanguage(0).equals("1")){
+        if (menuService.getCurrentLanguage(0).equals("1")){
             try {
                 a = translatable.translate(message,"sv");
             } catch (Exception e) {

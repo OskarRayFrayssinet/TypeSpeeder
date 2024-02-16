@@ -10,13 +10,15 @@ import java.sql.SQLException;
 @Component public class Controller implements Controllable {
     Playable playable;
     MenuService menuService;
+    IChallenge challenge;
     IO io;
 
 
-    public Controller(Playable playable, IO io,MenuService m) {
+    public Controller(Playable playable, IO io,MenuService m, IChallenge challenge) {
         this.playable = playable;
         this.io = io;
         this.menuService = m;
+        this.challenge = challenge;
     }
 
     @Override
@@ -56,16 +58,18 @@ import java.sql.SQLException;
                     }
                 }
                 case ACTIVE_IN_GAME -> {
-                    io.addString(playable.printListOfGames());
+                    io.addString(challenge.printListOfGames());
                     int input = io.getInt();
                     if (input == 0){
                         status = Status.VERIFIED;
                     } else {
                         io.addString(playable.beforeGameStartsText());
                         io.getEnter();
-                        io.addGameText(playable.activeInGame(input));
+                        io.addGameText(challenge.chooseGame(input));
+                        challenge.startChallenge();
                         String answer = io.getString();
-                        playable.calculatePoints(answer);
+                        challenge.endChallenge();
+                        playable.calculateTotalPointsForGame(answer);
 
                     }
                 }
@@ -132,7 +136,7 @@ import java.sql.SQLException;
                     io.addString(menuService.printChangeLanguageText());
                     String answer = io.getYesOrNo();
                     if (answer.equals("y")){
-                        playable.setLanguage();
+                        menuService.setLanguage();
                         io.addString(menuService.printChangeLanguageText());
                     }
 

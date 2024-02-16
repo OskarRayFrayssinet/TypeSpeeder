@@ -4,17 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.gameLogic.Playable;
 import se.ju23.typespeeder.gameLogic.Translatable;
-import se.ju23.typespeeder.gameLogic.Translator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Component public class Menu implements MenuService {
     Playable playable;
     Translatable translatable;
-
+    public String[] currentLanguage = {"2", "", ""};
     private String language = "";
     private int tries = 3;
     @Autowired
@@ -49,15 +46,12 @@ import java.util.logging.Logger;
         return toReturn;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
 
     @Override
     public String printChangeLanguageText(){
-        if (playable.getCurrentLanguage(2).equals("3")){
-            return "Changed";
-        } else if (playable.getCurrentLanguage(0).equals("1")) {
+        if (getCurrentLanguage(2).equals("3")){
+            return "Changed\n";
+        } else if (getCurrentLanguage(0).equals("1")) {
             return "Byta spelspråk till Engelska? y/n: ";
         } else {
             return "Change game language to Swedish? y/n: ";
@@ -73,8 +67,19 @@ import java.util.logging.Logger;
         for (String option : getMenuOptions()){
             stringBuilder.append(option);
         }
+        if (currentLanguage[0].equals("1")){
+            try {
+                translatedText = translatable.translate(stringBuilder.toString(), "sv");
 
-        System.out.println(stringBuilder);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            textToReturn = translatedText.replaceAll("(\\d+)\\.\\s*", "\n$1. ");
+        } else {
+            textToReturn = stringBuilder.toString();
+        }
+
+        System.out.println(textToReturn);
 
 /*
         if (language.equals("1")){
@@ -96,7 +101,9 @@ import java.util.logging.Logger;
     }
     @Override
     public String getUserSettingsMenu(){
+
         List<String> menuOptions = new ArrayList<>();
+
         menuOptions.add("\n0. Go back\n");
         menuOptions.add("1. Change Alias\n");
         menuOptions.add("2. Change Password\n");
@@ -173,15 +180,35 @@ import java.util.logging.Logger;
 
     @Override
     public List<String> getMenuOptions() {
+        currentLanguage[2] = "";
         List<String> menuOptions = new ArrayList<>();
+        if (currentLanguage[0].equals("1")){
+            menuOptions.add("Svenska valt");
+        } else {
+            menuOptions.add("English chosen");
+        }
         menuOptions.add("\n0.Sign out and exit\n");
-        menuOptions.add("1. Game Languange\n");
+        menuOptions.add("1. Choose language (Swedish/English)\n");
         menuOptions.add("2. Select game\n");
         menuOptions.add("3. Show your stats\n");
         menuOptions.add("4. Change user info\n");
         menuOptions.add("Your choice: ");
 
         return menuOptions;
+    }
+    @Override
+    public void setLanguage() {
+        if (currentLanguage[0] == "1") {
+            currentLanguage[0] = "2";
+            currentLanguage[2] = "3";
+        } else {
+            currentLanguage[0] = "1";
+            currentLanguage[2] = "3";
+        }
+    }
+    @Override
+    public String getCurrentLanguage(int place) {
+        return currentLanguage[place];
     }
     public int getNumberOfTries(){
         return tries;

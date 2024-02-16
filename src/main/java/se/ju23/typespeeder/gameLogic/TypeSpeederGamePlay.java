@@ -1,25 +1,18 @@
 package se.ju23.typespeeder.gameLogic;
 
 
-import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.ju23.typespeeder.classesFromDB.Tasks;
-import se.ju23.typespeeder.classesFromDB.TasksRepo;
-import se.ju23.typespeeder.classesFromDB.Users;
-import se.ju23.typespeeder.classesFromDB.UsersRepo;
+import se.ju23.typespeeder.classesFromDB.*;
 import se.ju23.typespeeder.userInterfaces.MenuService;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
 @Component
 public class TypeSpeederGamePlay implements Playable {
     MenuService menuService;
-    Translatable translator;
+
     public static LocalTime startGame = LocalTime.now();
     public static LocalTime endGame = LocalTime.now();
 
@@ -27,32 +20,34 @@ public class TypeSpeederGamePlay implements Playable {
 
 
     public int currentId = 0;
-    public String[] currentLanguage = {"2", "", ""};
 
-    public int currentGameTaskId = 0;
-    public String currentGameText = "";
+    double timeResult = 0;
     public String[] currentEmail = {"", "", ""};
     public String[] currentAlias = {"", ""};
     public int currentXp = 0;
     public int currentLevel = 0;
     public String[] currentPassword = {"", "", ""};
     public static List<String> currentSolution = new ArrayList<>();
+    IChallenge challenge;
 
 
-    public TypeSpeederGamePlay(Translatable translator) {
-        this.translator = translator;
+
+
+    public TypeSpeederGamePlay() {
 
     }
 
     @Autowired
-    UsersRepo uRepo;
+    UsersRepo usersRepo;
     @Autowired
-    TasksRepo tRepo;
+    AttemptRepo attemptRepo;
+    @Autowired
+    PointParamRepo pointParamRepo;
 
     public Status checkUser(String email, String password) {
 
 
-        Optional<Users> users = uRepo.findByEmailAndPassword(email, password);
+        Optional<Users> users = usersRepo.findByEmailAndPassword(email, password);
         if (users.isPresent()) {
             Users found = users.get();
             currentId = found.getUserId();
@@ -69,51 +64,30 @@ public class TypeSpeederGamePlay implements Playable {
         }
     }
 
-
-    public String printListOfGames() {
-        List<Tasks> tasksList = tRepo.findAll();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < tasksList.size(); i++) {
-            stringBuilder.append((i + 1)).append(". ").append(tasksList.get(i).getTaskName()).append("\n");
-        }
-        return "0. Go back\n" + stringBuilder.toString();
-    }
-
-    public String activeInGame(int id) {
-        String translatedText;
-        StringBuilder stringBuilder = new StringBuilder();
-        currentGameTaskId = id;
-        List<Tasks> tasksList = tRepo.findByTaskId(id);
-        for (Tasks tasks : tasksList) {
-            currentGameText = tasks.getActualTask();
-        }
-        if (getCurrentLanguage(0).equals("1")) {
-            try {
-                translatedText = translator.translate(currentGameText, "sv");
-                currentGameText = translatedText;
-            } catch (Exception e) {
-                throw new RuntimeException();
+    @Override
+    public void calculateTotalPointsForGame(String userAnswer){
+        int correctAnswers = 0;
+        int correctAnswersInRow = 0;
+        List<String> userList = new ArrayList<>(Arrays.asList(userAnswer.split("\\s+")));
+        for (int i = 0; i < userList.size(); i++) {
+            for (int j = 0; j < currentSolution.size(); j++) {
+                if (userList.get(i).equals(currentSolution.get(j))){
+                    correctAnswers++;
+                }
             }
         }
+        int find = 0;
+        for (int i = 0; i < userList.size(); i++) {
 
-        List<String> textInWords = Arrays.asList(currentGameText.split("\\s+"));
-        List<String> textWithYellowWords = addYellowHighlight(textInWords, generateRandomWords(currentGameText));
-
-        for (String t : textWithYellowWords) {
-            stringBuilder.append(t).append(" ");
+            if (userList.get(i).equals(currentSolution.get(find))){
+                correctAnswersInRow++;
+            }
+            find++;
         }
-
-        //watch.start();
-        startGame = LocalTime.now();
-        return stringBuilder.toString();
-    }
-
-
-    @Override
-    public void calculatePoints(String userAnswer){
-        endGame = LocalTime.now();
-        double timeResult = calculateTimeToDouble();
-        List<String> temp = new ArrayList<>(Arrays.asList(userAnswer.split("\\s+")));
+        System.out.println(currentSolution);
+        System.out.println(userList);
+        System.out.println("Antal rätt: " + correctAnswers + " rätt i rad:" + correctAnswersInRow + " Din tid: " +getTimeResult());
+        /*
         if (temp.equals(currentSolution)) {
             System.out.println("User's answer matches the current solution." + " Time in seconds: " + timeResult);
 
@@ -121,104 +95,29 @@ public class TypeSpeederGamePlay implements Playable {
             System.out.println("User's answer does not match the current solution."+ " Time in seconds: " + timeResult);
 
         }
-    }
-    public double calculateTimeToDouble(){
-        Duration difference = Duration.between(startGame, endGame);
-        long millisecondsDifference = difference.toMillis();
-        return millisecondsDifference / 1000.0;
+
+         */
     }
 
-    private static List<String> addYellowHighlight(List<String> textInWords, List<String> randomWords) {
-        List<String> temp = new ArrayList<>();
-        for (String a : randomWords) {
-            boolean markedWords = false;
-
-            for (int j = 0; j < textInWords.size(); j++) {
-                if (textInWords.get(j).equals(a) && !temp.contains(a)) {
-                    String highlightedWord = "\u001B[33m" + a + "\u001B[0m";
-                    textInWords.set(j, highlightedWord);
-                    temp.add(a);
-                    markedWords = true;
-                    break;
-                }
-            }
-            if (!markedWords) {
-                temp.add(a);
-            }
-        }
-        List<String> yellowWords = new ArrayList<>();
-        for (String word : textInWords) {
-            // Kolla om ordet har markerats gult
-            if (word.startsWith("\u001B[33m") && word.endsWith("\u001B[0m")) {
-                // Ta bort färgkoderna och lägg till det i listan av gula ord
-                yellowWords.add(word.substring(5, word.length() - 4));
-                if (yellowWords.size() == 7){
-                    break;
-                }
-            }
-        }
-        currentSolution = yellowWords;
-        //TODO TA BORT DET HÄR SEN
-        System.out.println("gula ord" + yellowWords);
-        return textInWords;
+    public static List<String> getCurrentSolution() {
+        return currentSolution;
     }
+    @Override
+    public void setCurrentSolution(List<String> currentSolution1) {
+        currentSolution = currentSolution1;
+    }
+
     @Override
     public String beforeGameStartsText(){
         return "Time starts when you press ENTER, READY?";
     }
-    private static List<String> generateRandomWords(String text) {
-        String[] words = text.split("\\s+");
-        Random random = new Random();
-        List<String> randomWordsList = new ArrayList<>();
 
-        int[] indices = new int[7];
-        Set<Integer> chosenIndices = new HashSet<>();
-        for (int i = 0; i < 7; i++) {
-            int index = random.nextInt(words.length);
-            while (chosenIndices.contains(index)) {
-                index = random.nextInt(words.length);
-            }
-            chosenIndices.add(index);
-            indices[i] = index;
-        }
-        for (int i = 0; i < indices.length - 1; i++) {
-            for (int j = 0; j < indices.length - i - 1; j++) {
-                if (indices[j] > indices[j + 1]) {
-                    int temp = indices[j];
-                    indices[j] = indices[j + 1];
-                    indices[j + 1] = temp;
-                }
-            }
-        }
-        for (int index : indices) {
-            randomWordsList.add(words[index]);
-        }
-
-
-       /* String[] words = text.split("\\s+");
-        Random random = new Random();
-        List<String> randomWordsList = new ArrayList<>();
-
-
-        for (int i = 0; i < 7; i++) {
-            int randomIndex = random.nextInt(words.length);
-            randomWordsList.add(words[randomIndex]);
-            currentSolution.add(words[randomIndex]);
-
-        }
-        //Collections.sort(randomWordsList);
-
-
-*/
-
-        return randomWordsList;
-    }
 
     @Override
     public Status standbyInMainMenu(int input) {
         currentPassword[2] = "";
         currentEmail[2] = "";
-        currentLanguage[2] = "";
+
         Status status = null;
         switch (input) {
             case 0 -> status = Status.EXIT;
@@ -230,16 +129,7 @@ public class TypeSpeederGamePlay implements Playable {
         return status;
     }
 
-    @Override
-    public void setLanguage() {
-        if (currentLanguage[0] == "1") {
-            currentLanguage[0] = "2";
-            currentLanguage[2] = "3";
-        } else {
-            currentLanguage[0] = "1";
-            currentLanguage[2] = "3";
-        }
-    }
+
     @Override
     public Status standbyInSettingsMenu(int input) {
         Status status = null;
@@ -252,21 +142,22 @@ public class TypeSpeederGamePlay implements Playable {
     }
     @Override
     public void setNewAlias(String input) {
-        List<Users> aliasFromDB = uRepo.findByAlias(getCurrentAlias(0));
+
+        List<Users> aliasFromDB = usersRepo.findByAlias(getCurrentAlias(0));
         for (Users u : aliasFromDB) {
             u.setAlias(input);
-            uRepo.save(u);
+            usersRepo.save(u);
             currentAlias[0] = input;
             currentAlias[1] = "1";
         }
     }
     @Override
     public void setNewUsername(String newUsername) {
-        Optional<Users> emailFromDB = uRepo.findByUserId(getCurrentId());
+        Optional<Users> emailFromDB = usersRepo.findByUserId(getCurrentId());
         if (emailFromDB.isPresent()) {
             Users found = emailFromDB.get();
             found.setEmail(newUsername);
-            uRepo.save(found);
+            usersRepo.save(found);
             currentEmail[1] = "1";
         }
     }
@@ -283,7 +174,7 @@ public class TypeSpeederGamePlay implements Playable {
     }
     @Override
     public boolean checkIfUserNameIsBusy(String input) {
-        Optional<Users> checkIfBusy = uRepo.findByEmail(input);
+        Optional<Users> checkIfBusy = usersRepo.findByEmail(input);
         if (checkIfBusy.isEmpty()) {
             return true;
         } else {
@@ -294,11 +185,11 @@ public class TypeSpeederGamePlay implements Playable {
     }
     @Override
     public void setNewPassword(String newPassword) {
-        Optional<Users> passwordFromDB = uRepo.findById(getCurrentId());
+        Optional<Users> passwordFromDB = usersRepo.findById(getCurrentId());
         if (passwordFromDB.isPresent()) {
             Users found = passwordFromDB.get();
             found.setPassword(newPassword);
-            uRepo.save(found);
+            usersRepo.save(found);
             currentPassword[1] = "1";
         }
     }
@@ -312,17 +203,32 @@ public class TypeSpeederGamePlay implements Playable {
             return false;
         }
     }
-    @Override
-    public String getCurrentLanguage(int place) {
-        return currentLanguage[place];
-    }
-    public Status playingGame(int input) {
-        return null;
+
+    public double getTimeResult() {
+        return timeResult;
     }
     @Override
-    public Status playAgain(boolean b) {
-        return null;
+    public void setTimeResult(double timeResult) {
+        this.timeResult = timeResult;
     }
+
+    public static LocalTime getStartGame() {
+        return startGame;
+    }
+    @Override
+    public void setStartGame(LocalTime startGame1) {
+       startGame = startGame1;
+    }
+
+    public static LocalTime getEndGame() {
+        return endGame;
+    }
+    @Override
+    public void setEndGame(LocalTime endGame1) {
+        endGame = endGame1;
+    }
+
+
     @Override
     public String getCurrentEmail(int place) {
         return currentEmail[place];
