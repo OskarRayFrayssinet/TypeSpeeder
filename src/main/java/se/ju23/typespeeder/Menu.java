@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 @Component
 public class Menu implements MenuService {
     private static UserService userService;
+    private static User loggedInUser;
+    private static Object LoggedInUser;
 
     @Autowired
     static void setUserService(UserService userService){
@@ -91,6 +93,14 @@ public class Menu implements MenuService {
             return null;
         }
     }
+    
+    public static void logOut(){
+        LoggedInUser = null;
+        System.out.println("Du har loggats ut.");
+    }
+   
+
+
 
     public static void playGame() throws IOException {
         System.out.println("Skriv de röda orden korrekt med samma ordning som de står och tryck enter när du är klar.");
