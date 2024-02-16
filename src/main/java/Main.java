@@ -219,6 +219,7 @@ public class Main {
                 System.out.println("Ogiltigt val, använder standardinställning 'Medel'.");
                 yield 4; // Standardvärde för "Medel"
             }
+
         };
 
         List<String> words = new ArrayList<>(Arrays.asList("kaffe", "programmering", "musik", "bok", "dator", "penna", "glasögon", "telefon", "skrivbord", "stol"));
