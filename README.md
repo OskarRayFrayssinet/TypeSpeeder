@@ -1,12 +1,17 @@
 # TypeSpeeder
 
-<<<<<<< HEAD
-Hejhej
-=======
+The warnings are written in english and make sure that you read the warnings carefully.
+
+
 ## Update 1 of 3
 One file is now added to the project:
 
-* MenuTest.Java
+* MenuTest.java
 
-The warnings are written in english and make sure that you read the warnings carefully.
->>>>>>> aeedfb6826541eff0ff715a7442e6c0507ac28e8
+
+## Update 2 of 3
+Three files are now added to the project:
+
+* ChallengePerformanceTest.java
+* ChallengeTest.java
+* MenuPerformanceTest.java
