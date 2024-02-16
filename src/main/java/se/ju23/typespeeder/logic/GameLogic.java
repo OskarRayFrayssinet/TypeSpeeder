@@ -1,34 +1,17 @@
-package se.ju23.typespeeder;
+package se.ju23.typespeeder.logic;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import se.ju23.typespeeder.logic.GameLogic;
-import se.ju23.typespeeder.logic.MenuLogic;
-import se.ju23.typespeeder.service.LoginService;
-
-import java.util.Random;
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
-public class Main {
+public class GameLogic {
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final Random random = new Random();
+    public void startGame() {
+        System.out.println("Welcome to Color Typing Game!");
 
-    //@Autowired
-    //private LoginService loginService; enligt menu blablabla
-
-    /*private static final Scanner scanner = new Scanner(System.in);
-    private static final Random random = new Random();*/
-
-    public static void main(String[] args) {
-        MenuLogic menuLogic = new MenuLogic();
-        menuLogic.displayMainMenu();
-
-        GameLogic gameLogic = new GameLogic();
-        gameLogic.startGame();
-
-    }
-        //System.out.println("Welcome to Color Typing Game!");
-
-        /*while (true) {
+        while (true) {
             String text = generateText(50, 5);
             System.out.println("Type the following words:");
 
@@ -125,5 +108,5 @@ public class Main {
         }
 
         return orderScore;
-    }*/
+    }
 }
