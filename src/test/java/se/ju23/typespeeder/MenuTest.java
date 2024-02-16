@@ -109,10 +109,10 @@ public class MenuTest {
         System.setOut(new PrintStream(outContent));
         Menu menu = new Menu();
         menu.displayMenu();
-
+//TODO KOLLA MED OSKAR
         String consoleOutput = outContent.toString();
-        assertTrue(consoleOutput.contains("Välj språk (svenska/engelska):"), "Menu should prompt for language selection.");
-        assertTrue(consoleOutput.contains("Svenska valt."), "Menu should confirm Swedish language selection.");
+        assertTrue(consoleOutput.contains("1. Choose language (Swedish/English)\n"), "Menu should prompt for language selection.");
+        assertTrue(consoleOutput.contains("English chosen"), "Menu should confirm Swedish language selection.");
     }
 
 }

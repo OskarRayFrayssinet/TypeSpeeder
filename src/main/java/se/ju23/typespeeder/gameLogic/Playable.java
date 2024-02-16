@@ -1,18 +1,27 @@
 package se.ju23.typespeeder.gameLogic;
 
+import java.time.LocalTime;
+import java.util.List;
+
 public interface Playable {
 
     Status checkUser(String username, String password);
 
+    void calculateTotalPointsForGame(String userAnswer);
+
+
+    void setCurrentSolution(List<String> currentSolution1);
+
+    String beforeGameStartsText();
+
+
+
     Status standbyInMainMenu(int input);
 
-    void setLanguage();
 
     Status standbyInSettingsMenu(int input);
-    Status playAgain(boolean b);
     String getCurrentEmail(int place);
     void setCurrentEmail(String newCurrentEmail);
-    String printGames();
 
     void setNewAlias(String input);
 
@@ -27,10 +36,14 @@ public interface Playable {
 
     boolean checkCurrentPassword(String input);
 
-    String getCurrentLanguage(int place);
 
-    Status playingGame(int input);
-    String activeInGame(int id);
+    void setTimeResult(double timeResult);
+
+    void setStartGame(LocalTime startGame1);
+
+    void setEndGame(LocalTime endGame1);
+
+
     int getCurrentId();
     String noUserFoundText();
     String getCurrentAlias(int place);

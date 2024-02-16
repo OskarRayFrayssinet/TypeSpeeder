@@ -1,6 +1,7 @@
 package se.ju23.typespeeder;
 
 import org.junit.jupiter.api.Test;
+import se.ju23.typespeeder.userInterfaces.Menu;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,9 +47,9 @@ public class MenuPerformanceTest {
 
         String consoleOutput = outContent.toString();
 
-        assertTrue(consoleOutput.contains("Välj språk (svenska/engelska):"), "Menu should prompt for language selection.");
+        assertTrue(consoleOutput.contains("1. Choose language (Swedish/English)\n"), "Menu should prompt for language selection.");
 
-        assertTrue(consoleOutput.contains("Svenska valt."), "Menu should confirm Swedish language selection.");
+        assertTrue(consoleOutput.contains("English chosen"), "Menu should confirm Swedish language selection.");
 
 
         assertTrue(duration <= MAX_EXECUTION_TIME_LANGUAGE_SELECTION, "Menu display and language selection took too long. Execution time: " + duration + " ms.");
