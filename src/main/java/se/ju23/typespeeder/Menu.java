@@ -20,10 +20,6 @@ public class Menu implements MenuService {
     private static User loggedInUser;
     private static Object LoggedInUser;
 
-    @Autowired
-    static void setUserService(UserService userService){
-        Menu.userService = userService;
-    }
 
     static List<String> MenuOptions = new ArrayList<>();
     public static final String YELLOW = "\u001B[33m";
@@ -83,6 +79,7 @@ public class Menu implements MenuService {
 
 
 
+
         User user = userService.logIn(username, password);
 
         if (user != null) {
@@ -98,8 +95,12 @@ public class Menu implements MenuService {
         LoggedInUser = null;
         System.out.println("Du har loggats ut.");
     }
-   
 
+    @Autowired
+    static void setUserService(UserService userService){
+        Menu.userService = userService;
+    }
+   
 
 
     public static void playGame() throws IOException {
