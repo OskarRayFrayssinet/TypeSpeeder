@@ -1,25 +1,19 @@
 package se.ju23.typespeeder;
 
 import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.Method;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
-
 import org.mockito.Mockito;
-import se.ju23.typespeeder.menu.Menu;
-import se.ju23.typespeeder.menu.MenuService;
 
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MenuServiceTest {
+public class MenuTest {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -37,7 +31,7 @@ public class MenuServiceTest {
     @Test
     public void testClassExists() {
         try {
-            Class<?> clazz = Class.forName("se.ju23.typespeeder.menu.Menu");
+            Class<?> clazz = Class.forName("se.ju23.typespeeder.Menu");
             assertNotNull(clazz, "The class 'Menu' should exist.");
         } catch (ClassNotFoundException e) {
             fail("The class 'Menu' does not exist.", e);
@@ -47,7 +41,7 @@ public class MenuServiceTest {
     @Test
     public void testMethodExists() {
         try {
-            Class<?> clazz = Class.forName("se.ju23.typespeeder.menu.Menu");
+            Class<?> clazz = Class.forName("se.ju23.typespeeder.Menu");
             Method method = clazz.getMethod("displayMenu");
             assertNotNull(method, "The method 'displayMenu()' should exist in the class 'Menu'.");
         } catch (ClassNotFoundException e) {
