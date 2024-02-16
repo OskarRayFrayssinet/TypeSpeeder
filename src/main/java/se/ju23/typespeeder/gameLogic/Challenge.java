@@ -10,7 +10,9 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.*;
 
-@Component public class Challenge implements IChallenge {
+@Component
+public class Challenge implements IChallenge {
+    public String stringToPrint = "";
     public List<String> currentSolution = new ArrayList<>();
     public String currentLanguage = "2";
     public int currentGameTaskId = 0;
@@ -22,14 +24,17 @@ import java.util.*;
     MenuService menuService;
     @Autowired
     TasksRepo tasksRepo;
+
     @Autowired
     public void setPlayable(Playable playable) {
         this.playable = playable;
     }
+
     @Autowired
     public void setTranslatable(Translatable translator) {
         this.translator = translator;
     }
+
     @Autowired
     public void setMenuService(MenuService menuService) {
         this.menuService = menuService;
@@ -38,6 +43,7 @@ import java.util.*;
     public Challenge() {
 
     }
+
     @Override
     public String printListOfGames() {
         List<Tasks> tasksList = tasksRepo.findAll();
@@ -45,23 +51,28 @@ import java.util.*;
         for (int i = 0; i < tasksList.size(); i++) {
             stringBuilder.append((i + 1)).append(". ").append(tasksList.get(i).getTaskName()).append("\n");
         }
-        return "0. Go back\n" + stringBuilder.toString();
+        return "0. Go back\n" + stringBuilder;
     }
+
     @Override
-    public String chooseGame(int id){
+    public String chooseGame(int id) {
         getAndSetCurrentLanguage();
         currentGameTaskId = id;
+        findTaskByid();
+        generateAndMarkWords();
         return lettersToType();
     }
-    @Override
-    public String lettersToType() {
-        String translatedText;
-        StringBuilder stringBuilder = new StringBuilder();
 
+    private void findTaskByid() {
         List<Tasks> tasksList = tasksRepo.findByTaskId(currentGameTaskId);
         for (Tasks tasks : tasksList) {
             currentGameText = tasks.getActualTask();
         }
+    }
+
+    private void generateAndMarkWords() {
+        String translatedText;
+        StringBuilder stringBuilder = new StringBuilder();
         if (currentLanguage.equals("1")) {
             try {
                 translatedText = translator.translate(currentGameText, "sv");
@@ -70,26 +81,26 @@ import java.util.*;
                 throw new RuntimeException();
             }
         }
-
         List<String> textInWords = Arrays.asList(currentGameText.split("\\s+"));
         List<String> textWithYellowWords = addYellowHighlight(textInWords, generateRandomWords(currentGameText));
-
-
-
         for (String t : textWithYellowWords) {
             stringBuilder.append(t).append(" ");
         }
-
-        return stringBuilder.toString();
+        stringToPrint = stringBuilder.toString();
     }
+
+    public String lettersToType() {
+        return stringToPrint;
+    }
+
     @Override
-    public void calculateTimeToDouble(){
+    public void calculateTimeToDouble() {
         Duration difference = Duration.between(startGame, endGame);
         long millisecondsDifference = difference.toMillis();
         playable.setTimeResult(millisecondsDifference / 1000.0);
     }
-    @Override
-    public List<String> addYellowHighlight(List<String> textInWords, List<String> randomWords) {
+
+    private List<String> addYellowHighlight(List<String> textInWords, List<String> randomWords) {
         List<String> temp = new ArrayList<>();
         for (String a : randomWords) {
             boolean markedWords = false;
@@ -113,7 +124,7 @@ import java.util.*;
             if (word.startsWith("\u001B[33m") && word.endsWith("\u001B[0m")) {
 
                 yellowWords.add(word.substring(5, word.length() - 4));
-                if (yellowWords.size() == 7){
+                if (yellowWords.size() == 7) {
                     break;
                 }
             }
@@ -124,8 +135,8 @@ import java.util.*;
         System.out.println("gula ord" + yellowWords);
         return textInWords;
     }
-    @Override
-    public List<String> generateRandomWords(String text) {
+
+    private List<String> generateRandomWords(String text) {
         String[] words = text.split("\\s+");
         Random random = new Random();
         List<String> randomWordsList = new ArrayList<>();
@@ -152,58 +163,28 @@ import java.util.*;
         for (int index : indices) {
             randomWordsList.add(words[index]);
         }
-
-
-       /* String[] words = text.split("\\s+");
-        Random random = new Random();
-        List<String> randomWordsList = new ArrayList<>();
-
-
-        for (int i = 0; i < 7; i++) {
-            int randomIndex = random.nextInt(words.length);
-            randomWordsList.add(words[randomIndex]);
-            currentSolution.add(words[randomIndex]);
-
-        }
-        //Collections.sort(randomWordsList);
-
-
-*/
-
         return randomWordsList;
     }
-    public void setCurrentSolution(){
+
+    private void setCurrentSolution() {
         playable.setCurrentSolution(currentSolution);
     }
 
     @Override
-    public void startChallenge(){
+    public void startChallenge() {
         startGame = LocalTime.now();
     }
+
     @Override
-    public void endChallenge(){
-       endGame = LocalTime.now();
-       calculateTimeToDouble();
+    public void endChallenge() {
+        endGame = LocalTime.now();
+        calculateTimeToDouble();
     }
 
-    public LocalTime getStartGame() {
-        return startGame;
-    }
 
-    public LocalTime getEndGame() {
-        return endGame;
-    }
-
-    public void setEndGame(LocalTime endGame) {
-        this.endGame = endGame;
-    }
-@Override
-    public void setStartGame(LocalTime startGame) {
-        this.startGame = startGame;
-    }
-@Override
+    @Override
     public void getAndSetCurrentLanguage() {
-    currentLanguage = menuService.getCurrentLanguage(0);
+        currentLanguage = menuService.getCurrentLanguage(0);
 
     }
 

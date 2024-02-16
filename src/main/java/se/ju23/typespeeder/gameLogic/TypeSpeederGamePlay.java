@@ -86,7 +86,7 @@ public class TypeSpeederGamePlay implements Playable {
         }
         System.out.println(currentSolution);
         System.out.println(userList);
-        System.out.println("Antal rätt: " + correctAnswers + " rätt i rad:" + correctAnswersInRow + " Din tid: " +getTimeResult());
+        System.out.println("Antal rätt: " + correctAnswers + " rätt i rad:" + correctAnswersInRow + " Din tid: " + getTimeResult());
         /*
         if (temp.equals(currentSolution)) {
             System.out.println("User's answer matches the current solution." + " Time in seconds: " + timeResult);

@@ -21,7 +21,7 @@ public class ChallengeTest {
     public void testLettersToTypeMethodExists() {
         try {
             Class<?> challengeClass = Class.forName("se.ju23.typespeeder.gameLogic.Challenge");
-            Method method = challengeClass.getMethod("getGameText");
+            Method method = challengeClass.getMethod("lettersToType");
             assertNotNull(method, "The method 'lettersToType' should exist in the Challenge class.");
         } catch (NoSuchMethodException | ClassNotFoundException e) {
             fail("The method 'lettersToType' could not be found in the Challenge class.");

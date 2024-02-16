@@ -14,17 +14,16 @@ public interface IChallenge {
 
     void calculateTimeToDouble();
 
-    List<String> addYellowHighlight(List<String> textInWords, List<String> randomWords);
 
-    List<String> generateRandomWords(String text);
 
-    String lettersToType();
+
+
+
 
     void startChallenge();
 
     void endChallenge();
 
-    void setStartGame(LocalTime startGame);
 
     void getAndSetCurrentLanguage();
 
