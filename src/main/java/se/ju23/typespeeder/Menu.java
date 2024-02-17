@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Scanner;
 import javax.swing.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -19,6 +22,7 @@ public class Menu implements MenuService {
     private static UserService userService;
     private static User loggedInUser;
     private static Object LoggedInUser;
+    private static ResourceBundle messages;
 
 
     static List<String> MenuOptions = new ArrayList<>();
@@ -36,6 +40,8 @@ public class Menu implements MenuService {
     public static void displayMenu() throws IOException {
         UserService userService = TypeSpeederApplication.userService;
 
+       // System.out.println(messages.getString("welcome.message.sv"));
+        //System.out.println(messages.getString("welcome.message"));
         System.out.println("Välkommen till TypeSpeeder!");
 
         if (loggedInUser == null) {
@@ -44,6 +50,7 @@ public class Menu implements MenuService {
             System.out.println("0. Logga ut");
             System.out.println("Inloggad som: " + loggedInUser.getUsername());
         }
+
 
         MenuOptions.add("1. Starta spelet");
         MenuOptions.add("2. Rankningslista");
@@ -78,8 +85,6 @@ public class Menu implements MenuService {
         String password = input.nextLine();
 
 
-
-
         User user = userService.logIn(username, password);
 
         if (user != null) {
@@ -90,20 +95,23 @@ public class Menu implements MenuService {
             return null;
         }
     }
-    
-    public static void logOut(){
+
+    public static void logOut() {
         LoggedInUser = null;
         System.out.println("Du har loggats ut.");
     }
 
     @Autowired
-    static void setUserService(UserService userService){
+    static void setUserService(UserService userService) {
         Menu.userService = userService;
     }
-   
 
 
     public static void playGame() throws IOException {
+
+       // System.out.println(messages.getString("game.instructions.sv"));
+       // System.out.println(messages.getString("game.instructions"));
+
         System.out.println("Skriv de röda orden korrekt med samma ordning som de står och tryck enter när du är klar.");
         System.out.println("Tiden börjar när texten skrivs ut");
         System.out.print("Klicka Enter för att starta spelet");
@@ -133,8 +141,9 @@ public class Menu implements MenuService {
             //System.out.print(RESET);
         }
     }
-    public static void timer(){
-    Thread timer = new Thread(()->{
+
+    public static void timer() {
+        Thread timer = new Thread(() -> {
             startTime = System.currentTimeMillis();
             while (!stopTimer) {
                 try {
@@ -148,7 +157,8 @@ public class Menu implements MenuService {
         });
         timer.start();
     }
-    public static void correctSpell(){
+
+    public static void correctSpell() {
         List<String> redWords = new ArrayList<>();
         String[] words = colorWords.split("\\s+");
         for (String word : words) {
@@ -158,15 +168,16 @@ public class Menu implements MenuService {
             }
         }
         int countWords = 0;
-        for(String red : redWords){
-            if (game.equals(red)){
-            countWords++;
+        for (String red : redWords) {
+            if (game.equals(red)) {
+                countWords++;
 
             }
         }
         System.out.println("Antal rättstavade ord = " + countWords);
     }
-    public static void rightOrder(){
+
+    public static void rightOrder() {
 
     }
 
@@ -178,9 +189,46 @@ public class Menu implements MenuService {
 
     }
 
-    public static void changeLanguage() {
+    public static void changeLanguage() throws IOException {
+        System.out.print("Välj språk (sv/en): ");
+        String language = input.nextLine().toLowerCase();
 
+        // Uppdatera ResourceBundle för det valda språket
+        System.out.println("Valt språk: " + language);
+        if ("en".equalsIgnoreCase(language)) {
+            messages = ResourceBundle.getBundle("messages", new Locale(language, "US"));
+            System.out.println(messages.getString("language.changed"));
+        } else if ("sv".equalsIgnoreCase(language)) {
+            messages = ResourceBundle.getBundle("messages", new Locale(language, "SE"));
+            System.out.println(messages.getString("language.changed"));
+        } else {
+            System.out.println("Ogiltigt språkval. Använder systemets standardspråk.");
+            messages = ResourceBundle.getBundle("messages", Locale.getDefault());
+        }
+
+        // Utskrift för att återgå till huvudmenyn
+        System.out.println(messages.getString("return.menu"));
+       // System.out.println(messages.getString("return.menu"));
+        //System.out.print("Vill du återgå till huvudmenyn? (ja/nej): ");
+        String goBack = input.nextLine().toLowerCase();
+        if ("ja".equalsIgnoreCase(goBack)) {
+            displayMenu();
+            if ("yes".equalsIgnoreCase(goBack)){
+                displayMenu();
+            }
+        }
     }
+
+
+
+
+
+
+    public static void loadResources() {
+        // Ladda resursbundeln här med standardlokalen
+        messages = ResourceBundle.getBundle("messages", Locale.getDefault());
+    }
+
 
     public List<String> getMenuOptions() {
         return MenuOptions;

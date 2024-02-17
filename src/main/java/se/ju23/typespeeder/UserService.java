@@ -7,7 +7,7 @@ import se.ju23.typespeeder.UserRepository;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
     // public UserService(UserRepository userRepository){
 
 
@@ -15,6 +15,7 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
 
     public User logIn(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password);

@@ -27,6 +27,8 @@ public class TypeSpeederApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Menu.setUserService(userService);
         Menu.displayMenu();
+        //Menu.loadResources();
+
     }
 
     @Bean
