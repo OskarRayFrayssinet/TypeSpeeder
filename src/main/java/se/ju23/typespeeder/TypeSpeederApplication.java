@@ -24,9 +24,10 @@ public class TypeSpeederApplication implements CommandLineRunner {
         System.out.println("Hej och välkommen till TypeSpeeder!");
         System.out.println("Börja med att ange dina inloggningsuppgifter nedan.");
         Menu.setUserService(userService);
-       // Menu.logIn();
-
+        Menu.displayMenu();
     }
+
+
 
   //  @Bean
   //  public UserService userService(UserRepository userRepository) {
