@@ -2,7 +2,6 @@ package se.ju23.typespeeder.utils;
 
 import se.ju23.typespeeder.classer.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
-import se.ju23.typespeeder.enums.Language;
 import se.ju23.typespeeder.menu.Menu;
 import se.ju23.typespeeder.service.PlayersService;
 
@@ -13,10 +12,12 @@ public class InputOutput {
     public static Menu menu = new Menu();
     public static PlayersService playersService = new PlayersService();
 
-    public static void login (PlayersRepo playersRepo) {
-
+    public static void login(PlayersRepo playersRepo, PlayersService playersService, Scanner input) {
+        boolean runProgram = true;
+        do {
             System.out.println("Enter your username: ");
             String answerUsername = input.nextLine();
+
             System.out.println("Enter corresponding password: ");
             String answerPassword = input.nextLine();
 
@@ -24,16 +25,16 @@ public class InputOutput {
 
             if (foundPLayer == null) {
                 System.out.println("Player not found.");
-                System.out.println("Do you want to create a new user, yes/no?");
-                String answer = input.nextLine();
-                if (!answer.equalsIgnoreCase("yes")) {
-                    playersService.addNewPlayer(playersRepo, input);
-                }
+                runProgram = false;
+
             } else {
                 System.out.println("Welcome, " + foundPLayer.getNickname());
                 System.out.println("Your current role is " + foundPLayer.getRole());
                 menu.displayMenu();
+                runProgram = false;
             }
+        } while (runProgram);
+
     }
 
 }
