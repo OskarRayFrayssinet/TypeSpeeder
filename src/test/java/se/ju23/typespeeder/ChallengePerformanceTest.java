@@ -2,9 +2,10 @@ package se.ju23.typespeeder;
 
 
 import org.junit.jupiter.api.Test;
+import se.ju23.typespeeder.challenge.Challenge;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-/*
+
 public class ChallengePerformanceTest {
     private static final int MAX_EXECUTION_TIME = 200;
     private static final int MILLISECONDS_CONVERSION = 1_000_000;
@@ -27,4 +28,3 @@ public class ChallengePerformanceTest {
         assertTrue(duration <= MAX_EXECUTION_TIME, "Selecting letters to type took too long. Execution time: " + duration + " ms.");
     }
 }
-*/
