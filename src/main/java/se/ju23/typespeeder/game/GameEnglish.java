@@ -17,14 +17,19 @@ public class GameEnglish implements iGame {
     private Challenge challenge;
     private long startTime;
     private long endTime;
+
     @Override
     public void generateWords() {
-        List<String> words = new ArrayList<>(dictionaryService.EnglishText().getWords());
-        Collections.shuffle(words);
-        for (String word : words) {
-            System.out.println(word + " ");
+        if (dictionaryService != null) {
+            List<String> words = new ArrayList<>(dictionaryService.generateRandomEnglishWords(5));
+            Collections.shuffle(words);
+            for (String word : words) {
+                System.out.println(word + " ");
+            }
+            System.out.println("");
+        } else {
+            System.out.println("Dictionary service is not available.");
         }
-        System.out.println("");
     }
 
     @Override

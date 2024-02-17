@@ -31,6 +31,7 @@ public class InputOutput {
                 System.out.println("Welcome, " + foundPLayer.getNickname());
                 System.out.println("Your current role is " + foundPLayer.getRole());
                 menu.displayMenu();
+                menu.handleMenuOption();
                 runProgram = false;
             }
         } while (runProgram);
