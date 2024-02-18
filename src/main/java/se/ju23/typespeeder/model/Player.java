@@ -2,6 +2,8 @@ package se.ju23.typespeeder.model;
 import jakarta.persistence.*;
 import se.ju23.typespeeder.enums.Role;
 
+import java.util.List;
+
 @Entity
 @Table(name = "players")
 
@@ -15,14 +17,17 @@ public class Player {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
-    @Column(name = "playername")
-    private String playerName;
+    private int points;
+    private int level;
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
+    private List<Result> gamesPlayed;
 
-    public Player(String username, String password, Role role, String playerName) {
+    public Player(String username, String password, Role role, int points, int level) {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.playerName = playerName;
+        this.points = points;
+        this.level = level;
     }
 
     public Player(){
@@ -60,12 +65,20 @@ public class Player {
         this.role = role;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public int getPoints() {
+        return points;
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public void setPoints(int points) {
+        this.points += points;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     @Override
@@ -75,7 +88,8 @@ public class Player {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
-                ", playerName='" + playerName + '\'' +
+                ", points=" + points +
+                ", level=" + level +
                 '}';
     }
 }
