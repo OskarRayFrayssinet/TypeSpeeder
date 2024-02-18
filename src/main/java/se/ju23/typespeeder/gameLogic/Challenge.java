@@ -58,6 +58,7 @@ public class Challenge implements IChallenge {
     public String chooseGame(int id) {
         getAndSetCurrentLanguage();
         currentGameTaskId = id;
+        setCurrentGameTaskId();
         findTaskByid();
         generateAndMarkWords();
         return lettersToType();
@@ -67,6 +68,7 @@ public class Challenge implements IChallenge {
         List<Tasks> tasksList = tasksRepo.findByTaskId(currentGameTaskId);
         for (Tasks tasks : tasksList) {
             currentGameText = tasks.getActualTask();
+
         }
     }
 
@@ -170,6 +172,7 @@ public class Challenge implements IChallenge {
         playable.setCurrentSolution(currentSolution);
     }
 
+
     @Override
     public void startChallenge() {
         startGame = LocalTime.now();
@@ -180,7 +183,14 @@ public class Challenge implements IChallenge {
         endGame = LocalTime.now();
         calculateTimeToDouble();
     }
-
+@Override
+    public int getCurrentGameTaskId() {
+        return currentGameTaskId;
+    }
+@Override
+    public void setCurrentGameTaskId() {
+        playable.setCurrentTaskId(currentGameTaskId);
+    }
 
     @Override
     public void getAndSetCurrentLanguage() {

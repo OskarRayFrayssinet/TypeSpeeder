@@ -19,6 +19,9 @@ public class Tasks {
     @OneToMany(mappedBy = "tasksByTaskId")
     private Collection<Attempt> attemptsByTaskId;
 
+    public Tasks() {
+    }
+
     public int getTaskId() {
         return taskId;
     }

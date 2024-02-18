@@ -30,6 +30,9 @@ import java.util.Collection;
     @OneToMany(mappedBy = "usersByUserId")
     private Collection<Attempt> attemptsByUserId;
 
+    public Users() {
+    }
+
     public int getUserId() {
         return userId;
     }

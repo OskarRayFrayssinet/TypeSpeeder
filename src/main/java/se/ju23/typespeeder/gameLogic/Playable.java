@@ -10,6 +10,8 @@ public interface Playable {
     void calculateTotalPointsForGame(String userAnswer);
 
 
+    double calculatedPoints();
+
     void setCurrentSolution(List<String> currentSolution1);
 
     String beforeGameStartsText();
@@ -20,6 +22,9 @@ public interface Playable {
 
 
     Status standbyInSettingsMenu(int input);
+
+    void setCurrentTaskId(int currentTaskId);
+
     String getCurrentEmail(int place);
     void setCurrentEmail(String newCurrentEmail);
 
@@ -44,7 +49,7 @@ public interface Playable {
     void setEndGame(LocalTime endGame1);
 
 
-    int getCurrentId();
+    int getCurrentUserId();
     String noUserFoundText();
     String getCurrentAlias(int place);
 

@@ -25,6 +25,10 @@ public interface IChallenge {
     void endChallenge();
 
 
+    int getCurrentGameTaskId();
+
+    void setCurrentGameTaskId();
+
     void getAndSetCurrentLanguage();
 
 }

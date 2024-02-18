@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.classesFromDB.*;
 import se.ju23.typespeeder.userInterfaces.MenuService;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -16,11 +18,13 @@ public class TypeSpeederGamePlay implements Playable {
     public static LocalTime startGame = LocalTime.now();
     public static LocalTime endGame = LocalTime.now();
 
+    int correctAnswers = 0;
+    int correctAnswersInRow = 0;
 
+    String currentUserGuess = "";
 
-
-    public int currentId = 0;
-
+    public int currentUserId = 0;
+    public int currentTaskId = 0;
     double timeResult = 0;
     public String[] currentEmail = {"", "", ""};
     public String[] currentAlias = {"", ""};
@@ -43,6 +47,8 @@ public class TypeSpeederGamePlay implements Playable {
     AttemptRepo attemptRepo;
     @Autowired
     PointParamRepo pointParamRepo;
+    @Autowired
+    TasksRepo tasksRepo;
 
     public Status checkUser(String email, String password) {
 
@@ -50,7 +56,7 @@ public class TypeSpeederGamePlay implements Playable {
         Optional<Users> users = usersRepo.findByEmailAndPassword(email, password);
         if (users.isPresent()) {
             Users found = users.get();
-            currentId = found.getUserId();
+            currentUserId = found.getUserId();
             currentEmail[0] = found.getEmail();
             currentAlias[0] = found.getAlias();
             currentXp = found.getXp();
@@ -66,26 +72,26 @@ public class TypeSpeederGamePlay implements Playable {
 
     @Override
     public void calculateTotalPointsForGame(String userAnswer){
-        int correctAnswers = 0;
-        int correctAnswersInRow = 0;
-        List<String> userList = new ArrayList<>(Arrays.asList(userAnswer.split("\\s+")));
-        for (int i = 0; i < userList.size(); i++) {
+        currentUserGuess = userAnswer;
+        List<String> userAnswerList = new ArrayList<>(Arrays.asList(userAnswer.split("\\s+")));
+
+        for (int i = 0; i < userAnswerList.size(); i++) {
             for (int j = 0; j < currentSolution.size(); j++) {
-                if (userList.get(i).equals(currentSolution.get(j))){
+                if (userAnswerList.get(i).equals(currentSolution.get(j))){
                     correctAnswers++;
                 }
             }
         }
         int find = 0;
-        for (int i = 0; i < userList.size(); i++) {
+        for (int i = 0; i < userAnswerList.size(); i++) {
 
-            if (userList.get(i).equals(currentSolution.get(find))){
+            if (userAnswerList.get(i).equals(currentSolution.get(find))){
                 correctAnswersInRow++;
             }
             find++;
         }
         System.out.println(currentSolution);
-        System.out.println(userList);
+        System.out.println(userAnswerList);
         System.out.println("Antal rätt: " + correctAnswers + " rätt i rad:" + correctAnswersInRow + " Din tid: " + getTimeResult());
         /*
         if (temp.equals(currentSolution)) {
@@ -97,6 +103,38 @@ public class TypeSpeederGamePlay implements Playable {
         }
 
          */
+        //TODO FORTSÄTT HÄR
+        //PointParam pointParam = new PointParam()
+        Tasks t = null;
+        Users u = null;
+        Optional<Tasks> findTask = tasksRepo.findById(currentTaskId);
+        if (findTask.isPresent()){
+            t = findTask.get();
+        }
+        Optional<Users> findUser = usersRepo.findById(currentUserId);
+        if (findUser.isPresent()){
+            u = findUser.get();
+        }
+        Attempt newAttempt = new Attempt(calculatedPoints(),currentSolutionToString(),currentUserGuess,u,t);
+
+        attemptRepo.save(newAttempt);
+        System.out.println(calculatedPoints());
+    }
+    @Override
+    public double calculatedPoints(){
+        double userTime = getTimeResult();
+        double maxTime = 120;
+        double points = (correctAnswers + correctAnswersInRow + (100 * Math.pow((1 - (userTime / maxTime)), 3)));
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.US);
+        DecimalFormat df = new DecimalFormat("#.##", symbols);
+        return Double.parseDouble(df.format(points));
+    }
+    public String currentSolutionToString(){
+        StringBuilder sb = new StringBuilder();
+        for (String s : currentSolution){
+            sb.append(s).append(" ");
+        }
+        return sb.toString();
     }
 
     public static List<String> getCurrentSolution() {
@@ -153,7 +191,7 @@ public class TypeSpeederGamePlay implements Playable {
     }
     @Override
     public void setNewUsername(String newUsername) {
-        Optional<Users> emailFromDB = usersRepo.findByUserId(getCurrentId());
+        Optional<Users> emailFromDB = usersRepo.findByUserId(getCurrentUserId());
         if (emailFromDB.isPresent()) {
             Users found = emailFromDB.get();
             found.setEmail(newUsername);
@@ -185,7 +223,7 @@ public class TypeSpeederGamePlay implements Playable {
     }
     @Override
     public void setNewPassword(String newPassword) {
-        Optional<Users> passwordFromDB = usersRepo.findById(getCurrentId());
+        Optional<Users> passwordFromDB = usersRepo.findById(getCurrentUserId());
         if (passwordFromDB.isPresent()) {
             Users found = passwordFromDB.get();
             found.setPassword(newPassword);
@@ -228,6 +266,14 @@ public class TypeSpeederGamePlay implements Playable {
         endGame = endGame1;
     }
 
+@Override
+    public void setCurrentTaskId(int currentTaskId1) {
+        currentTaskId = currentTaskId1;
+    }
+
+    public void setCurrentUserGuess(String currentUserGuess) {
+        this.currentUserGuess = currentUserGuess;
+    }
 
     @Override
     public String getCurrentEmail(int place) {
@@ -238,8 +284,8 @@ public class TypeSpeederGamePlay implements Playable {
         currentEmail[0] = input;
     }
     @Override
-    public int getCurrentId() {
-        return currentId;
+    public int getCurrentUserId() {
+        return currentUserId;
     }
     @Override
     public String noUserFoundText() {

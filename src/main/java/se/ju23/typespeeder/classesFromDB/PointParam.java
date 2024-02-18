@@ -26,6 +26,16 @@ public class PointParam {
     @JoinColumn(name = "attempt_id", referencedColumnName = "attempt_id", nullable = false)
     private Attempt attemptByAttemptId;
 
+    public PointParam(int attemptId, double speedInSec, int correct, int correctInOrder) {
+        this.attemptId = attemptId;
+        this.speedInSec = speedInSec;
+        this.correct = correct;
+        this.correctInOrder = correctInOrder;
+    }
+
+    public PointParam() {
+    }
+
     public int getId() {
         return id;
     }
