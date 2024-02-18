@@ -64,6 +64,7 @@ public class Challenge implements IChallenge {
         return lettersToType();
     }
 
+
     private void findTaskByid() {
         List<Tasks> tasksList = tasksRepo.findByTaskId(currentGameTaskId);
         for (Tasks tasks : tasksList) {

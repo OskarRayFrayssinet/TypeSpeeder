@@ -70,6 +70,8 @@ import java.sql.SQLException;
                         String answer = io.getString();
                         challenge.endChallenge();
                         playable.calculateTotalPointsForGame(answer);
+                        io.addString(playable.printChallengeResult());
+
 
                     }
                 }

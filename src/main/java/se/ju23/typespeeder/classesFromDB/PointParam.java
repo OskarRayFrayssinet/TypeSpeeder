@@ -33,6 +33,13 @@ public class PointParam {
         this.correctInOrder = correctInOrder;
     }
 
+    public PointParam(double speedInSec, int correct, int correctInOrder, Attempt attemptByAttemptId) {
+        this.speedInSec = speedInSec;
+        this.correct = correct;
+        this.correctInOrder = correctInOrder;
+        this.attemptByAttemptId = attemptByAttemptId;
+    }
+
     public PointParam() {
     }
 

@@ -10,6 +10,10 @@ public interface Playable {
     void calculateTotalPointsForGame(String userAnswer);
 
 
+    String printChallengeResult();
+
+    List<String> printLeaderBoard();
+
     double calculatedPoints();
 
     void setCurrentSolution(List<String> currentSolution1);
