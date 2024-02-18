@@ -36,8 +36,8 @@ public class DictionaryService {
         return englishDictionary;
     }
 
-    public void SwedishDictionary(){
-        Dictionary swedishDictionary = new Dictionary("Swedish");
+    public Dictionary SwedishDictionary(){
+        Dictionary swedishDictionary = new Dictionary("Svenska");
         swedishDictionary.addWord("Hej");
         swedishDictionary.addWord("Världen");
         swedishDictionary.addWord("Java");
@@ -55,6 +55,24 @@ public class DictionaryService {
         swedishDictionary.addWord("Grön");
         swedishDictionary.addWord("Kamel");
         swedishDictionary.addWord("Lejon");
+        swedishDictionary.addWord("Tiger");
+        swedishDictionary.addWord("Varg");
+        swedishDictionary.addWord("Politik");
+        return swedishDictionary;
+    }
+
+    public Dictionary toungeTwistersSwe(){
+        Dictionary toungeTwistersSwe = new Dictionary("Svenska");
+        toungeTwistersSwe.addWord("Sju sjösjuka sjömän sköttes av sju undersköna sjuksköterskor på skeppet Shang Hai");
+        toungeTwistersSwe.addWord("Knut satt vid en knut och knöt en knut När Knut knutit knuten var knuten knuten");
+        return toungeTwistersSwe;
+    }
+
+    public Dictionary toungeTwistersEng(){
+        Dictionary toungeTwistersEng = new Dictionary("English");
+        toungeTwistersEng.addWord("Bettie bought a bit of butter but the bit of butter Bettie bought was bitter so Bettie bought a better bit of butter");
+        toungeTwistersEng.addWord("She sells sea shells on the sea shore and the sea shells she sells are sea shells Im sure");
+        return toungeTwistersEng;
     }
 
 }

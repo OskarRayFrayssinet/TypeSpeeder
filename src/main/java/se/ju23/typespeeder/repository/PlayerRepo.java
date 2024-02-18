@@ -7,4 +7,5 @@ import se.ju23.typespeeder.model.Player;
 @Repository
 public interface PlayerRepo extends JpaRepository<Player, Integer> {
     boolean existsPlayerByUsernameAndPassword(String username, String password);
+    Player findPlayerByUsernameAndPassword(String username, String password);
 }

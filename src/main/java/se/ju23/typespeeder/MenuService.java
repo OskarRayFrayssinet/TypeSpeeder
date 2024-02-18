@@ -1,10 +1,10 @@
 package se.ju23.typespeeder;
 import org.springframework.stereotype.Service;
-import java.util.Scanner;
+import se.ju23.typespeeder.enums.Status;
 
 @Service
 public interface MenuService{
-    void displayMenu();
+    Status displayMenu();
     void displayLoginMenu();
-    void selectMenuOptions();
+    int selectMenuOptions(Status status);
 }
