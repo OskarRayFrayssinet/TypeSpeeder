@@ -6,6 +6,5 @@ import java.util.Scanner;
 public interface IO {
     String getValidStringInput(Scanner input);
     int getValidIntegerInput(Scanner input, int minValue, int maxValue);
-
     Scanner returnScanner();
 }
