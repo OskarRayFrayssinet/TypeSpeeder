@@ -19,10 +19,7 @@ public class Menu implements MenuService {
     private static UserService userService;
     private static User loggedInUser;
     private static Object LoggedInUser;
-    private static ResourceBundle messages;
-
-
-
+    private static ResourceBundle messages = ResourceBundle.getBundle("Messages");
     static List<String> MenuOptions = new ArrayList<>();
     public static final String WHITE = "\u001B[37m";
     public static final String RESET = "\u001B[0m";
@@ -175,8 +172,8 @@ public class Menu implements MenuService {
             }
             long timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
 
-            System.out.println(messages.getString("your.time" + timeSeconds + "seconds"));
-            //System.out.println("Din tid blev: " + timeSeconds + " sekunder");
+            //System.out.println(messages.getString("your.time" + timeSeconds + "seconds"));
+            System.out.println("Din tid blev: " + timeSeconds + " sekunder");
         });
         timer.start();
     }
@@ -196,8 +193,8 @@ public class Menu implements MenuService {
                 }
             }
         }
-        System.out.println(messages.getString("correct.words" + countWords));
-       // System.out.println("Antal rättstavade ord = " + countWords);
+        //System.out.println(messages.getString("correct.words" + countWords));
+        System.out.println("Antal rättstavade ord = " + countWords);
     }
     public static void checkOrder(){
         int countOrder = 0;
@@ -210,7 +207,7 @@ public class Menu implements MenuService {
                 break;
             }
         }
-        System.out.println("Antal ord i korrekt ordnind: " + countOrder);
+        System.out.println("Antal ord i korrekt ordning: " + countOrder);
     }
 
     public static void showRankingList() {
