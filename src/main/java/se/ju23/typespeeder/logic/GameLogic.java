@@ -6,13 +6,16 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class GameLogic {
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final Random random = new Random();
+    private static final String RESET_COLOR = "\u001B[0m";
+    private  static final String TEXT_COLOR = "\u001B[36m";
+    private static final Scanner SCANNER = new Scanner(System.in);
     public void startGame() {
         System.out.println("Welcome to Color Typing Game!");
 
         while (true) {
+
             String text = generateText(50, 5);
+
             System.out.println("Type the following words:");
 
             System.out.println(text);
@@ -21,7 +24,7 @@ public class GameLogic {
             long startTime = System.currentTimeMillis();
 
             // Läs in användarens inmatning
-            String userInput = scanner.nextLine();
+            String userInput = SCANNER.nextLine();
 
             // Stoppa tidtagning
             long endTime = System.currentTimeMillis();
@@ -42,14 +45,14 @@ public class GameLogic {
             System.out.printf("Time taken: %.2f seconds%n", elapsedTimeInSeconds);
 
             System.out.println("Do you want to play again? (yes/no)");
-            String playAgain = scanner.nextLine().toLowerCase();
+            String playAgain = SCANNER.nextLine().toLowerCase();
             if (!playAgain.equals("yes")) {
                 System.out.println("Thanks for playing! Goodbye.");
                 break;
             }
         }
 
-        scanner.close();
+        SCANNER.close();
     }
 
     private static String generateText(int length, int wordFrequency) {
@@ -64,14 +67,14 @@ public class GameLogic {
                     char randomChar = (char) (Math.random() * 26 + 'a');
                     word.append(randomChar);
                 }
-                text.append(word).append(" ");
+                text.append(TEXT_COLOR).append(word).append(" ");
             } else {
                 // Generera en slumpmässig bokstav
                 char randomChar = (char) (Math.random() * 26 + 'a');
-                text.append(randomChar);
+                text.append(TEXT_COLOR).append(randomChar);
             }
         }
-
+        text.append(RESET_COLOR);
         return text.toString();
     }
 
@@ -108,5 +111,23 @@ public class GameLogic {
         }
 
         return orderScore;
+    }
+
+    public void startChallengeMode() {
+        System.out.println("Type: 'I come from the land down under' as fast as you can!");
+        String challengeText = "I come from the land down under";
+        long startTime = System.currentTimeMillis();
+
+        String userInput = SCANNER.nextLine();
+
+        long endTime = System.currentTimeMillis();
+        double elapsedTimeInSeconds = (endTime - startTime) / 1000.0;
+
+        if(userInput.equalsIgnoreCase(challengeText) && elapsedTimeInSeconds <= 10) {
+            System.out.println("Congratulations! You've you completed the challenge in " + elapsedTimeInSeconds + " seconds and earned 30 points!");
+
+        } else {
+            System.out.println("Challenge failed. You took " + elapsedTimeInSeconds + " seconds. Try again!");
+        }
     }
 }

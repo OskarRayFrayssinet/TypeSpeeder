@@ -1,6 +1,7 @@
 package se.ju23.typespeeder.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import se.ju23.typespeeder.Controller.NewsController;
 import se.ju23.typespeeder.service.LoginService;
 
 import java.util.Scanner;
@@ -12,88 +13,118 @@ public class MenuLogic {
 
     @Autowired
     private LoginService loginService;
+    private NewsController newsController;
     private boolean isEnglish = true; // Default language setting
 
     public void runApplication() {
         System.out.println("Welcome to TypeSpeeder");
-        mainMenu();
+        displayMainMenu();
     }
     public void displayMainMenu() {
+        boolean isLoggedIn = true; // ändra till false när du inte testar spelet
+        while (!isLoggedIn) {
+            isLoggedIn = isLoggedIn();
+        }
+        chooseLanguage();
+        if(isEnglish) {
+            englishMenu();
+        } else swedishMenu();
+    }
+    private void englishMenu() {
         boolean running = true;
         while (running) {
             System.out.println("Welcome to the TypeSpeeder Application");
-            System.out.println("1. Login");
-            System.out.println("2. Start Game");
-            System.out.println("3. Choose Language");
-            System.out.println("4. Exit");
+
+            System.out.println("1. Game mode.");
+            System.out.println("2. View personal ranking.");
+            System.out.println("3. View top ranking");
+            System.out.println("4. Challenge mode.");
+            System.out.println("5. News and updates.");
+            System.out.println("6. Exit");
             System.out.print("Select an option: ");
 
             String input = scanner.nextLine();
 
             switch (input) {
                 case "1":
-                    login();//i went solo and it worked, the fuck..
-                    // Implement your login logic here
-                    System.out.println("Login functionality not implemented yet.");
-                    break;
-                case "2":
                     gameLogic.startGame();
+                case "2":
+                    //personal rank
                     break;
                 case "3":
-                    chooseLanguage();
+                    //top rank
                     break;
                 case "4":
+                    gameLogic.startChallengeMode();
+                    break;
+                case "5":
+                    newsController.displayNews();
+                    break;
+                case "6":
                     System.out.println("Exiting...");
                     running = false;
                     break;
                 default:
                     System.out.println("Invalid option, please try again.");
+                    break;
             }
         }
     }
-
-    private void mainMenu() {
+    private void swedishMenu() {
         boolean running = true;
         while (running) {
-            System.out.println(getMessage("Select an option: \n1. Login\n2. Go to Game Menu\n3. Choose Language\n0. Exit"));
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline left-over
-            switch (choice) {
-                case 1:
-                    login();
+            System.out.println("Välkommen till TypeSpeeder-applikationen"); //översätta till svenska, homanegool.
+
+            System.out.println("1. Spel-läge");
+            System.out.println("2. Visa peronlig ranking");
+            System.out.println("3. Visa topplista.");
+            System.out.println("4. Utamningsläge.");
+            System.out.println("6. Exit");
+            System.out.print("Select an option: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    gameLogic.startGame();
                     break;
-                case 2:
-                    goToGameMenu();
+                case "2":
+                    //personlig rank
                     break;
-                case 3:
-                    chooseLanguage();
+                case "3":
+                    //topplista
                     break;
-                case 0:
+                case "4.":
+                    gameLogic.startChallengeMode();
+                    break;
+                case "6":
+                    System.out.println("Avslutar...");
                     running = false;
-                    System.out.println(getMessage("Exiting program."));
                     break;
                 default:
-                    System.out.println(getMessage("Invalid option. Please try again."));
+                    System.out.println("Ogiltigt alternativ, försök igen.");
             }
         }
     }
 
-    private void login() {
-        System.out.println(getMessage("Please enter your username:"));
+    private boolean isLoggedIn() {
+        System.out.println("Please enter your username:");
         String username = scanner.nextLine();
-        System.out.println(getMessage("Please enter your password:"));
+        System.out.println("Please enter your password:");
         String password = scanner.nextLine();
-        if (loginService.login(username, password)) {
-            System.out.println(getMessage("Login successful!"));
+        boolean isLoggedIn = loginService.login(username, password);
+        if (isLoggedIn) {
+            System.out.println("Login successful!");
             // You can proceed to game menu or another part of your application here
         } else {
-            System.out.println(getMessage("Login failed. Please try again."));
+            System.out.println("Login failed. Please try again.");
         }
+        return isLoggedIn;
     }
 
     private void goToGameMenu() {
         // Placeholder for game menu logic
-        System.out.println(getMessage("Welcome to the game menu!"));
+        System.out.println("Welcome to the game menu!");
     }
 
     private void chooseLanguage() {
@@ -107,38 +138,7 @@ public class MenuLogic {
             isEnglish = false;
             System.out.println("Språk inställt på svenska.");
         } else {
-            System.out.println(getMessage("Invalid option. Please try again."));
-        }
-    }
-
-    // Helper method to get messages in the selected language
-    private String getMessage(String englishMessage) {
-        // Placeholder for actual translation logic
-        if (isEnglish) {
-            return englishMessage;
-        } else {
-            // Here you would return the Swedish translation
-            // This is a simplified example, you would have a better translation mechanism
-            switch (englishMessage) {
-                case "Select an option: \n1. Login\n2. Go to Game Menu\n3. Choose Language\n0. Exit":
-                    return "Välj ett alternativ: \n1. Logga in\n2. Gå till spelmenyn\n3. Välj språk\n0. Avsluta";
-                case "Exiting program.":
-                    return "Avslutar programmet.";
-                case "Invalid option. Please try again.":
-                    return "Ogiltigt alternativ. Försök igen.";
-                case "Please enter your username:":
-                    return "Vänligen ange ditt användarnamn:";
-                case "Please enter your password:":
-                    return "Vänligen ange ditt lösenord:";
-                case "Login successful!":
-                    return "Inloggning lyckades!";
-                case "Login failed. Please try again.":
-                    return "Inloggning misslyckades. Försök igen.";
-                case "Welcome to the game menu!":
-                    return "Välkommen till spelmenyn!";
-                default:
-                    return "Oversatt meddelande saknas";
-            }
+            System.out.println("Invalid option. Please try again.");
         }
     }
 
