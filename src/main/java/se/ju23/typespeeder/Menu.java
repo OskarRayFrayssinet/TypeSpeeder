@@ -4,16 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 
+import java.sql.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Scanner;
-import javax.swing.*;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileInputStream;
+
+//import static se.ju23.typespeeder.User.setPassword;
+//import static se.ju23.typespeeder.User.setUsername;
 
 //import static se.ju23.typespeeder.User.logIn;
 @SpringBootApplication
@@ -35,11 +34,10 @@ public class Menu implements MenuService {
     public static long startTime;
     public static String game;
     public static String colorWords;
-
+    public static String userName;
+    public static String passWord;
 
     public static void displayMenu() throws IOException {
-        UserService userService = TypeSpeederApplication.userService;
-
 
         //System.out.println(messages.getString("welcome.message"));
         System.out.println("Välkommen till TypeSpeeder!");
@@ -63,6 +61,7 @@ public class Menu implements MenuService {
         int menuChoice = input.nextInt();
         input.nextLine();
 
+
         if (loggedInUser == null && menuChoice == 0) {
             loggedInUser = logIn();
         } else {
@@ -72,21 +71,25 @@ public class Menu implements MenuService {
                 case 2 -> showRankingList();
                 case 3 -> showNewsAndUpdates();
                 case 4 -> changeLanguage();
-                case 5 -> User.updateProfile();
+                case 5 -> updateUser();
                 default -> System.out.println("Felaktig inmatning, försök igen.");
             }
         }
     }
+    public static void updateUser(){
+        User u = new User();
+    }
+
+
 
     public static User logIn() {
         System.out.print("Ange användarnamn: ");
-        String username = input.nextLine();
+        userName = input.nextLine();
         System.out.print("Ange lösenord: ");
-        String password = input.nextLine();
+        passWord = input.nextLine();
 
 
-        User user = userService.logIn(username, password);
-
+       User user = userService.userRepository.findByUsernameAndPassword(userName, passWord);
         if (user != null) {
             System.out.println("Inloggning lyckades!");
             return user;
@@ -96,15 +99,29 @@ public class Menu implements MenuService {
         }
     }
 
+
+    public static void updateUserProfile(User user) {
+        System.out.print("Ange nytt användarnamn (lämna tomt om ingen ändring): ");
+        String newUsername = input.nextLine();
+
+        System.out.print("Ange nytt lösenord (lämna tomt om ingen ändring): ");
+        String newPassword = input.nextLine();
+
+        user.updateProfile(newUsername, newPassword);
+    }
+
+
     public static void logOut() {
         LoggedInUser = null;
         System.out.println("Du har loggats ut.");
     }
 
-    @Autowired
+
     static void setUserService(UserService userService) {
-        Menu.userService = userService;
+       Menu.userService = userService;
     }
+ //   @Autowired
+   // private static UserService userService;
 
 
     public static void playGame() throws IOException {
@@ -186,9 +203,20 @@ public class Menu implements MenuService {
 
     }
 
-    public static void showNewsAndUpdates() {
+    public static void showNewsAndUpdates() throws IOException {
+        System.out.println("Nyheter och uppdateringar:");
+        System.out.println("Nu finns möjlighet att spela spelet på engelska!");
 
+        System.out.println("Vill du återgå till huvudmenyn? (ja/nej): ");
+        String goBack = input.nextLine().toLowerCase();
+
+        if ("ja".equals(goBack)) {
+            displayMenu();
+        } else {
+            System.out.println("Programmet avslutas.");
+        }
     }
+
 
     public static void changeLanguage() throws IOException {
         System.out.print("Välj språk (sv/en): ");
@@ -214,8 +242,6 @@ public class Menu implements MenuService {
         }
 
     }
-
-
 
 
 
