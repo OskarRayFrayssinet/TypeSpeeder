@@ -109,17 +109,17 @@ public class Menu implements MenuService {
 
     public static void playGame() throws IOException {
 
-       // System.out.println(messages.getString("game.instructions.sv"));
-       // System.out.println(messages.getString("game.instructions"));
 
-        System.out.println("Skriv de röda orden korrekt med samma ordning som de står och tryck enter när du är klar.");
-        System.out.println("Tiden börjar när texten skrivs ut");
-        System.out.print("Klicka Enter för att starta spelet");
+       System.out.println(messages.getString("game.instructions"));
+
+      //  System.out.println("Skriv de röda orden korrekt med samma ordning som de står och tryck enter när du är klar.");
+        System.out.println(messages.getString("time.starts"));
+        System.out.print(messages.getString("press.enter.to.play"));
         input.nextLine();
         openTextFile();
         timer();
         System.out.println();
-        System.out.print("SKRIV HÄR --> ");
+        System.out.print(messages.getString("write.here"));
         game = input.nextLine();
         stopTimer = true;
         correctSpell();
