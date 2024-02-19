@@ -1,5 +1,9 @@
 package se.ju23.typespeeder;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Component;
+
 import javax.swing.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +20,7 @@ public class Menu implements MenuService {
     private static User loggedInUser;
     private static Object LoggedInUser;
     private static ResourceBundle messages;
+
 
 
     static List<String> MenuOptions = new ArrayList<>();
@@ -117,6 +122,7 @@ public class Menu implements MenuService {
     static void setUserService(UserService userService) {
        Menu.userService = userService;
     }
+
  //   @Autowired
    // private static UserService userService;
 
