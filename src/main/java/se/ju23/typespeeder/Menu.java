@@ -206,17 +206,12 @@ public class Menu implements MenuService {
             messages = ResourceBundle.getBundle("messages", Locale.getDefault());
         }
 
-        // Utskrift för att återgå till huvudmenyn
         System.out.println(messages.getString("return.menu"));
-       // System.out.println(messages.getString("return.menu"));
-        //System.out.print("Vill du återgå till huvudmenyn? (ja/nej): ");
         String goBack = input.nextLine().toLowerCase();
-        if ("ja".equalsIgnoreCase(goBack)) {
+        if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {
             displayMenu();
-            if ("yes".equalsIgnoreCase(goBack)){
-                displayMenu();
-            }
         }
+
     }
 
 
