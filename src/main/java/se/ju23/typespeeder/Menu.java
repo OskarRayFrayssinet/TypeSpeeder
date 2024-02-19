@@ -146,7 +146,7 @@ public class Menu implements MenuService {
 
     public static void openTextFile() throws FileNotFoundException {
         StringBuilder colorWordsBuilder = new StringBuilder();
-        File file = new File("C:\\Users\\janss\\IdeaProjects\\Text2.txt");
+        File file = new File("C:\\GitHub Repositories\\TypeSpeeder\\src\\main\\resources\\TextFile");
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) {
             String textFile = scanner.nextLine();
