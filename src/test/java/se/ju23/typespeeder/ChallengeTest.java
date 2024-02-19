@@ -1,4 +1,3 @@
-/*
 package se.ju23.typespeeder;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +9,7 @@ public class ChallengeTest {
     @Test
     public void testChallengeClassExists() {
         try {
-            Class<?> challengeClass = Class.forName("se.ju23.typespeeder.Challenge");
+            Class<?> challengeClass = Class.forName("se.ju23.typespeeder.logic.Challenge");
         } catch (ClassNotFoundException e) {
             fail("Challenge class could not be found.");
         }
@@ -36,4 +35,3 @@ public class ChallengeTest {
         }
     }
 }
-*/
