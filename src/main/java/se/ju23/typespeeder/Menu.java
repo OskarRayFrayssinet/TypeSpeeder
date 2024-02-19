@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 
+import java.sql.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -24,10 +25,6 @@ public class Menu implements MenuService {
     private static Object LoggedInUser;
     private static ResourceBundle messages;
 
-    @Autowired
-    static void setUserService(UserService userService){
-        Menu.userService = userService;
-    }
 
     static List<String> MenuOptions = new ArrayList<>();
     public static final String WHITE = "\u001B[37m";
@@ -41,6 +38,8 @@ public class Menu implements MenuService {
     public static String colorWords;
     public static List<String> redWords = new ArrayList<>();
 
+    public static String userName;
+    public static String passWord;
 
     public static void displayMenu() throws IOException {
         UserService userService = TypeSpeederApplication.userService;
@@ -77,22 +76,25 @@ public class Menu implements MenuService {
                 case 2 -> showRankingList();
                 case 3 -> showNewsAndUpdates();
                 case 4 -> changeLanguage();
-                case 5 -> User.updateProfile();
+                case 5 -> updateUser();
                 default -> System.out.println("Felaktig inmatning, försök igen.");
             }
         }
     }
+    public static void updateUser(){
+        User u = new User();
+    }
+
+
 
     public static User logIn() {
         System.out.print("Ange användarnamn: ");
-        String username = input.nextLine();
+        userName = input.nextLine();
         System.out.print("Ange lösenord: ");
-        String password = input.nextLine();
+        passWord = input.nextLine();
 
 
-
-        User user = userService.logIn(username, password);
-
+       User user = userService.userRepository.findByUsernameAndPassword(userName, passWord);
         if (user != null) {
             System.out.println("Inloggning lyckades!");
             return user;
@@ -102,10 +104,29 @@ public class Menu implements MenuService {
         }
     }
 
+
+    public static void updateUserProfile(User user) {
+        System.out.print("Ange nytt användarnamn (lämna tomt om ingen ändring): ");
+        String newUsername = input.nextLine();
+
+        System.out.print("Ange nytt lösenord (lämna tomt om ingen ändring): ");
+        String newPassword = input.nextLine();
+
+        user.updateProfile(newUsername, newPassword);
+    }
+
+
     public static void logOut() {
         LoggedInUser = null;
         System.out.println("Du har loggats ut.");
     }
+
+
+    static void setUserService(UserService userService) {
+       Menu.userService = userService;
+    }
+ //   @Autowired
+   // private static UserService userService;
 
 
     public static void playGame() throws IOException {
@@ -113,14 +134,14 @@ public class Menu implements MenuService {
        // System.out.println(messages.getString("game.instructions.sv"));
        // System.out.println(messages.getString("game.instructions"));
 
-        System.out.println("Skriv de röda orden korrekt med samma ordning som de står och tryck enter när du är klar.");
-        System.out.println("Tiden börjar när texten skrivs ut");
-        System.out.print("Klicka Enter för att starta spelet");
+        System.out.println(messages.getString("game.instructions"));
+        System.out.println(messages.getString("time.starts"));
+        System.out.print(messages.getString("press.enter.to.play"));
         input.nextLine();
         openTextFile();
         timer();
         System.out.println();
-        System.out.print("SKRIV HÄR --> ");
+        System.out.print(messages.getString("write.here"));
         game = input.nextLine();
         stopTimer = true;
         checkSpelling();
@@ -155,7 +176,9 @@ public class Menu implements MenuService {
                 }
             }
             long timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
-            System.out.println(RESET + "Din tid blev: " + timeSeconds + " sekunder");
+
+            System.out.println(messages.getString("your.time" + timeSeconds + "seconds"));
+            //System.out.println("Din tid blev: " + timeSeconds + " sekunder");
         });
         timer.start();
     }
@@ -175,7 +198,8 @@ public class Menu implements MenuService {
                 }
             }
         }
-        System.out.println(RESET + "Antal rättstavade ord = " + countWords);
+        System.out.println(messages.getString("correct.words" + countWords));
+       // System.out.println("Antal rättstavade ord = " + countWords);
     }
     public static void checkOrder(){
         int countOrder = 0;
@@ -195,9 +219,20 @@ public class Menu implements MenuService {
 
     }
 
-    public static void showNewsAndUpdates() {
+    public static void showNewsAndUpdates() throws IOException {
+        System.out.println("Nyheter och uppdateringar:");
+        System.out.println("Nu finns möjlighet att spela spelet på engelska!");
 
+        System.out.println("Vill du återgå till huvudmenyn? (ja/nej): ");
+        String goBack = input.nextLine().toLowerCase();
+
+        if ("ja".equals(goBack)) {
+            displayMenu();
+        } else {
+            System.out.println("Programmet avslutas.");
+        }
     }
+
 
     public static void changeLanguage() throws IOException {
         System.out.print("Välj språk (sv/en): ");
@@ -227,10 +262,7 @@ public class Menu implements MenuService {
 
 
 
-
-
     public static void loadResources() {
-        // Ladda resursbundeln här med standardlokalen
         messages = ResourceBundle.getBundle("messages", Locale.getDefault());
     }
 
