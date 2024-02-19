@@ -56,12 +56,15 @@ public class Challenge implements IChallenge {
 
     @Override
     public String chooseGame(int id) {
+
         getAndSetCurrentLanguage();
         currentGameTaskId = id;
         setCurrentGameTaskId();
         findTaskByid();
         generateAndMarkWords();
+
         return lettersToType();
+
     }
 
 
@@ -104,6 +107,7 @@ public class Challenge implements IChallenge {
     }
 
     private List<String> addYellowHighlight(List<String> textInWords, List<String> randomWords) {
+        long start = System.nanoTime();
         List<String> temp = new ArrayList<>();
         for (String a : randomWords) {
             boolean markedWords = false;
@@ -127,29 +131,31 @@ public class Challenge implements IChallenge {
             if (word.startsWith("\u001B[33m") && word.endsWith("\u001B[0m")) {
 
                 yellowWords.add(word.substring(5, word.length() - 4));
-                if (yellowWords.size() == 7) {
+                if (yellowWords.size() == getRandomWordsAccordingToLevel()){
                     break;
                 }
             }
         }
+        long end = System.nanoTime();
+        System.out.println((end-start));
         currentSolution = yellowWords;
         setCurrentSolution();
         //TODO TA BORT DET HÄR SEN
         System.out.println("gula ord" + yellowWords);
         return textInWords;
     }
-
+//TODO FÖR VARJE LEVEL currentLevel ÖKAR SKA RANDOM ORD ÖKA MED 2
     private List<String> generateRandomWords(String text) {
         String[] words = text.split("\\s+");
         Random random = new Random();
         List<String> randomWordsList = new ArrayList<>();
 
-        int[] indices = new int[7];
-        Set<Integer> chosenIndices = new HashSet<>();
-        for (int i = 0; i < 7; i++) {
-            int index = random.nextInt(words.length);
-            while (chosenIndices.contains(index)) {
-                index = random.nextInt(words.length);
+        int[] indices = new int[getRandomWordsAccordingToLevel()];//en array för att lagra dom slumpmässiga orden. hur många ord som lagras beror på level enligt insatt metod
+        Set<Integer> chosenIndices = new HashSet<>(); //här sparas alla ord i en hashset för att säkerställa att det inte finns samma ord mer än en gång
+        for (int i = 0; i < getRandomWordsAccordingToLevel(); i++) {
+            int index = random.nextInt(words.length); //väljer random index i words Arrayen, dessa blir slumpmässiga ord som ska med i spelet
+            while (chosenIndices.contains(index)) { //om ordet finns i
+                index = random.nextInt(words.length);//om det finns samma ord på ett annat index så hämtar denna en ny index att kolla ord på
             }
             chosenIndices.add(index);
             indices[i] = index;
@@ -163,10 +169,20 @@ public class Challenge implements IChallenge {
                 }
             }
         }
+
         for (int index : indices) {
             randomWordsList.add(words[index]);
         }
         return randomWordsList;
+    }
+    //TODO OPTIMERA HÄR ENKELT
+    private int getRandomWordsAccordingToLevel(){
+        int numberOfWords = 3;
+        int level = getCurrentLevel();
+        if (level > 0){
+            numberOfWords += (level * 2);
+        }
+        return numberOfWords;
     }
 
     private void setCurrentSolution() {
@@ -177,6 +193,10 @@ public class Challenge implements IChallenge {
     @Override
     public void startChallenge() {
         startGame = LocalTime.now();
+    }
+
+    public int getCurrentLevel() {
+        return playable.getCurrentLevel();
     }
 
     @Override

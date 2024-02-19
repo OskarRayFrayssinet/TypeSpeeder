@@ -73,6 +73,9 @@ public class TypeSpeederGamePlay implements Playable {
 
     @Override
     public void calculateTotalPointsForGame(String userAnswer){
+
+        correctAnswers = 0;
+        correctAnswersInRow = 0;
         currentUserGuess = userAnswer;
         List<String> userAnswerList = new ArrayList<>(Arrays.asList(userAnswer.split("\\s+")));
 
@@ -91,6 +94,7 @@ public class TypeSpeederGamePlay implements Playable {
             }
             find++;
         }
+
         saveAttemptToDB();
     }
     public void saveAttemptToDB(){
@@ -121,6 +125,7 @@ public class TypeSpeederGamePlay implements Playable {
     }
     @Override
     public List<String> printLeaderBoard(){
+
         List<String> leaderboardList = new ArrayList<>();
         List<Users> users = usersRepo.findAll();
         int index = 0;
@@ -150,15 +155,17 @@ public class TypeSpeederGamePlay implements Playable {
                 }
 
             }
+
             leaderboardList.add(index,"Alias: " + alias +
                     "\nXp: " + String.valueOf(userXp) +
                     "\nCorrect %: " + (correct/(totalAtt*7)*100) +
                     "\nCorrect in order %: " + (correctInOrder/(totalAtt*7)*100) +
                     "\nSpeed average: " + (speedInSec/totalAtt) + "\n-------------\n");
             index++;
-            //TODO FORTSÄTT MED XP OCH LEVELUPPGRADERING,
-            // FORMATERA UTSKRIFTER TILL TVÅ DECIMALER
-            // OCH SNYGGARE UTSKRIFT AV LEADERBOARD
+            //TODO FORTSÄTT MED XP OCH LEVELUPPGRADERING
+            //TODO FORMATERA UTSKRIFTER TILL TVÅ DECIMALER
+            //TODO OCH SNYGGARE UTSKRIFT AV LEADERBOARD
+            //TODO NÄR MAN LEVLAR SÅ SKA ORDEN BLI 2 FLER
 
 
 
@@ -166,6 +173,7 @@ public class TypeSpeederGamePlay implements Playable {
         System.out.println(leaderboardList);
         return leaderboardList;
     }
+
     @Override
     public double calculatedPoints(){
         double points;
@@ -174,6 +182,8 @@ public class TypeSpeederGamePlay implements Playable {
         if (userTime>maxTime){
             points = 0;
 
+        } else if (correctAnswers == 0 && correctAnswersInRow == 0){
+            points = 0;
         } else {
             points = (correctAnswers + correctAnswersInRow + (10 * Math.pow((1 - (userTime / maxTime)), 1)));
         }
