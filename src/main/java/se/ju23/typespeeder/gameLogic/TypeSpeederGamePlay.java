@@ -124,8 +124,8 @@ public class TypeSpeederGamePlay implements Playable {
                 "\n--------\n";
     }
     @Override
-    public List<String> printLeaderBoard(){
-
+    public String printLeaderBoard(){
+        List<Users> topListOfUsers = new ArrayList<>();
         List<String> leaderboardList = new ArrayList<>();
         List<Users> users = usersRepo.findAll();
         int index = 0;
@@ -136,6 +136,7 @@ public class TypeSpeederGamePlay implements Playable {
             double speedInSec = 0;
             int totalAtt = 0;
             String alias = users.get(i).getAlias();
+            int level = users.get(i).getLevel();
             int userId = users.get(i).getUserId();
             int userXp = users.get(i).getXp();
             List<Attempt> attUserId = attemptRepo.findByUserId(userId);
@@ -147,14 +148,10 @@ public class TypeSpeederGamePlay implements Playable {
                     correct += uParam.get(k).getCorrect();
                     correctInOrder += uParam.get(k).getCorrectInOrder();
                     speedInSec += uParam.get(k).getSpeedInSec();
-                    /*leaderboardList.add("Rätt: " + String.valueOf(correct));
-                    leaderboardList.add("Rätt i rad: " + String.valueOf(correctInOrder));
-                    leaderboardList.add("Din tid" + String.valueOf(speedInSec));
-
-                     */
                 }
 
             }
+            topListOfUsers.add(users.get(i));
 
             leaderboardList.add(index,"Alias: " + alias +
                     "\nXp: " + String.valueOf(userXp) +
@@ -170,8 +167,15 @@ public class TypeSpeederGamePlay implements Playable {
 
 
         }
-        System.out.println(leaderboardList);
-        return leaderboardList;
+        StringBuilder result = new StringBuilder("    SCOREBOARD\n    player          Level   XP\n");
+        int pos = 1;
+        topListOfUsers.sort((p1,p2) -> Integer.compare(p2.getLevel(), p1.getLevel()));
+        for (Users u : topListOfUsers){
+            result.append(String.format("%5d %-9s%7.0f%7.0f%n", pos, (u.getEmail()), (double)u.getLevel(),(double)u.getXp()));
+            if (pos++ ==10) break;
+        }
+
+        return result.toString();
     }
 
     @Override
@@ -225,7 +229,7 @@ public class TypeSpeederGamePlay implements Playable {
             case 0 -> status = Status.EXIT;
             case 1 -> status = Status.SETTING_LANGUAGE;
             case 2 -> status = Status.ACTIVE_IN_GAME;
-            //case 3
+            case 3 -> status = Status.IN_STATS;
             case 4 -> status = Status.IN_GAME_SETTINGS;
         }
         return status;

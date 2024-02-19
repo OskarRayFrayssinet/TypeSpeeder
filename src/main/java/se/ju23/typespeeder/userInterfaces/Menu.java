@@ -60,13 +60,14 @@ import java.util.List;
     @Override
     //Main menu
     //Only in English
-    public void displayMenu() {
+    public String displayMenu() {
         String textToReturn = null;
         String translatedText;
         StringBuilder stringBuilder = new StringBuilder();
         for (String option : getMenuOptions()){
             stringBuilder.append(option);
         }
+        /*
         if (currentLanguage[0].equals("1")){
             try {
                 translatedText = translatable.translate(stringBuilder.toString(), "sv");
@@ -96,8 +97,7 @@ import java.util.List;
        */
 
 
-
-
+        return stringBuilder.toString();
     }
     @Override
     public String getUserSettingsMenu(){
@@ -122,7 +122,7 @@ import java.util.List;
         if (playable.getCurrentAlias(1).equals("1")){
             menuOptions.add("\u001B[1mAlias changed to: " + playable.getCurrentAlias(0) + "\nYOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
         } else {
-            menuOptions.add("New Alias: ");
+            menuOptions.add("New Alias(Go back 'b'): ");
 
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -140,11 +140,11 @@ import java.util.List;
                     "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
         } else {
             if (playable.getPassword(1).equals(playable.getPassword(0))){
-                menuOptions.add("New password: ");
+                menuOptions.add("New password (Go back 'b'): ");
             } else if (playable.getPassword(2).equals("2")){
                 menuOptions.add("Wrong password");
             } else {
-                menuOptions.add("Current password: ");
+                menuOptions.add("Current password (Go back 'b'): ");
             }
 
         }
@@ -162,11 +162,11 @@ import java.util.List;
                     "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
         } else {
             if (playable.getCurrentEmail(1).equals(playable.getCurrentEmail(0))/* && playable.getCurrentEmail(2).isEmpty()*/){
-                menuOptions.add("New Username: ");
+                menuOptions.add("New Username (Go back 'b'): ");
             } else if (playable.getCurrentEmail(2).equals("2")){
                 menuOptions.add("\u001B[1mWrong Username Or already taken\u001B[0m\n");
             } else {
-                menuOptions.add("Type your current Username: ");
+                menuOptions.add("Type your current Username (Go back 'b'): ");
             }
 
         }
@@ -190,7 +190,7 @@ import java.util.List;
         menuOptions.add("\n0.Sign out and exit\n");
         menuOptions.add("1. Choose language (Swedish/English)\n");
         menuOptions.add("2. Select game\n");
-        menuOptions.add("3. Show your stats\n");
+        menuOptions.add("3. Show ranking list\n");
         menuOptions.add("4. Change user info\n");
         menuOptions.add("Your choice: ");
 

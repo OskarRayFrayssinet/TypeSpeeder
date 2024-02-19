@@ -12,7 +12,7 @@ public interface Playable {
 
     String printChallengeResult();
 
-    List<String> printLeaderBoard();
+    String printLeaderBoard();
 
     double calculatedPoints();
 

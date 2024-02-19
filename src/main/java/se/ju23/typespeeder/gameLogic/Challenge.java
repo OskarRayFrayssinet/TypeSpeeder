@@ -144,7 +144,7 @@ public class Challenge implements IChallenge {
         System.out.println("gula ord" + yellowWords);
         return textInWords;
     }
-//TODO FÖR VARJE LEVEL currentLevel ÖKAR SKA RANDOM ORD ÖKA MED 2
+    //TODO FÖR VARJE LEVEL currentLevel ÖKAR SKA RANDOM ORD ÖKA MED 2
     private List<String> generateRandomWords(String text) {
         String[] words = text.split("\\s+");
         Random random = new Random();

@@ -26,7 +26,7 @@ import java.sql.SQLException;
 
 
         while (true) {
-
+            playable.printLeaderBoard();
             Status status;
             if (playable.getCurrentAlias(0).isEmpty()){
                 if (menuService.getNumberOfTries() == 0){
@@ -39,7 +39,7 @@ import java.sql.SQLException;
 
                 status = playable.checkUser(email, password);
             } else {
-                menuService.displayMenu();
+                io.addString(menuService.displayMenu());
 
                 //io.addString(menuService.displayMenu());
                 int input = io.getInt();
@@ -76,6 +76,7 @@ import java.sql.SQLException;
                     }
                 }
                 case NO_USER_FOUND -> io.addString(menuService.printLoginText());
+                case IN_STATS -> io.addGameText(playable.printLeaderBoard());
             }
             switch (status){
                 case EXIT -> io.exit();
@@ -91,8 +92,13 @@ import java.sql.SQLException;
                     } else {
                         io.addString(menuService.getUserNameChangeText());
                         String newAlias = io.getString();
-                        playable.setNewAlias(newAlias);
-                        io.addString(menuService.getUserNameChangeText());
+                        if (newAlias.equalsIgnoreCase("b")){
+                            run();
+                        } else {
+                            playable.setNewAlias(newAlias);
+                            io.addString(menuService.getUserNameChangeText());
+                        }
+
                     }
                 }
                 case CHANGING_PASSWORD -> {
@@ -101,10 +107,16 @@ import java.sql.SQLException;
                     } else {
                         io.addString(menuService.getPasswordChangeText());
                         String checkCurrentPassword = io.getString();
+                        if (checkCurrentPassword.equalsIgnoreCase("b")){
+                            run();
+                        }
                         boolean checked = playable.checkCurrentPassword(checkCurrentPassword);
                         if (checked) {
                             io.addString(menuService.getPasswordChangeText());
                             String newPassword = io.getString();
+                            if (newPassword.equalsIgnoreCase("b")){
+                                run();
+                            }
                             playable.setNewPassword(newPassword);
                             io.addString(menuService.getPasswordChangeText());
                         } else {
@@ -118,10 +130,16 @@ import java.sql.SQLException;
                     } else {
                         io.addString(menuService.getUsernameChangeText());
                         String checkCurrentEmail = io.getString();
+                        if (checkCurrentEmail.equalsIgnoreCase("b")){
+                            run();
+                        }
                         boolean checked = playable.checkCurrentEmail(checkCurrentEmail);
                         if (checked) {
                             io.addString(menuService.getUsernameChangeText());
                             String newEmail = io.getString();
+                            if (newEmail.equalsIgnoreCase("b")){
+                                run();
+                            }
                             boolean checkIfBusy = playable.checkIfUserNameIsBusy(newEmail);
                             if (checkIfBusy){
                                 playable.setNewUsername(newEmail);

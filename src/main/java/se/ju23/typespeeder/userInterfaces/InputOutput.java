@@ -33,7 +33,6 @@ import java.util.Scanner;
                 return inputString;
             }
         }
-
     }
     @Override
     public String getEnter() {
