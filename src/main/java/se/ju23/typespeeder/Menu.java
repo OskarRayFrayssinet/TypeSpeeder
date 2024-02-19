@@ -40,7 +40,7 @@ public class Menu implements MenuService {
     public static void displayMenu() throws IOException {
         UserService userService = TypeSpeederApplication.userService;
 
-       // System.out.println(messages.getString("welcome.message.sv"));
+
         //System.out.println(messages.getString("welcome.message"));
         System.out.println("Välkommen till TypeSpeeder!");
 
@@ -110,9 +110,7 @@ public class Menu implements MenuService {
     public static void playGame() throws IOException {
 
 
-       System.out.println(messages.getString("game.instructions"));
-
-      //  System.out.println("Skriv de röda orden korrekt med samma ordning som de står och tryck enter när du är klar.");
+        System.out.println(messages.getString("game.instructions"));
         System.out.println(messages.getString("time.starts"));
         System.out.print(messages.getString("press.enter.to.play"));
         input.nextLine();
@@ -153,7 +151,9 @@ public class Menu implements MenuService {
                 }
             }
             long timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
-            System.out.println("Din tid blev: " + timeSeconds + " sekunder");
+
+            System.out.println(messages.getString("your.time" + timeSeconds + "seconds"));
+            //System.out.println("Din tid blev: " + timeSeconds + " sekunder");
         });
         timer.start();
     }
@@ -174,7 +174,8 @@ public class Menu implements MenuService {
 
             }
         }
-        System.out.println("Antal rättstavade ord = " + countWords);
+        System.out.println(messages.getString("correct.words" + countWords));
+       // System.out.println("Antal rättstavade ord = " + countWords);
     }
 
     public static void rightOrder() {
@@ -220,7 +221,6 @@ public class Menu implements MenuService {
 
 
     public static void loadResources() {
-        // Ladda resursbundeln här med standardlokalen
         messages = ResourceBundle.getBundle("messages", Locale.getDefault());
     }
 
