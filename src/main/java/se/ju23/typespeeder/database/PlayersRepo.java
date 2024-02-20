@@ -6,4 +6,6 @@ import se.ju23.typespeeder.classer.Players;
 
 @Repository
 public interface PlayersRepo extends JpaRepository<Players, Integer> {
+    Players getPLayersByUsernameAndPassword(String username, String password);
+    boolean existsById(int id);
 }

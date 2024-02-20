@@ -10,26 +10,29 @@ public class Resultat {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "mistakes")
+    private int mistakes;
+    @Column(name = "time")
+    private Long time;
     @Column(name = "resultat")
     private int resultat;
-    @Column(name = "playerID")
-    private int playerID;
+    @ManyToOne
+    @JoinColumn(name = "playerID")
+    private Players players;
 
     public Resultat() {
     }
 
-    public  Resultat(int id, int resultat, int playerID){
-        this.id = id;
+    public Resultat ( int mistakes, Long time, int resultat, Players players) {
+
+        this.mistakes = mistakes;
+        this.time = time;
         this.resultat = resultat;
-        this.playerID = playerID;
+        this.players = players;
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getResultat() {
@@ -40,20 +43,37 @@ public class Resultat {
         this.resultat = resultat;
     }
 
-    public int getPlayerID() {
-        return playerID;
+    public int getMistakes() {
+        return mistakes;
     }
 
-    public void setPlayerID(int playerID) {
-        this.playerID = playerID;
+    public void setMistakes(int mistakes) {
+        this.mistakes = mistakes;
     }
 
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time) {
+        this.time = time;
+    }
+
+    public Players getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(Players players) {
+        this.players = players;
+    }
     @Override
     public String toString() {
         return "Resultat{" +
                 "id=" + id +
+                ", mistakes=" + mistakes +
+                ", time=" + time +
                 ", resultat=" + resultat +
-                ", playerID=" + playerID +
+                ", players=" + players.getNickname() +
                 '}';
     }
 }
