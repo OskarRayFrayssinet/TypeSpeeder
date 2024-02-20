@@ -2,6 +2,7 @@ package se.ju23.typespeeder.menu;
 
 import se.ju23.typespeeder.challenge.Challenge;
 import se.ju23.typespeeder.game.GameEnglish;
+import se.ju23.typespeeder.classer.DictionaryService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ public class Menu implements MenuService {
 
     public Challenge challenge = new Challenge();
     private String language = "svenska";
+
+    public DictionaryService dictionaryService = new DictionaryService();
 
     @Override
     public List<String> getMenuOptions() {
@@ -101,8 +104,9 @@ public class Menu implements MenuService {
         switch (option) {
             case 1:
                 System.out.println("Spela spel");
-                GameEnglish game = new GameEnglish();
-                challenge.startChallenge();
+
+                challenge.beginGame();
+           //     challenge.playersInput();
                 break;
             case 2:
                 System.out.println("CASE 2");

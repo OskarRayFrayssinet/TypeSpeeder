@@ -3,7 +3,7 @@ package se.ju23.typespeeder.utils;
 import se.ju23.typespeeder.classer.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
 import se.ju23.typespeeder.menu.Menu;
-import se.ju23.typespeeder.service.PlayersService;
+import se.ju23.typespeeder.classer.PlayersService;
 
 import java.util.Scanner;
 
