@@ -49,6 +49,7 @@ import java.sql.SQLException;
 
             switch (status){
                 case IN_GAME_SETTINGS -> {
+                    io.addString(playable.printUserInfo());
                     io.addString(menuService.getUserSettingsMenu());
                     int input = io.getInt();
                     if(input == 0){
@@ -71,12 +72,10 @@ import java.sql.SQLException;
                         challenge.endChallenge();
                         playable.calculateTotalPointsForGame(answer);
                         io.addString(playable.printChallengeResult());
-
-
                     }
                 }
                 case NO_USER_FOUND -> io.addString(menuService.printLoginText());
-                case IN_STATS -> io.addGameText(playable.printNewLeaderBoard() +
+                case IN_STATS -> io.addGameText(playable.printScoreBoardBasedOnThree() +
                 playable.printLeaderBoard());
             }
             switch (status){

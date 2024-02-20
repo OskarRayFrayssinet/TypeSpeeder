@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class ChallengeTest {
     @Test
     public void testChallengeClassExists() {
-        try {                                                           //TODO KOLLA PAKETNAMN MED OSKAR
+        try {
             Class<?> challengeClass = Class.forName("se.ju23.typespeeder.gameLogic.Challenge");
         } catch (ClassNotFoundException e) {
             fail("Challenge class could not be found.");
@@ -29,7 +29,7 @@ public class ChallengeTest {
     }
     @Test
     public void testStartChallengeMethodExists() {
-        try {                                                       //TODO KOLLA PAKETNAMN MED OSKAR
+        try {
             Class<?> challengeClass = Class.forName("se.ju23.typespeeder.gameLogic.Challenge");
             Method method = challengeClass.getMethod("startChallenge");
             assertNotNull(method, "The method 'startChallenge' should exist in the Challenge class.");

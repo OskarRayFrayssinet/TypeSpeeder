@@ -67,36 +67,6 @@ import java.util.List;
         for (String option : getMenuOptions()){
             stringBuilder.append(option);
         }
-        /*
-        if (currentLanguage[0].equals("1")){
-            try {
-                translatedText = translatable.translate(stringBuilder.toString(), "sv");
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            textToReturn = translatedText.replaceAll("(\\d+)\\.\\s*", "\n$1. ");
-        } else {
-            textToReturn = stringBuilder.toString();
-        }
-
-        System.out.println(textToReturn);
-
-/*
-        if (language.equals("1")){
-            try {
-                translatedText = translatable.translate(stringBuilder.toString(), "sv");
-                textToReturn = translatedText.replaceAll("(\\d+)\\.\\s*", "\n$1. ");
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            textToReturn = stringBuilder.toString();
-        }
-       */
-
-
         return stringBuilder.toString();
     }
     @Override

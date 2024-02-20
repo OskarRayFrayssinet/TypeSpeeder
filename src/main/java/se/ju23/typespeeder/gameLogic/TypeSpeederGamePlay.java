@@ -23,7 +23,7 @@ public class TypeSpeederGamePlay implements Playable {
     int correctAnswersInRow = 0;
     String currentPointsForPrinting = "";
     String currentUserGuess = "";
-
+    boolean levelUp = false;
     public int currentUserId = 0;
     public int currentTaskId = 0;
     double timeResult = 0;
@@ -117,16 +117,21 @@ public class TypeSpeederGamePlay implements Playable {
     }
     @Override
     public String printChallengeResult(){
-
-        return "--------\n" +
+        String toReturn = "--------\n" +
+                "| XP: " + currentXp +
                 "| Correct Answers: " + correctAnswers + " |" +
-                "\n| Correct Answers in row: " + correctAnswersInRow + " |" +
-                "\n| Your Time: " + getTimeResult() + " Seconds" + "|" + "\n| Points: " +
+                "| Correct Answers in row: " + correctAnswersInRow + " |" +
+                "| Your Time: " + getTimeResult() + " Seconds" + "|" + "| Points: " +
                 currentPointsForPrinting + "|" +
                 "\n--------\n";
+        if (levelUp){
+            return toReturn + "XP: " + currentXp + "NEW LEVEL!: " + currentLevel;
+        } else {
+            return toReturn;
+        }
     }
     @Override
-    public String printNewLeaderBoard(){
+    public String printScoreBoardBasedOnThree(){
         List<Users> users = usersRepo.findAll();
         List<UserScores> userScores = new ArrayList<>();
         for (Users user : users){
@@ -137,7 +142,7 @@ public class TypeSpeederGamePlay implements Playable {
             userScores.add(new UserScores(user.getEmail(),user.getLevel(),user.getXp(),userScore));
         }
         userScores.sort(Comparator.comparingDouble(UserScores::getScore).reversed());
-        StringBuilder result = new StringBuilder("    SCOREBOARD BASED ON 5 LATEST ACHIEVEMENTS\n SCORE BASED ON: SPEED, ACCURACY, ACCURACY IN ORDER \n    player          Level   XP   Score\n");
+        StringBuilder result = new StringBuilder("    SCOREBOARD BASED ON 10 LATEST ACHIEVEMENTS\n SCORE BASED ON: SPEED, ACCURACY, ACCURACY IN ORDER \n    player          Level   XP   Score\n");
         int pos = 1;
         for (UserScores userScore : userScores) {
             result.append(String.format("%5d %-9s%7.0f%7.0f%7.2f%n", pos, userScore.getUsername(),
@@ -203,6 +208,8 @@ public class TypeSpeederGamePlay implements Playable {
                 (speedAverage * weightSpeedAverage);
     }
     public void setXpToDB(int totPoints){
+        levelUp = false;
+        int xpLimit = 20;
         int latestPoints = 0;
         Optional<Users> finduser = usersRepo.findById(currentUserId);
         if (finduser.isPresent()) {
@@ -212,63 +219,43 @@ public class TypeSpeederGamePlay implements Playable {
             }
             Users found = finduser.get();
             int xp = finduser.get().getXp();
+            int xpToCountoff = xp;
+            int level = finduser.get().getLevel();
+            if (level > 1 ) {
+                for (int i = 0; i < level; i++) {
+                    xpLimit += 5;
+                }
+                System.out.println("din gräns" +xpLimit);
+            }
             if (latestPoints > totPoints || totPoints == 0) {
                 xp = (xp - 10);
+                if (xp<0) xp = 0;
             } else {
                 xp += totPoints;
+                if (xp >= xpLimit){
+                    int sum = xpLimit - xpToCountoff;
+                    level++;
+                    levelUp = true;
+                    xp = totPoints - sum;
+                }
             }
-
+            currentLevel = level;
+            currentXp = xp;
             found.setXp(xp);
+            found.setLevel(level);
             usersRepo.save(found);
             saveAttemptToDB();
         }
     }
 
 
+
     @Override
     public String printLeaderBoard(){
-        List<Users> topListOfUsers = new ArrayList<>();
-        List<String> leaderboardList = new ArrayList<>();
+        long start = System.nanoTime();
         List<Users> users = usersRepo.findAll();
-        int index = 0;
-        for (int i = 0; i < users.size(); i++) {
 
-            double correct = 0;
-            double correctInOrder = 0;
-            double speedInSec = 0;
-            int totalAtt = 0;
-            String alias = users.get(i).getAlias();
-            int level = users.get(i).getLevel();
-            int userId = users.get(i).getUserId();
-            int userXp = users.get(i).getXp();
-            List<Attempt> attUserId = attemptRepo.findByUserId(userId);
-            for (int j = 0; j < attUserId.size(); j++) {
-                int attId = attUserId.get(j).getAttemptId();
-                totalAtt = attUserId.size();
-                List<PointParam> uParam = pointParamRepo.findPointParamByAttemptId(attId);
-                for (int k = 0; k < uParam.size(); k++) {
-                    correct += uParam.get(k).getCorrect();
-                    correctInOrder += uParam.get(k).getCorrectInOrder();
-                    speedInSec += uParam.get(k).getSpeedInSec();
-                }
-
-            }
-            topListOfUsers.add(users.get(i));
-
-            leaderboardList.add("Alias: " + alias +
-                    "\nXp: " + String.valueOf(userXp) +
-                    "\nCorrect %: " + (correct/(totalAtt*7)*100) +
-                    "\nCorrect in order %: " + (correctInOrder/(totalAtt*7)*100) +
-                    "\nSpeed average: " + (speedInSec/totalAtt) + "\n-------------\n");
-            index++;
-            //TODO FORTSÄTT MED XP OCH LEVELUPPGRADERING
-            //TODO FORMATERA UTSKRIFTER TILL TVÅ DECIMALER
-            //TODO OCH SNYGGARE UTSKRIFT AV LEADERBOARD
-            //TODO NÄR MAN LEVLAR SÅ SKA ORDEN BLI 2 FLER
-
-
-
-        }
+        List<Users> topListOfUsers = new ArrayList<>(users);
         StringBuilder result = new StringBuilder("    SCOREBOARD BASED ON LEVEL \n    player          Level   XP\n");
         int pos = 1;
         topListOfUsers.sort((p1,p2) -> Integer.compare(p2.getLevel(), p1.getLevel()));
@@ -276,10 +263,13 @@ public class TypeSpeederGamePlay implements Playable {
             result.append(String.format("%5d %-9s%7.0f%7.0f%n", pos, (u.getEmail()), (double)u.getLevel(),(double)u.getXp()));
             if (pos++ ==10) break;
         }
-
+        System.out.println(System.nanoTime() - start);
         return result.toString();
     }
-
+    //TODO FORTSÄTT MED XP OCH LEVELUPPGRADERING
+    //TODO FORMATERA UTSKRIFTER TILL TVÅ DECIMALER
+    //TODO OCH SNYGGARE UTSKRIFT AV LEADERBOARD
+    //TODO NÄR MAN LEVLAR SÅ SKA ORDEN BLI 2 FLER
     @Override
     public double totalPoints(){
         double points;
@@ -316,6 +306,10 @@ public class TypeSpeederGamePlay implements Playable {
     @Override
     public void setCurrentSolution(List<String> currentSolution1) {
         currentSolution = currentSolution1;
+    }
+    @Override
+    public String printUserInfo(){
+        return "| Alias " + currentAlias[0] + " | Level: " + currentLevel + " | XP: " + currentXp;
     }
 
     @Override

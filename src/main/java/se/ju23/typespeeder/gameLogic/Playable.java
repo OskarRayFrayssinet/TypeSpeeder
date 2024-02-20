@@ -12,13 +12,15 @@ public interface Playable {
 
     String printChallengeResult();
 
-    String printNewLeaderBoard();
+    String printScoreBoardBasedOnThree();
 
     String printLeaderBoard();
 
     double totalPoints();
 
     void setCurrentSolution(List<String> currentSolution1);
+
+    String printUserInfo();
 
     String beforeGameStartsText();
 
