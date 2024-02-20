@@ -107,7 +107,6 @@ public class Challenge implements IChallenge {
     }
 
     private List<String> addYellowHighlight(List<String> textInWords, List<String> randomWords) {
-        long start = System.nanoTime();
         List<String> temp = new ArrayList<>();
         for (String a : randomWords) {
             boolean markedWords = false;
@@ -136,15 +135,10 @@ public class Challenge implements IChallenge {
                 }
             }
         }
-        long end = System.nanoTime();
-        System.out.println((end-start));
         currentSolution = yellowWords;
         setCurrentSolution();
-        //TODO TA BORT DET HÄR SEN
-        System.out.println("gula ord" + yellowWords);
         return textInWords;
     }
-    //TODO FÖR VARJE LEVEL currentLevel ÖKAR SKA RANDOM ORD ÖKA MED 2
     private List<String> generateRandomWords(String text) {
         String[] words = text.split("\\s+");
         Random random = new Random();
@@ -176,12 +170,14 @@ public class Challenge implements IChallenge {
         return randomWordsList;
     }
     //TODO OPTIMERA HÄR ENKELT
-    private int getRandomWordsAccordingToLevel(){
+    @Override
+    public int getRandomWordsAccordingToLevel(){
         int numberOfWords = 3;
         int level = getCurrentLevel();
         if (level > 0){
             numberOfWords += (level * 2);
         }
+        playable.setNumOfWords(numberOfWords);
         return numberOfWords;
     }
 

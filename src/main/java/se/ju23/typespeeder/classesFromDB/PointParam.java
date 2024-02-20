@@ -22,6 +22,9 @@ public class PointParam {
     @Basic
     @Column(name = "correct_in_order", nullable = false)
     private int correctInOrder;
+    @Basic
+    @Column(name = "questions", nullable = false)
+    private int questions;
     @ManyToOne
     @JoinColumn(name = "attempt_id", referencedColumnName = "attempt_id", nullable = false)
     private Attempt attemptByAttemptId;
@@ -31,16 +34,27 @@ public class PointParam {
         this.speedInSec = speedInSec;
         this.correct = correct;
         this.correctInOrder = correctInOrder;
+
+
     }
 
-    public PointParam(double speedInSec, int correct, int correctInOrder, Attempt attemptByAttemptId) {
+    public PointParam(double speedInSec, int correct, int correctInOrder, Attempt attemptByAttemptId,int questions) {
         this.speedInSec = speedInSec;
         this.correct = correct;
         this.correctInOrder = correctInOrder;
         this.attemptByAttemptId = attemptByAttemptId;
+        this.questions = questions;
     }
 
     public PointParam() {
+    }
+
+    public int getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(int questions) {
+        this.questions = questions;
     }
 
     public int getId() {
@@ -95,7 +109,8 @@ public class PointParam {
         if (correct != that.correct) return false;
         if (correctInOrder != that.correctInOrder) return false;
         if (speedInSec != that.speedInSec) return false;
-        
+        if (questions != that.questions) return false;
+
 
         return true;
     }
@@ -107,6 +122,7 @@ public class PointParam {
         result = (int) (31 * result + speedInSec);
         result = 31 * result + correct;
         result = 31 * result + correctInOrder;
+        result = 31 * result + questions;
         return result;
     }
 

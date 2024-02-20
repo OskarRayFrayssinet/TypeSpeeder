@@ -15,10 +15,8 @@ public interface IChallenge {
     void calculateTimeToDouble();
 
 
-
-
-
-
+    //TODO OPTIMERA HÄR ENKELT
+    int getRandomWordsAccordingToLevel();
 
     void startChallenge();
 

@@ -17,7 +17,8 @@ public class TypeSpeederGamePlay implements Playable {
 
     public static LocalTime startGame = LocalTime.now();
     public static LocalTime endGame = LocalTime.now();
-
+    int totalCalculatedPoints = 0;
+    int numOfWords = 0;
     int correctAnswers = 0;
     int correctAnswersInRow = 0;
     String currentPointsForPrinting = "";
@@ -51,7 +52,7 @@ public class TypeSpeederGamePlay implements Playable {
     TasksRepo tasksRepo;
 
     public Status checkUser(String email, String password) {
-        printLeaderBoard();
+
 
 
         Optional<Users> users = usersRepo.findByEmailAndPassword(email, password);
@@ -94,8 +95,8 @@ public class TypeSpeederGamePlay implements Playable {
             }
             find++;
         }
+        totalPoints();
 
-        saveAttemptToDB();
     }
     public void saveAttemptToDB(){
         Tasks t = null;
@@ -108,9 +109,9 @@ public class TypeSpeederGamePlay implements Playable {
         if (findUser.isPresent()){
             u = findUser.get();
         }
-        Attempt newAttempt = new Attempt(calculatedPoints(),currentSolutionToString(),currentUserGuess,u,t);
+        Attempt newAttempt = new Attempt(totalCalculatedPoints,currentSolutionToString(),currentUserGuess,u,t);
         attemptRepo.save(newAttempt);
-        PointParam pointParam = new PointParam(getTimeResult(),correctAnswers,correctAnswersInRow,newAttempt);
+        PointParam pointParam = new PointParam(getTimeResult(),correctAnswers,correctAnswersInRow,newAttempt,numOfWords);
         pointParamRepo.save(pointParam);
 
     }
@@ -120,9 +121,110 @@ public class TypeSpeederGamePlay implements Playable {
         return "--------\n" +
                 "| Correct Answers: " + correctAnswers + " |" +
                 "\n| Correct Answers in row: " + correctAnswersInRow + " |" +
-                "\n| Your Time: " + getTimeResult() + " Seconds" + "|" + "\n| Points: " + currentPointsForPrinting + "|" +
+                "\n| Your Time: " + getTimeResult() + " Seconds" + "|" + "\n| Points: " +
+                currentPointsForPrinting + "|" +
                 "\n--------\n";
     }
+    @Override
+    public String printNewLeaderBoard(){
+        List<Users> users = usersRepo.findAll();
+        List<UserScores> userScores = new ArrayList<>();
+        for (Users user : users){
+            double correctPercentage = calculateCorrectPercentage(user);
+            double correctInOrderPercentage = calculateCorrectInOrderPercentage(user);
+            double speedAverage = calculateSpeedAverage(user);
+            double userScore = calculateUserScore(correctPercentage, correctInOrderPercentage, speedAverage);
+            userScores.add(new UserScores(user.getEmail(),user.getLevel(),user.getXp(),userScore));
+        }
+        userScores.sort(Comparator.comparingDouble(UserScores::getScore).reversed());
+        StringBuilder result = new StringBuilder("    SCOREBOARD BASED ON 5 LATEST ACHIEVEMENTS\n SCORE BASED ON: SPEED, ACCURACY, ACCURACY IN ORDER \n    player          Level   XP   Score\n");
+        int pos = 1;
+        for (UserScores userScore : userScores) {
+            result.append(String.format("%5d %-9s%7.0f%7.0f%7.2f%n", pos, userScore.getUsername(),
+                    (double)userScore.getLevel(),
+                    (double)userScore.getXp(), userScore.getScore()));
+            if (pos++ == 10) break;
+        }
+        return result.toString();
+    }
+    private double calculateCorrectPercentage(Users user){
+        int correct = 0;
+        int questions = 0;
+        List<Attempt> attemptsToCount = attemptRepo.findTop10ByUserIdOrderByAttemptIdDesc(user.getUserId());
+        for (int i = 0; i < attemptsToCount.size(); i++) {
+            int attid = attemptsToCount.get(i).getAttemptId();
+            List<PointParam> pointParams = pointParamRepo.findPointParamByAttemptId(attid);
+            for (int j = 0; j < pointParams.size(); j++) {
+                correct += pointParams.get(j).getCorrect();
+                questions += pointParams.get(j).getQuestions();
+            }
+        }
+
+        return ((double) correct /(attemptsToCount.size()*questions)*100);
+    }
+
+    private double calculateCorrectInOrderPercentage(Users user) {
+        int correctInOrder = 0;
+        int questions = 0;
+        List<Attempt> attemptsToCount = attemptRepo.findTop10ByUserIdOrderByAttemptIdDesc(user.getUserId());
+        for (int i = 0; i < attemptsToCount.size(); i++) {
+            int attid = attemptsToCount.get(i).getAttemptId();
+            List<PointParam> pointParams = pointParamRepo.findPointParamByAttemptId(attid);
+            for (int j = 0; j < pointParams.size(); j++) {
+                correctInOrder += pointParams.get(j).getCorrectInOrder();
+                questions += pointParams.get(j).getQuestions();
+            }
+        }
+        return ((double) correctInOrder/(attemptsToCount.size()*questions)*100);
+    }
+    private double calculateSpeedAverage(Users user){
+        double speed = 0;
+
+        List<Attempt> attemptsToCount = attemptRepo.findTop10ByUserIdOrderByAttemptIdDesc(user.getUserId());
+        for (int i = 0; i < attemptsToCount.size(); i++) {
+            int attid = attemptsToCount.get(i).getAttemptId();
+            List<PointParam> pointParams = pointParamRepo.findPointParamByAttemptId(attid);
+            for (int j = 0; j < pointParams.size(); j++) {
+                speed += pointParams.get(j).getSpeedInSec();
+            }
+        }
+        return speed/attemptsToCount.size();
+    }
+    private double calculateUserScore(double correctPercentage, double correctInOrderPercentage, double speedAverage) {
+        // Viktningar för varje prestation
+        double weightCorrectPercentage = 0.9;  // Viktning för andel korrekta svar
+        double weightCorrectInOrderPercentage = 0.4;  // Viktning för andel korrekta svar i ordning
+        double weightSpeedAverage = 0.8;  // Viktning för snitthastighet
+
+        // Beräkna den totala poängen genom att multiplicera varje prestation med dess viktning och sedan summera dem
+
+        return (correctPercentage * weightCorrectPercentage) +
+                (correctInOrderPercentage * weightCorrectInOrderPercentage) +
+                (speedAverage * weightSpeedAverage);
+    }
+    public void setXpToDB(int totPoints){
+        int latestPoints = 0;
+        Optional<Users> finduser = usersRepo.findById(currentUserId);
+        if (finduser.isPresent()) {
+            List<Attempt> attempts = attemptRepo.findTop1ByUserIdOrderByAttemptIdDesc(currentUserId);
+            for (int i = 0; i < attempts.size(); i++) {
+                latestPoints = (int) attempts.get(i).getTotalPoints();
+            }
+            Users found = finduser.get();
+            int xp = finduser.get().getXp();
+            if (latestPoints > totPoints || totPoints == 0) {
+                xp = (xp - 10);
+            } else {
+                xp += totPoints;
+            }
+
+            found.setXp(xp);
+            usersRepo.save(found);
+            saveAttemptToDB();
+        }
+    }
+
+
     @Override
     public String printLeaderBoard(){
         List<Users> topListOfUsers = new ArrayList<>();
@@ -153,7 +255,7 @@ public class TypeSpeederGamePlay implements Playable {
             }
             topListOfUsers.add(users.get(i));
 
-            leaderboardList.add(index,"Alias: " + alias +
+            leaderboardList.add("Alias: " + alias +
                     "\nXp: " + String.valueOf(userXp) +
                     "\nCorrect %: " + (correct/(totalAtt*7)*100) +
                     "\nCorrect in order %: " + (correctInOrder/(totalAtt*7)*100) +
@@ -167,7 +269,7 @@ public class TypeSpeederGamePlay implements Playable {
 
 
         }
-        StringBuilder result = new StringBuilder("    SCOREBOARD\n    player          Level   XP\n");
+        StringBuilder result = new StringBuilder("    SCOREBOARD BASED ON LEVEL \n    player          Level   XP\n");
         int pos = 1;
         topListOfUsers.sort((p1,p2) -> Integer.compare(p2.getLevel(), p1.getLevel()));
         for (Users u : topListOfUsers){
@@ -179,7 +281,7 @@ public class TypeSpeederGamePlay implements Playable {
     }
 
     @Override
-    public double calculatedPoints(){
+    public double totalPoints(){
         double points;
         double userTime = getTimeResult();
         double maxTime = 120;
@@ -191,10 +293,13 @@ public class TypeSpeederGamePlay implements Playable {
         } else {
             points = (correctAnswers + correctAnswersInRow + (10 * Math.pow((1 - (userTime / maxTime)), 1)));
         }
+        totalCalculatedPoints = (int) points;
+        setXpToDB((int) points);
         DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.US);
         DecimalFormat df = new DecimalFormat("#.##", symbols);
         double a = Double.parseDouble(df.format(points));
         currentPointsForPrinting = String.valueOf(a);
+
         return a;
     }
     public String currentSolutionToString(){
@@ -316,6 +421,10 @@ public class TypeSpeederGamePlay implements Playable {
     @Override
     public void setTimeResult(double timeResult) {
         this.timeResult = timeResult;
+    }
+    @Override
+    public void setNumOfWords(int words){
+        numOfWords = words;
     }
 
     public static LocalTime getStartGame() {

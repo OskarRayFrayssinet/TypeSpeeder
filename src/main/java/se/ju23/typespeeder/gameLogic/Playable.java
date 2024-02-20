@@ -12,9 +12,11 @@ public interface Playable {
 
     String printChallengeResult();
 
+    String printNewLeaderBoard();
+
     String printLeaderBoard();
 
-    double calculatedPoints();
+    double totalPoints();
 
     void setCurrentSolution(List<String> currentSolution1);
 
@@ -47,6 +49,8 @@ public interface Playable {
 
 
     void setTimeResult(double timeResult);
+
+    void setNumOfWords(int words);
 
     void setStartGame(LocalTime startGame1);
 

@@ -26,7 +26,7 @@ import java.sql.SQLException;
 
 
         while (true) {
-            playable.printLeaderBoard();
+
             Status status;
             if (playable.getCurrentAlias(0).isEmpty()){
                 if (menuService.getNumberOfTries() == 0){
@@ -76,7 +76,8 @@ import java.sql.SQLException;
                     }
                 }
                 case NO_USER_FOUND -> io.addString(menuService.printLoginText());
-                case IN_STATS -> io.addGameText(playable.printLeaderBoard());
+                case IN_STATS -> io.addGameText(playable.printNewLeaderBoard() +
+                playable.printLeaderBoard());
             }
             switch (status){
                 case EXIT -> io.exit();
