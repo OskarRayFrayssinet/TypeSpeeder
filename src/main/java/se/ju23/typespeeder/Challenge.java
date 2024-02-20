@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+import static se.ju23.typespeeder.TypeSpeederApplication.userService;
+
 public class Challenge {
     private static ResourceBundle messages = ResourceBundle.getBundle("Messages");
     public static Scanner input = new Scanner(System.in);
@@ -15,6 +17,9 @@ public class Challenge {
     public static long startTime;
     public static String game;
     public static String colorWords;
+    public static int countWords;
+    public static int countOrder;
+    public static long timeSeconds;
     public static List<String> redWords = new ArrayList<>();
     public static final String WHITE = "\u001B[37m";
     public static final String RESET = "\u001B[0m";
@@ -69,7 +74,7 @@ public class Challenge {
                     e.printStackTrace();
                 }
             }
-            long timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
+            timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
 
             //System.out.println(messages.getString("your.time" + timeSeconds + "seconds"));
             System.out.println("Din tid blev: " + timeSeconds + " sekunder");
@@ -84,7 +89,7 @@ public class Challenge {
             }
         }
         String [] gameList = game.split("\\s+");
-        int countWords = 0;
+        //int countWords = 0;
         for (String list : gameList){
             for(String red : redWords){
                 if (red.equals(list)){
@@ -96,7 +101,7 @@ public class Challenge {
         System.out.println("Antal rättstavade ord = " + countWords);
     }
     public static void checkOrder(){
-        int countOrder = 0;
+        //int countOrder = 0;
         String[] gameList = game.split("\\s+");
         int minWord = Math.min(redWords.size(), gameList.length);
         for(int i = 0; i < minWord; i++){
@@ -109,7 +114,38 @@ public class Challenge {
         System.out.println("Antal ord i korrekt ordning: " + countOrder);
     }
 
-    public static void showRankingList() {
+    public static void printRankingList(ArrayList<PlayerRanking> topList) {
+        System.out.println("Ranking List\n     Player     Score\n");
+        int position = 1;
+        topList.sort((p1, p2) -> Double.compare(p1.result, p2.result));
 
+        for(PlayerRanking player : topList){
+            System.out.println(String.format("%3d %-10s%5.2f%n", position, player.name, player.result));
+        }
+    }
+    public static void showRankingList(){
+        ArrayList<PlayerRanking> topList = rankingList();
+        printRankingList(topList);
+    }
+    public static class PlayerRanking{
+        String name;
+        double result;
+
+        public PlayerRanking(String name, double result) {
+            this.name = name;
+            this.result = result;
+        }
+    }
+
+    public static ArrayList<PlayerRanking> rankingList(){
+        ArrayList<PlayerRanking>RankingList = new ArrayList<>();
+        int wrong = countWords - countOrder;
+        int correct = countWords - wrong;
+        double score = timeSeconds/correct;
+        //User user = userService.userRepository.findByUsernameAndPassword(Menu.userName, Menu.passWord);
+        String user = Menu.loggedInUser.getUsername();
+        //String name = user.getUsername();
+        RankingList.add(new PlayerRanking(user,score));
+        return RankingList;
     }
 }

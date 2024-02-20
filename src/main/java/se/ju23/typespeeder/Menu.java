@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 @Component
 public class Menu implements MenuService {
     private static UserService userService;
-    private static User loggedInUser;
+    public static User loggedInUser;
     private static Object LoggedInUser;
     private static ResourceBundle messages = ResourceBundle.getBundle("Messages");
     static List<String> MenuOptions = new ArrayList<>();
