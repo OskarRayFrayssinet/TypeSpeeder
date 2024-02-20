@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Component
-public class Menu {
+public class Menu implements MenuService {
     private ArrayList<String> menuOptions;
     private ArrayList<String> startMenuOptions;
     private ArrayList<String> logInMenuOptions;
@@ -15,16 +15,14 @@ public class Menu {
     private SystemIO systemIO;
     private PlayerRepo playerRepo;
 
-    public Menu(SystemIO systemIO, PlayerRepo playerRepo) {
-        this.playerRepo = playerRepo;
-        this.systemIO = systemIO;
-
+    public Menu() {
+        this.systemIO = new SystemIO();
         menuOptions = new ArrayList<>();
         menuOptions.add("1. Spela");
         menuOptions.add("2. Visa rankningslista");
         menuOptions.add("3. Inställningar");
         menuOptions.add("4. Patch notes och nyheter");
-        menuOptions.add("5. Logga ut");
+        menuOptions.add("5. Logga ut\n>");
 
         startMenuOptions = new ArrayList<>();
         startMenuOptions.add("""
@@ -45,6 +43,8 @@ public class Menu {
         logInMenuOptions.add(" försök kvar.");
 
         wrongUsernameMessage = "Felaktigt användarid, försök igen. \nAnge användarid:\n>";
+
+
     }
 
     public ArrayList<String> getMenuOptions() {
@@ -114,9 +114,20 @@ public class Menu {
                   | |  \\ \\  / | . \\/ __ \\\\ \\__ | . \\/ __ \\ / __ \\   | | / __ \\|  . \\\s
                   | |   \\ \\/ /|  _/ /__\\| \\__ \\|  _/ /__\\// /__\\/ __| |/ /__\\||    /\s
                   | |    \\  / | | \\ \\__   __/ /| | \\ \\___ \\ \\___ / .  |\\ \\___ | |\\ \\
-                  |_|    / /  |_|  \\__ / \\__ / |_|  \\___ / \\___ /\\___ | \\___ /|_| \\_\\	
+                  |_|    / /  |_|  \\__ / \\__ / |_|  \\___ / \\___ /\\___ | \\___ /|_| \\_\\
                         /_/
                 """);
+    }
+    public void challengeCountDown() {
+        systemIO.addString("Timern börjar när texten visas.\n");
+        for (int i = 3; i > 0; i--) {
+            systemIO.addString(i + "\n");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public Player getLoggedInPlayer() {
@@ -125,6 +136,12 @@ public class Menu {
 
     public void setLoggedInPlayer(Player loggedInPlayer) {
         this.loggedInPlayer = loggedInPlayer;
+    }
+    public void setSystemIO(SystemIO systemIO) {
+        this.systemIO = systemIO;
+    }
+    public void setPlayerRepo(PlayerRepo playerRepo) {
+        this.playerRepo = playerRepo;
     }
 
     public void changeLanguage() {

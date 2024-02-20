@@ -10,13 +10,17 @@ import java.util.InputMismatchException;
 @Component
 public class Runner implements CommandLineRunner {
     private Menu menu;
+    private SystemIO systemIO = new SystemIO();
+    Challenge challenge = new Challenge();
 
     @Autowired
     private PlayerRepo playerRepo;
     @Autowired
     public Runner(PlayerRepo playerRepo) {
         this.playerRepo = playerRepo;
-        menu = new Menu(new SystemIO(), playerRepo);
+        menu = new Menu();
+        menu.setSystemIO(systemIO);
+        menu.setPlayerRepo(playerRepo);
     }
 
     @Override
@@ -28,7 +32,18 @@ public class Runner implements CommandLineRunner {
             if (menu.getLoggedInPlayer() == null) {
                 return;
             }
+
             menu.displayMenu();
+
+            switch (systemIO.getString()) {
+                case "0" -> {
+                    return;
+                }
+                case "1" -> {
+                    menu.challengeCountDown();
+                    challenge.startChallenge();
+                }
+            }
         }
     }
 }
