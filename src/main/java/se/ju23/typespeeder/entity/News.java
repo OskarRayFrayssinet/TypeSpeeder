@@ -14,6 +14,10 @@ public class News {
     @Column(name = "publish_date")
     private LocalDateTime publishDate;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public News() {
     }
 
@@ -22,6 +26,14 @@ public class News {
         this.title = title;
         this.content = content;
         this.publishDate = publishDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Long getId() {

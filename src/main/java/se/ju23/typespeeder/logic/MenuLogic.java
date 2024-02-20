@@ -1,11 +1,13 @@
 package se.ju23.typespeeder.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.Controller.NewsController;
 import se.ju23.typespeeder.service.LoginService;
 
 import java.util.Scanner;
 
+@Component
 public class MenuLogic {
 
     private final Scanner scanner = new Scanner(System.in);
@@ -21,7 +23,7 @@ public class MenuLogic {
         displayMainMenu();
     }
     public void displayMainMenu() {
-        boolean isLoggedIn = true; // ändra till false när du inte testar spelet
+        boolean isLoggedIn = false; // ändra till false när du inte testar spelet
         while (!isLoggedIn) {
             isLoggedIn = isLoggedIn();
         }
@@ -49,7 +51,6 @@ public class MenuLogic {
                 case "1":
                     gameLogic.startGame();
                 case "2":
-                    //personal rank
                     break;
                 case "3":
                     //top rank
@@ -115,7 +116,6 @@ public class MenuLogic {
         boolean isLoggedIn = loginService.login(username, password);
         if (isLoggedIn) {
             System.out.println("Login successful!");
-            // You can proceed to game menu or another part of your application here
         } else {
             System.out.println("Login failed. Please try again.");
         }
