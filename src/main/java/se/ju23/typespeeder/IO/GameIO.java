@@ -4,27 +4,27 @@ import java.util.Scanner;
 
 @Service
 public class GameIO implements IO {
-    public String getValidStringInput(Scanner input) {
-        String userInput;
-        boolean isUserInputInvalid;
+    Scanner scanner = new Scanner(System.in);
+    @Override
+    public String getValidStringInput() {
+        String userInput = null;
+        boolean isValidInput = false;
 
-        do {
-            userInput = input.nextLine();
-            if (!userInput.matches("[-a-zA-ZåäöÅÄÖ0-9@._ ]+")) {
-                System.out.println("Incorrect format, you cannot use special characters!");
-                isUserInputInvalid = true;
-            } else if (userInput.isEmpty()) {
-                System.out.println("entry cannot be blank..");
-                isUserInputInvalid = true;
-            } else {
-                isUserInputInvalid = false;
+        while (!isValidInput) {
+            try {
+                userInput = scanner.nextLine();
+                isValidInput = true;
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please try again.");
+                scanner.nextLine();
             }
-
-        } while (isUserInputInvalid);
+        }
 
         return userInput;
     }
 
+
+    @Override
     public int getValidIntegerInput(Scanner input, int minValue, int maxValue) {
         int userInput = 0;
         boolean isUserInputInvalid;
@@ -47,6 +47,29 @@ public class GameIO implements IO {
         return userInput;
     }
 
+    @Override
+    public String getString() {
+        String userInput;
+        boolean isUserInputInvalid;
+
+        do {
+            userInput = scanner.nextLine();
+            if (!userInput.matches("[-a-zA-ZåäöÅÄÖ0-9@._ ]+")) {
+                System.out.println("Incorrect format, you cannot use special characters!");
+                isUserInputInvalid = true;
+            } else if (userInput.isEmpty()) {
+                System.out.println("entry cannot be blank..");
+                isUserInputInvalid = true;
+            } else {
+                isUserInputInvalid = false;
+            }
+
+        } while (isUserInputInvalid);
+
+        return userInput;
+    }
+
+    @Override
     public Scanner returnScanner() {
         return new Scanner(System.in);
     }

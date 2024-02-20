@@ -14,9 +14,9 @@ public class PlayerService {
     private Player activePlayer;
     public Status checkCredentials(PlayerRepo playerRepo, IO io) {
         System.out.print(ANSI_DARK_GREY + "Please enter a username -> " + ANSI_RESET);
-        String username = io.getValidStringInput(new Scanner(System.in));
+        String username = io.getValidStringInput();
         System.out.print(ANSI_DARK_GREY + "Please enter a password -> " + ANSI_RESET);
-        String password = io.getValidStringInput(new Scanner(System.in));
+        String password = io.getValidStringInput();
 
         boolean playerExists = playerRepo.existsPlayerByUsernameAndPassword(username, password);
         if (playerExists) {
