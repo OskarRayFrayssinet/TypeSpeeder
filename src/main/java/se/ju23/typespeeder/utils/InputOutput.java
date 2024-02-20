@@ -3,7 +3,7 @@ package se.ju23.typespeeder.utils;
 import se.ju23.typespeeder.classer.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
 import se.ju23.typespeeder.menu.Menu;
-import se.ju23.typespeeder.service.PlayersService;
+import se.ju23.typespeeder.classer.PlayersService;
 
 import java.util.Scanner;
 
@@ -31,6 +31,7 @@ public class InputOutput {
                 System.out.println("Welcome, " + foundPLayer.getNickname());
                 System.out.println("Your current role is " + foundPLayer.getRole());
                 menu.displayMenu();
+                menu.handleMenuOption();
                 runProgram = false;
             }
         } while (runProgram);

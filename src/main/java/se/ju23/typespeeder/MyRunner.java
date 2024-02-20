@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.database.PlayersRepo;
 import se.ju23.typespeeder.database.ResultatRepo;
 import se.ju23.typespeeder.menu.Menu;
-import se.ju23.typespeeder.service.PlayersService;
+import se.ju23.typespeeder.classer.PlayersService;
 import se.ju23.typespeeder.utils.InputOutput;
 
 import java.util.Scanner;

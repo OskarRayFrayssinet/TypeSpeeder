@@ -1,4 +1,4 @@
-package se.ju23.typespeeder.service;
+package se.ju23.typespeeder.classer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

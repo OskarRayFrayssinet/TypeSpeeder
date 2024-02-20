@@ -1,6 +1,8 @@
 package se.ju23.typespeeder.menu;
 
-import se.ju23.typespeeder.enums.Language;
+import se.ju23.typespeeder.challenge.Challenge;
+import se.ju23.typespeeder.game.GameEnglish;
+import se.ju23.typespeeder.classer.DictionaryService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +11,10 @@ import java.util.Scanner;
 
 public class Menu implements MenuService {
 
-    Scanner scanner = new Scanner(System.in);
+    public Challenge challenge = new Challenge();
     private String language = "svenska";
+
+    public DictionaryService dictionaryService = new DictionaryService();
 
     @Override
     public List<String> getMenuOptions() {
@@ -22,6 +26,9 @@ public class Menu implements MenuService {
         options.add("4. Få fram dina resultat");
         options.add("5. Få fram andras resultat");
         options.add("6. Byte till engelska");
+
+
+
         return options;
     }
 
@@ -33,25 +40,32 @@ public class Menu implements MenuService {
         options.add("3. Add player");
         options.add("4. Get your results");
         options.add("5. Get others results");
-        options.add("6. Switch to swedish");
+        options.add("6. Switch to svenska");
         return options;
     }
 
     @Override
     public void displayMenu() {
-            languageChoosing();
-            List<String> menuOptions;
-            if (language.equalsIgnoreCase("svenska")) {
-                menuOptions = getMenuOptions();
-                System.out.println("Meny Alternativ - " + language + ": ");
-            } else {
-                menuOptions = getMenuOptionsEnglish();
-                System.out.println("Menu Alternativ - " + language + ": ");
-            }
+        languageChoosing();
+        List<String> menuOptions;
+        if (language.equalsIgnoreCase("svenska")) {
+            menuOptions = getMenuOptions();
+            System.out.println("Meny Alternativ - " + language + ": ");
+        } else {
+            menuOptions = getMenuOptionsEnglish();
+            System.out.println("Menu Alternativ - " + language + ": ");
+        }
 
-            for (String option : menuOptions) {
-                System.out.println(option);
-            }
+        displayMenuOptions(menuOptions);
+
+    }
+
+    private void displayMenuOptions(List<String> menuOptions) {
+        for (String option : menuOptions) {
+            System.out.println(option);
+        }
+
+
     }
 
     public void languageChoosing() {
@@ -79,6 +93,38 @@ public class Menu implements MenuService {
             }
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e);
+        }
+
+    }
+
+    public void handleMenuOption() {
+        Scanner scanner = new Scanner(System.in);
+        int option = scanner.nextInt();
+        scanner.nextLine();
+        switch (option) {
+            case 1:
+                System.out.println("Spela spel");
+
+                challenge.beginGame();
+           //     challenge.playersInput();
+                break;
+            case 2:
+                System.out.println("CASE 2");
+                break;
+            case 3:
+                System.out.println("CASE 3");
+                break;
+            case 4:
+                System.out.println("CASE 4");
+                break;
+            case 5:
+                System.out.println("CASE 5");
+                break;
+            case 6:
+                System.out.println("CASE 6");
+                break;
+            default:
+                System.out.println("Invalid option.");
         }
     }
 }
