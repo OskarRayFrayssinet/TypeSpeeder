@@ -10,8 +10,9 @@ import se.ju23.typespeeder.repository.PlayerRepo;
 import se.ju23.typespeeder.repository.ResultRepo;
 import se.ju23.typespeeder.service.PlayerService;
 import se.ju23.typespeeder.service.ResultService;
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Scanner;
 
 @Service
 public class GameController {
@@ -46,26 +47,24 @@ public class GameController {
             if (playerService.checkCredentials(playerRepo, io).equals(Status.OK)) {
                 Player activePlayer = playerService.getActivePlayer();
                 do {
-                    Status selectedLanguage = menuService.displayMenu();
-                    int userInput = menuService.selectMenuOptions(selectedLanguage);
+                    int userChoiceLanguage = menuService.setMenuInput();
+                    switch (userChoiceLanguage) {
+                        case 1 -> menuService.displayMenu();
+                        case 2 -> menuService.displayMenuEnglish();
+                    }
+                    int userInput = menuService.selectMenuOptions();
                     switch (userInput) {
                         case 1 -> {
-                            List<String> calculatedWords = new ArrayList<>();
-                            int userSelectDifficulty = typingGame.generateGameDifficulty(selectedLanguage);
-
-                            if (selectedLanguage == Status.SVENSKA){
-                                calculatedWords = typingGame.generateWordsSweEasyMode(userSelectDifficulty);
-                                calculatedWords = typingGame.generateSweWordsHardMode(userSelectDifficulty);
-                                calculatedWords = typingGame.generateSweToungeTwisters(userSelectDifficulty);
+                            List<String> calculatedWords;
+                            typingGame.generateGameDifficulty();
+                            if (menuService.getStatus().equals(Status.SVENSKA)){
+                                typingGame.lettersToType();
                             } else {
-                                calculatedWords = typingGame.generateWordsEngEasyMode(userSelectDifficulty);
-                                calculatedWords = typingGame.generateEngWordHardMode(userSelectDifficulty);
-                                calculatedWords = typingGame.generateEngToungeTwisters(userSelectDifficulty);
-
+                                typingGame.lettersToType();
                             }
-                            resultService.inputFromPlayerInGame(calculatedWords, io, resultRepo, activePlayer, playerRepo);
+                            resultService.inputFromPlayerInGame(typingGame.getCalculatedWords(), io, resultRepo, activePlayer, playerRepo);
                             playerService.calculatePlayerLevel(playerRepo);
-                            calculatedWords.removeAll(calculatedWords);
+                            typingGame.getCalculatedWords().removeAll(typingGame.getCalculatedWords());
 
                         }
                         case 2 -> System.out.println("Leaderboards");
@@ -76,6 +75,7 @@ public class GameController {
                     }
                 } while (continueGame);
             }
+
 
         } while (!foundUser);
     }

@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import se.ju23.typespeeder.IO.IO;
 import se.ju23.typespeeder.enums.Status;
-import se.ju23.typespeeder.logic.TypingGame;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.List;
 
 
 @Service
@@ -16,13 +15,12 @@ public class Menu implements MenuService {
     public static final String ANSI_DARK_BLUE = "\u001B[34m";
     public static final String ANSI_DARK_GREY = "\u001B[90m";
     public static final String ANSI_RESET = "\u001B[0m";
+    private Status status;
 
     @Qualifier("gameIO")
     @Autowired
     IO io;
 
-    @Autowired
-    TypingGame typingGame;
 
     public Menu() {
         this.menuOptions = new ArrayList<>();
@@ -41,11 +39,20 @@ public class Menu implements MenuService {
         menuOptions.add(ANSI_DARK_GREY + "Avsluta spel" + ANSI_RESET);
     }
 
-    public ArrayList<String> getMenuOptions() {
+
+    public List getMenuOptions() {
         return menuOptions;
     }
 
-    public void setMenuOptions(ArrayList<String> menuOptions) {
+    @Override
+    public Status getStatus() {
+        return status;
+    }
+
+    @Override
+    public Status setStatus(Status status) {
+        this.status = status;
+        return status;
     }
 
     public void displayLoginMenu() {
@@ -61,54 +68,51 @@ public class Menu implements MenuService {
     }
 
     @Override
-    public Status displayMenu() {
+    public Status displayMenu(){
+        System.out.println("Välj språk (svenska/engelska):");
+        System.out.println("Svenska valt.");
         int menuNumber = 1;
         LinkedList<String> tempmenuOptions = new LinkedList<>(getMenuOptions());
-        System.out.println(" ");
-        System.out.println("Välj språk (svenska/engelska):");
-        System.out.println(ANSI_DARK_GREY + "Choose language (english/swedish);" + ANSI_RESET);
-        System.out.println("Please type in svenska/swedish to select it, or any key to continue in english."+ ANSI_RESET);
-        System.out.println(ANSI_DARK_GREY + "Vänligen skriv in svenska/swedish för byta språk, eller valfri tangenttryck för att fortsätta på engelska. ");
-        Scanner input = new Scanner(System.in);
-        String userInput = input.nextLine();
-        if (userInput.equalsIgnoreCase("svenska") || (userInput.equalsIgnoreCase("swedish"))) {
-            System.out.println("Svenska valt.");
-            System.out.println(" ");
-            for (int i = 0; i < tempmenuOptions.size(); i++) {
-                tempmenuOptions.set(i, tempmenuOptions.get(i).replace("TypeSpeeder", "TypSpeeder").replace("News from devs", "Nyheter from utvecklarna"));
-                tempmenuOptions.set(i, tempmenuOptions.get(i).replace("Edit users", "Redigera spelare").replace("Logout", "Logga ut").replace("Quit game", "Avsluta spel"));
-                tempmenuOptions.set(i, tempmenuOptions.get(i).replace("Play game", "Spela spelet").replace("Display leaderboards", "Visa rankinglistan"));
-                tempmenuOptions.set(i, tempmenuOptions.get(i).replace("Login", "Logga in").replace("News from devs", "Nyheter from utvecklarna"));
-            }
-            for (String options : tempmenuOptions) {
-                System.out.println(menuNumber + ". " + options);
+        for (int i = 0; i < tempmenuOptions.size(); i++) {
+            if ((i >= 7) && (i <= 12)) {
+                System.out.println(menuNumber + ". " + tempmenuOptions.get(i));
                 menuNumber++;
-                if (menuNumber == 7){
-                    break;
-                }
-            }
-            return Status.SVENSKA;
-        } else {
-            for (String options : tempmenuOptions) {
-                System.out.println(menuNumber + ". " + options);
-                menuNumber++;
-                if (menuNumber == 7){
-                    break;
-                }
             }
         }
-        return Status.ENGLISH;
+        return setStatus(Status.SVENSKA);
     }
 
-    public int selectMenuOptions(Status status) {
-        if (status.equals(status.SVENSKA)) {
+    public Status displayMenuEnglish() {
+        System.out.println("English chosen");
+        int menuNumber = 1;
+        LinkedList<String> tempmenuOptions = new LinkedList<>(getMenuOptions());
+        for (String options : tempmenuOptions) {
+                System.out.println(menuNumber + ". " + options);
+                menuNumber++;
+                if (menuNumber == 7) {
+                    break;
+                }
+            }
+        return setStatus(Status.ENGLISH);
+    }
+
+
+    public int setMenuInput() {
+        System.out.println(ANSI_DARK_GREY + "\nVälj språk / Choose language" + ANSI_RESET);
+        System.out.println(ANSI_DARK_GREY + "Skriv in ett för 1 för svenska, 2 för engelska." + ANSI_RESET);
+        System.out.println(ANSI_DARK_GREY + "Please type in 1 for swedish, 2 for english" + ANSI_RESET);
+        System.out.print("-> ");
+        int userInput = io.getValidIntegerInput(io.returnScanner(), 1, 2);
+        return userInput;
+    }
+
+    public int selectMenuOptions() {
+        if (getStatus().equals(Status.SVENSKA)) {
             System.out.println("Vänlingen välj ett av följande alternativ genom att ange nummer: ");
-            return io.getValidIntegerInput(io.returnScanner(), 1, 6);
-        } else {
+        } else if (getStatus().equals(Status.ENGLISH)) {
             System.out.println(ANSI_DARK_GREY + "Please select one of the following options by entering the number:  " + ANSI_RESET);
-            return io.getValidIntegerInput(io.returnScanner(), 1, 6);
         }
+        return io.getValidIntegerInput(io.returnScanner(), 1, 6);
     }
-
 }
 

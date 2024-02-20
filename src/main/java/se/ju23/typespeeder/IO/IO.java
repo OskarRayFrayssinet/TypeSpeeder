@@ -4,7 +4,10 @@ import java.util.Scanner;
 
 @Repository
 public interface IO {
-    String getValidStringInput(Scanner input);
+    String getValidStringInput();
     int getValidIntegerInput(Scanner input, int minValue, int maxValue);
+
+    String getString();
+
     Scanner returnScanner();
 }

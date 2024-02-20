@@ -5,12 +5,16 @@ import java.util.List;
 
 @Repository
 public interface TypingGame {
-    List<String> generateWordsEngEasyMode(int userSelectDifficulty);
-    List<String> generateEngWordHardMode(int userSelectDifficulty);
-    List<String> generateWordsSweEasyMode(int userSelectDifficulty);
-    List<String> generateSweWordsHardMode(int userSelectDifficulty);
-    int generateGameDifficulty(Status status);
-    List<String> generateEngToungeTwisters(int userSelectDifficulty);
-    List<String> generateSweToungeTwisters(int userSelectDifficulty);
+    List<String> generateWordsEngEasyMode();
+    List<String> generateEngWordHardMode();
+    List<String> generateWordsSweEasyMode();
+    List<String> generateSweWordsHardMode();
+    int generateGameDifficulty();
+    List<String> generateEngToungeTwisters();
+    List<String> generateSweToungeTwisters();
+    void lettersToType();
+    List<String> getCalculatedWords();
+
+    void startChallenge();
 
 }
