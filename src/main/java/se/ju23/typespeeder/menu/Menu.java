@@ -1,6 +1,8 @@
 package se.ju23.typespeeder.menu;
 
 import se.ju23.typespeeder.challenge.Challenge;
+import se.ju23.typespeeder.classer.PlayersService;
+import se.ju23.typespeeder.database.PlayersRepo;
 import se.ju23.typespeeder.game.GameEnglish;
 import se.ju23.typespeeder.classer.DictionaryService;
 
@@ -15,20 +17,18 @@ public class Menu implements MenuService {
     private String language = "svenska";
 
     public DictionaryService dictionaryService = new DictionaryService();
+    public PlayersService playersService = new PlayersService();
 
     @Override
     public List<String> getMenuOptions() {
         List<String> options = new ArrayList<>();
 
         options.add("1. Spela spel");
-        options.add("2. Avsluta spel");
+        options.add("2. Redigera spelare");
         options.add("3. Lägg till spelare");
         options.add("4. Få fram dina resultat");
         options.add("5. Få fram andras resultat");
         options.add("6. Byte till engelska");
-
-
-
         return options;
     }
 
@@ -36,7 +36,7 @@ public class Menu implements MenuService {
         List<String> options = new ArrayList<>();
 
         options.add("1. Play game");
-        options.add("2. Finish game");
+        options.add("2. Update player");
         options.add("3. Add player");
         options.add("4. Get your results");
         options.add("5. Get others results");
@@ -96,20 +96,53 @@ public class Menu implements MenuService {
         }
 
     }
+    public void handleMenuOption(PlayersRepo playersRepo, PlayersService playersService, Scanner scanner) {
 
-    public void handleMenuOption() {
-        Scanner scanner = new Scanner(System.in);
         int option = scanner.nextInt();
         scanner.nextLine();
         switch (option) {
             case 1:
                 System.out.println("Spela spel");
-
                 challenge.beginGame();
-           //     challenge.playersInput();
                 break;
             case 2:
-                System.out.println("CASE 2");
+                playersService.updatePlayer(playersRepo, scanner);
+                break;
+            case 3:
+                playersService.addNewPlayer(playersRepo,scanner);
+                break;
+            case 4:
+                System.out.println("CASE 4");
+                break;
+            case 5:
+                System.out.println("CASE 5");
+                break;
+            case 6:
+              handleMenuOptionEnglish(playersRepo, playersService, scanner);
+                break;
+
+            default:
+                System.out.println("Invalid option.");
+        }
+    }
+    public void handleMenuOptionEnglish(PlayersRepo playersRepo, PlayersService playersService, Scanner scanner) {
+        System.out.println("Welcome to the english menu.");
+        System.out.println("Option 1");
+        System.out.println("Option 2");
+        System.out.println("3");
+        System.out.println("4");
+        System.out.println("5");
+        System.out.println("6");
+
+        int option = scanner.nextInt();
+        scanner.nextLine();
+        switch (option) {
+            case 1:
+                System.out.println("Play game");
+                challenge.beginGame();
+                break;
+            case 2:
+                playersService.updatePlayer(playersRepo, scanner);
                 break;
             case 3:
                 System.out.println("CASE 3");
@@ -121,10 +154,13 @@ public class Menu implements MenuService {
                 System.out.println("CASE 5");
                 break;
             case 6:
-                System.out.println("CASE 6");
+                getMenuOptions();
                 break;
+
             default:
                 System.out.println("Invalid option.");
         }
     }
+
+
 }

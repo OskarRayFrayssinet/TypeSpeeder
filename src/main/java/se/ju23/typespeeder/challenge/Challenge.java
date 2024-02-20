@@ -2,12 +2,16 @@ package se.ju23.typespeeder.challenge;
 
 import se.ju23.typespeeder.game.GameEnglish;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 public class Challenge implements iChallenge {
 
     public GameEnglish game = new GameEnglish();
     public Scanner scanner = new Scanner (System.in);
+    private Instant startTime;
+    private Instant endTime;
 
     @Override
     public List<Character> lettersToType() {
@@ -22,6 +26,7 @@ public class Challenge implements iChallenge {
 
     @Override
     public void startChallenge() {
+        startTime = Instant.now();
         System.out.println("Type the following characters: ");
         List<String> words = generateRandomEnglishWords(2);
         StringBuilder wordString = new StringBuilder();
@@ -31,20 +36,19 @@ public class Challenge implements iChallenge {
         System.out.println(wordString.toString().trim());
         System.out.println("\nBegin typing now!");
         List<String> playersInputList = new ArrayList<>();
- //       System.out.println("Enter your words: ");
- //       String inputLine = scanner.nextLine();
- //       String[] w = inputLine.split("\\s+");
- //       playersInputList.addAll(Arrays.asList(w));
 
         String typedText = String.join(" ", playersInputList);
 
-      //  String originalText = String.join(" ", wordString);
-
         double accuracy = calculateAccuracy(typedText.trim(), wordString.toString().trim());
         System.out.println("Accuracy: " + accuracy);
+        endTime = Instant.now();
+        if (accuracy == 100.0) {
+            calculateTime();
+        }
     }
 
     public void beginGame() {
+        startTime = Instant.now();
         System.out.println("Type the following characters: ");
         List<String> words = generateRandomEnglishWords(2);
         StringBuilder wordString = new StringBuilder();
@@ -61,10 +65,12 @@ public class Challenge implements iChallenge {
 
         String typedText = String.join(" ", playersInputList);
 
-        //  String originalText = String.join(" ", wordString);
-
         double accuracy = calculateAccuracy(typedText.trim(), wordString.toString().trim());
         System.out.println("Accuracy: " + accuracy);
+        endTime = Instant.now();
+        if (accuracy == 100.0) {
+            calculateTime();
+        }
     }
 
     public List<String> generateRandomEnglishWords(int numberOfWords) {
@@ -117,6 +123,18 @@ public class Challenge implements iChallenge {
         }
 
         return accuracy;
+    }
+
+    public void calculateTime() {
+        if (startTime != null && endTime != null) {
+            Duration duration = Duration.between(startTime, endTime);
+            long seconds = duration.getSeconds();
+            long minutes = seconds / 60;
+            seconds %= 60;
+            System.out.println("Time taken: " + minutes + " minutes " + seconds + " seconds");
+        } else {
+            System.out.println("Time calculation failed. Start and end times are not properly set.");
+        }
     }
 
 }
