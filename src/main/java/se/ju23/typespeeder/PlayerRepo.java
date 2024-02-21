@@ -13,5 +13,5 @@ public interface PlayerRepo extends JpaRepository<Player, Integer> {
 
     @Query(value = "SELECT * FROM TypeSpeeder.player " +
             "ORDER BY player.ranking DESC LIMIT 10", nativeQuery = true)
-    List<Player> findTop10levelPlayer();
+    List<Player> findTop10levelPlayers();
 }

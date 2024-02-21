@@ -32,6 +32,7 @@ public class Controller {
                     challenge.setDifficulty(menu.chooseDifficulty());
                     menu.challengeCountDown();
                     challenge.runChallenge();
+                    systemIO.addString(menu.postGameResults(challenge.postChallengeSummary()));
                 }
                 case 2 -> systemIO.addString(challenge.getTop10rankings());
             }

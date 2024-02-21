@@ -24,13 +24,14 @@ public class MyMain implements CommandLineRunner {
         menu = new Menu();
         menu.setSystemIO(systemIO);
         menu.setPlayerRepo(playerRepo);
+        menu.setDaoManager(daoManager);
         daoManager.setPlayerRepo(playerRepo);
         daoManager.setTypeGoalTextRepo(typeGoalTextRepo);
         challenge.setDaoManager(daoManager);
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Controller controller = new Controller(menu, systemIO, challenge);
         controller.run();
     }

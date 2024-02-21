@@ -14,4 +14,6 @@ public interface MenuService {
     void changeLanguage();
     void printTypeSpeederAnsi();
     int chooseDifficulty();
+    String postGameResults(double[] results);
+    void setDaoManager(DAOManager daoManager);
 }

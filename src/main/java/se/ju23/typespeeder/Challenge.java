@@ -2,7 +2,6 @@ package se.ju23.typespeeder;
 
 import org.springframework.stereotype.Component;
 
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,38 +104,63 @@ public class Challenge {
         return Collections.max(streaks);
     }
 
-    public void playerStatsUpdate(double xpGain) {
+    public void postGamePlayerStatsUpdate(double[] results) {
+        int playerLevel = daoManager.getPlayer().getLevel();
+        int xpGainThreshHold = (70 + (playerLevel * 2));
 
+        if (results[4] < xpGainThreshHold){
+            results[4] = -(xpGainThreshHold - ((double) xpGainThreshHold / 5));
+        }
+
+        int playerXp = daoManager.getPlayer().getXp();
+        int levelGainThreshHold = (1000 * (1 + (xpGainThreshHold / 100)));
+
+        int newTotalXpAmount = (int) (results[4] + playerXp);
+
+        if (newTotalXpAmount >= levelGainThreshHold) {
+            results[4] = newTotalXpAmount - levelGainThreshHold;
+            daoManager.incrementPlayerLevel();
+            systemIO.addString("Level up! Du är nu level: " + (playerLevel + 1) + "\n");
+        }
+
+        daoManager.updatePlayerStats((int) results[4], calcNewRanking());
     }
-    public void postChallengeSummary() {
-        double percentScore = inputVsGoalCheck();
+    public int calcNewRanking() {
+        int ranking = 1;
+        daoManager.getPlayer().setRanking(ranking);
+        return ranking;
+    }
+    public double[] postChallengeSummary() {
+        double[] results = new double[5];
+        double percentScore = results[0] =  inputVsGoalCheck();
+
         int streak = checkStreak();
-        double time = (double) timerInMillis / 1000;
-        double timeScore = (time * 2) > 20 ? 0 : 20 - (time * 2);
-        double xpGain = (percentScore/1.5) + (streak*2) + timeScore + (difficulty * 1.6);
-        playerStatsUpdate(xpGain);
-        systemIO.addString(String.format("%s %.2f %s\n", "Accuracy:", percentScore, "%."));
-        systemIO.addString("Longest streak: " + streak + " words.\n");
-        systemIO.addString(String.format("%s %.2f %s", "time:", time, " seconds.\n"));
-        systemIO.addString(String.format("%s %.0f%n", "XP gain:", xpGain));
-        systemIO.addString("play again?\n>");
-        String playAgain = systemIO.getString();
+        results[1] = streak;
+
+        double time = results[2] = (double) timerInMillis / 1000;
+        double timeScore = results[3] =(time * 2) > 20 ? 0 : 20 - (time * 2);
+        double xpGain = results[4] = (percentScore/1.5) + (streak * 4) +
+                timeScore + difficulty * 2;
+
+        postGamePlayerStatsUpdate(results);
+
+        return results;
     }
+
     public void runChallenge() {
         startChallenge();
         typeInput = systemIO.getString();
         endTimer();
         calcTimerResult();
-        postChallengeSummary();
     }
     public String getTop10rankings(){
         List<Player> topTenPlayers = daoManager.top10LevelPlayers();
         StringBuilder topTen = new StringBuilder("""
                     --TOP PLAYERS--
-                NAME        LEVEL""");
+                NAME~-~-RANKING~-~-LEVEL""");
         for (Player topTenPlayer : topTenPlayers) {
-            topTen.append("\n").append(topTenPlayer.getDisplayName())
-                    .append("\t\t").append(topTenPlayer.getLevel());
+            topTen.append(String.format("%n%-12s%-9s%-5s", topTenPlayer.getDisplayName(),
+                            topTenPlayer.getRanking(), topTenPlayer.getLevel()));
         }
         topTen.append("\n");
         return topTen.toString();
