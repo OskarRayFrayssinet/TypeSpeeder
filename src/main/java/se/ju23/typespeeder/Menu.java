@@ -17,12 +17,13 @@ public class Menu implements MenuService {
 
     public Menu() {
         this.systemIO = new SystemIO();
+        Challenge.setSwedish(true);
         menuOptions = new ArrayList<>();
         menuOptions.add("1. Spela");
         menuOptions.add("2. Visa rankningslista");
         menuOptions.add("3. Inställningar");
         menuOptions.add("4. Patch notes och nyheter");
-        menuOptions.add("5. Logga ut\n>");
+        menuOptions.add("0. Logga ut\n>");
 
         startMenuOptions = new ArrayList<>();
         startMenuOptions.add("""
@@ -55,6 +56,14 @@ public class Menu implements MenuService {
             systemIO.addString("\n" + menuOption);
         }
     }
+    public int chooseDifficulty() {
+        int difficulty;
+        do {
+            systemIO.addString("Välj svårighetsgrad (1-10)\n>");
+            difficulty = systemIO.readIntOnly();
+        } while (difficulty > 11 && difficulty < 0);
+        return difficulty;
+    }
     public void logInMenu() {
         systemIO.addString(logInMenuOptions.get(0));
         loggedInPlayer = verifyPlayer();
@@ -74,7 +83,6 @@ public class Menu implements MenuService {
             }
         }
     }
-
     public Player verifyPlayer(){
         Optional<Player> player;
         do {
@@ -146,6 +154,7 @@ public class Menu implements MenuService {
 
     public void changeLanguage() {
         if (menuOptions.get(0).equals("1. Spela")) {
+            Challenge.setSwedish(false);
             menuOptions = new ArrayList<>();
             menuOptions.add("1. Play");
             menuOptions.add("2. Show Scoreboard");
@@ -173,6 +182,7 @@ public class Menu implements MenuService {
 
             wrongUsernameMessage = "Incorrect username, try again. \nEnter username:\n>";
         } else {
+            Challenge.setSwedish(true);
             menuOptions = new ArrayList<>();
             menuOptions.add("1. Spela");
             menuOptions.add("2. Visa rankningslista");
