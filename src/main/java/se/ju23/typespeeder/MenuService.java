@@ -18,4 +18,6 @@ public interface MenuService {
 
     int setMenuInput();
 
+    public int selectNewsOptions();
+
 }
