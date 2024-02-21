@@ -1,8 +1,7 @@
-package se.ju23.typespeeder;
+package se.ju23.typespeeder.IO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import se.ju23.typespeeder.IO.IO;
 import se.ju23.typespeeder.enums.Status;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -37,6 +36,16 @@ public class Menu implements MenuService {
         menuOptions.add(ANSI_DARK_GREY + "Redigera spelare" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_GREY + "Logga ut" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_GREY + "Avsluta spel" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY +"Visa nyhetsbrev"+ ANSI_RESET);
+        menuOptions.add(ANSI_DARK_BLUE + "Redigera nyhetsbrev" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Läs patchnyheter" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_BLUE + "Redigera patchnyheter" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Avsluta" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY +"Display newsletter"+ ANSI_RESET);
+        menuOptions.add(ANSI_DARK_BLUE + "Edit newsletter" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Read patch news" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_BLUE + "Edit patch news" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Exit" + ANSI_RESET);
     }
 
 
@@ -121,7 +130,29 @@ public class Menu implements MenuService {
         } else if (getStatus().equals(Status.ENGLISH)) {
             System.out.println(ANSI_DARK_GREY + "Please select one of the following options by entering the number:  " + ANSI_RESET);
         }
-        return io.getValidIntegerInput(io.returnScanner(), 1, 2);
+        return io.getValidIntegerInput(io.returnScanner(), 1, 5);
+    }
+
+    public void displayNewsMenu() {
+        int menuNumber = 1;
+        LinkedList<String> tempmenuOptions = new LinkedList<>(getMenuOptions());
+        if (getStatus().equals(Status.SVENSKA)){
+            for (int i = 0; i < tempmenuOptions.size(); i++) {
+                if ((i >= 13) && (i <= 17)) {
+                    System.out.println(menuNumber + ". " + tempmenuOptions.get(i));
+                    menuNumber++;
+                }
+            }
+        } else if (getStatus().equals(Status.ENGLISH)){
+            for (int i = 0; i < tempmenuOptions.size(); i++) {
+                if ((i >= 18) && (i <= 22)) {
+                    System.out.println(menuNumber + ". " + tempmenuOptions.get(i));
+                    menuNumber++;
+                }
+            }
+
+        }
+
     }
 
 }

@@ -17,6 +17,8 @@ public class GameIO implements IO {
         inGameMessages.add("Please enter the content of the newsletter -> ");
         inGameMessages.add("Åtkomst nekad, endast admin har åtkomst.");
         inGameMessages.add("Access denied, only admin has access.");
+        inGameMessages.add("Skriv in patchversion -> ");
+        inGameMessages.add("Please enter the patch version -> ");
     }
 
     public ArrayList<String> getInGameMessages() {
