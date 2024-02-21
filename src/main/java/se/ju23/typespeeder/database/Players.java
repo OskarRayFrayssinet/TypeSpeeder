@@ -1,4 +1,4 @@
-package se.ju23.typespeeder.classer;
+package se.ju23.typespeeder.database;
 
 import jakarta.persistence.*;
 
@@ -24,7 +24,7 @@ public class Players {
     private String role;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "playerID")
+    @JoinColumn(name = "player_id")
     private List<Resultat>resultat = new ArrayList<>();
 
     public Players() {

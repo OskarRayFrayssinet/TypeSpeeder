@@ -1,6 +1,7 @@
-package se.ju23.typespeeder.classer;
+package se.ju23.typespeeder.database;
 
 import jakarta.persistence.*;
+import se.ju23.typespeeder.database.Players;
 
 @Entity
 @Table(name = "resultat")
@@ -9,15 +10,18 @@ public class Resultat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-
-    @Column(name = "mistakes")
+    @Column(name = "mistakes", nullable = false)
     private int mistakes;
-    @Column(name = "time")
+    @Column(name = "time", nullable = false)
     private Long time;
-    @Column(name = "resultat")
+    @Column(name = "resultat",  nullable = false)
     private int resultat;
+
+    @Column(name = "player_id", nullable = false, updatable = false,insertable = false)
+    private int playerid;
+
     @ManyToOne
-    @JoinColumn(name = "playerID")
+    @JoinColumn(name = "player_id", referencedColumnName = "id", nullable = false)
     private Players players;
 
     public Resultat() {
@@ -61,6 +65,18 @@ public class Resultat {
 
     public Players getPlayers() {
         return players;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getPlayerid() {
+        return playerid;
+    }
+
+    public void setPlayerid(int playerid) {
+        this.playerid = playerid;
     }
 
     public void setPlayers(Players players) {

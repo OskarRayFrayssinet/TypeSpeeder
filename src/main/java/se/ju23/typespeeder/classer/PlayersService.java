@@ -1,17 +1,15 @@
 package se.ju23.typespeeder.classer;
 
 import org.springframework.stereotype.Service;
+import se.ju23.typespeeder.database.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
 
-import java.util.List;
 import java.util.Scanner;
 
 @Service
 public class PlayersService {
 
-    public static Scanner input = new Scanner(System.in);
-
-    public void addNewPlayer(PlayersRepo playersRepo, Scanner input) {
+       public void addNewPlayer(PlayersRepo playersRepo, Scanner input) {
 
         Players players = new Players();
 
@@ -74,7 +72,6 @@ public class PlayersService {
                 case 3 -> carryOn = false;
 
             }
-
 
         } while (carryOn);
 

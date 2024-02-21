@@ -7,18 +7,22 @@ import se.ju23.typespeeder.database.PlayersRepo;
 import se.ju23.typespeeder.database.ResultatRepo;
 import se.ju23.typespeeder.menu.Menu;
 import se.ju23.typespeeder.classer.PlayersService;
-import se.ju23.typespeeder.utils.InputOutput;
+
 
 import java.util.Scanner;
-
 
 @Component
 public class MyRunner implements CommandLineRunner {
 
     @Autowired
-    PlayersRepo playersRepo;
+    public static PlayersRepo playersRepo;
     @Autowired
-    ResultatRepo resultatRepo;
+    public static ResultatRepo resultatRepo;
+    @Autowired
+    public MyRunner(PlayersRepo playersRepo, ResultatRepo resultatRepo){
+        this.playersRepo = playersRepo;
+        this.resultatRepo = resultatRepo;
+    }
     Scanner input = new Scanner(System.in);
     PlayersService playersService = new PlayersService();
     Menu menu = new Menu();
@@ -31,24 +35,20 @@ public class MyRunner implements CommandLineRunner {
             System.out.println("""
                     Please choose option below:
                     1 - Login
-                    2 - Create
-                    3 - Exit Program""");
+                    2 - Exit Program""");
             int userChoice = input.nextInt();
             input.nextLine();
 
             switch (userChoice) {
                 case 1:
-                    InputOutput.login(playersRepo, playersService, input);
+                    menu.login(playersRepo, playersService, input);
                     break;
                 case 2:
-                    playersService.addNewPlayer(playersRepo, input);
-                    break;
-                case 3:
                     System.out.println("HEJ DÅ");
                     exitProgram = true;
                     break;
                 default:
-                    System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+                    System.out.println("Invalid choice. Please enter 1, or 2.");
                     break;
             }
         } while (exitProgram);

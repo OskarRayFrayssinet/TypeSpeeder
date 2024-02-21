@@ -2,9 +2,8 @@ package se.ju23.typespeeder.menu;
 
 import se.ju23.typespeeder.challenge.Challenge;
 import se.ju23.typespeeder.classer.PlayersService;
+import se.ju23.typespeeder.database.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
-import se.ju23.typespeeder.game.GameEnglish;
-import se.ju23.typespeeder.classer.DictionaryService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class Menu implements MenuService {
     public Challenge challenge = new Challenge();
     private String language = "svenska";
 
-    public DictionaryService dictionaryService = new DictionaryService();
+
     public PlayersService playersService = new PlayersService();
 
     @Override
@@ -102,8 +101,7 @@ public class Menu implements MenuService {
         scanner.nextLine();
         switch (option) {
             case 1:
-                System.out.println("Spela spel");
-                challenge.beginGame();
+                menuGame(playersRepo,scanner);
                 break;
             case 2:
                 playersService.updatePlayer(playersRepo, scanner);
@@ -139,7 +137,7 @@ public class Menu implements MenuService {
         switch (option) {
             case 1:
                 System.out.println("Play game");
-                challenge.beginGame();
+                challenge.basicGame();
                 break;
             case 2:
                 playersService.updatePlayer(playersRepo, scanner);
@@ -160,6 +158,69 @@ public class Menu implements MenuService {
             default:
                 System.out.println("Invalid option.");
         }
+    }
+
+    public void menuGame (PlayersRepo playersRepo, Scanner scanner) {
+
+        int choice;
+
+        do {
+            System.out.println("You are entering game menu");
+            System.out.println("""
+                    Choose option below: 
+                    1 - Play basic game
+                    2 - Game with highlighted words
+                    3 - Game XXXX
+                    4 - Game YYYY
+                    5 - Game ZZZZj""");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    challenge.basicGame();
+                    break;
+                case 2:
+                    challenge.colourGame();
+                    break;
+                case 3:
+                    System.out.println("XXXXX");
+                    break;
+                case 4:
+                    System.out.println("YYYYY");
+                    break;
+                case 5:
+                    System.out.println("ZZZZZ");
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        } while(choice != 0);
+    }
+
+    public void login(PlayersRepo playersRepo, PlayersService playersService, Scanner input) {
+        boolean runProgram = true;
+        do {
+            System.out.println("Enter your username: ");
+            String answerUsername = input.nextLine();
+
+            System.out.println("Enter corresponding password: ");
+            String answerPassword = input.nextLine();
+
+            Players foundPLayer = playersRepo.getPLayersByUsernameAndPassword(answerUsername, answerPassword);
+
+            if (foundPLayer == null) {
+                System.out.println("Player not found.");
+                runProgram = false;
+
+            } else {
+                System.out.println("Welcome, " + foundPLayer.getNickname());
+                System.out.println("Your current role is " + foundPLayer.getRole());
+                displayMenu();
+                handleMenuOption(playersRepo , playersService, input);
+                runProgram = false;
+            }
+        } while (runProgram);
+
     }
 
 
