@@ -114,5 +114,15 @@ public class Menu implements MenuService {
         }
         return io.getValidIntegerInput(io.returnScanner(), 1, 6);
     }
+
+    public int selectNewsOptions() {
+        if (getStatus().equals(Status.SVENSKA)) {
+            System.out.println("Vänlingen välj ett av följande alternativ genom att ange nummer: ");
+        } else if (getStatus().equals(Status.ENGLISH)) {
+            System.out.println(ANSI_DARK_GREY + "Please select one of the following options by entering the number:  " + ANSI_RESET);
+        }
+        return io.getValidIntegerInput(io.returnScanner(), 1, 2);
+    }
+
 }
 

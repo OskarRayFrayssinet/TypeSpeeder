@@ -1,10 +1,32 @@
 package se.ju23.typespeeder.IO;
+
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 @Service
 public class GameIO implements IO {
-    Scanner scanner = new Scanner(System.in);
+    Scanner input = new Scanner(System.in);
+    ArrayList<String> inGameMessages;
+
+    public GameIO() {
+        inGameMessages = new ArrayList<>();
+        inGameMessages.add("Välkomna till spelet.");
+        inGameMessages.add("Skriv in nyhetsbrevets innehåll -> ");
+        inGameMessages.add("Please enter the content of the newsletter -> ");
+        inGameMessages.add("Åtkomst nekad, endast admin har åtkomst.");
+        inGameMessages.add("Access denied, only admin has access.");
+    }
+
+    public ArrayList<String> getInGameMessages() {
+        return inGameMessages;
+    }
+
+    public void setInGameMessages(ArrayList<String> inGameMessages) {
+        this.inGameMessages = inGameMessages;
+    }
+
     @Override
     public String getValidStringInput() {
         String userInput = null;
@@ -12,11 +34,11 @@ public class GameIO implements IO {
 
         while (!isValidInput) {
             try {
-                userInput = scanner.nextLine();
+                userInput = input.nextLine();
                 isValidInput = true;
             } catch (Exception e) {
                 System.out.println("Invalid input. Please try again.");
-                scanner.nextLine();
+                input.nextLine();
             }
         }
 
@@ -53,7 +75,7 @@ public class GameIO implements IO {
         boolean isUserInputInvalid;
 
         do {
-            userInput = scanner.nextLine();
+            userInput = input.nextLine();
             if (!userInput.matches("[-a-zA-ZåäöÅÄÖ0-9@._ ]+")) {
                 System.out.println("Incorrect format, you cannot use special characters!");
                 isUserInputInvalid = true;
@@ -73,5 +95,10 @@ public class GameIO implements IO {
     public Scanner returnScanner() {
         return new Scanner(System.in);
     }
+
+    public String inputUserString() {
+        return input.nextLine();
+    }
+
 
 }
