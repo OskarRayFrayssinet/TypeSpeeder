@@ -50,7 +50,8 @@ public class Challenge {
     }
     public static void openTextFile() throws FileNotFoundException {
         StringBuilder colorWordsBuilder = new StringBuilder();
-        File file = new File("C:\\GitHub Repositories\\TypeSpeeder\\src\\main\\resources\\TextFile");
+        //File file = new File("C:\\GitHub Repositories\\TypeSpeeder\\src\\main\\resources\\TextFile");
+        File file = new File("./src/main/resources/TextFile");
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) {
             String textFile = scanner.nextLine();
