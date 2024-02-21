@@ -3,12 +3,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import se.ju23.typespeeder.IO.IO;
-import se.ju23.typespeeder.MenuService;
+import se.ju23.typespeeder.IO.MenuService;
 import se.ju23.typespeeder.enums.Status;
 import se.ju23.typespeeder.model.Player;
 import se.ju23.typespeeder.repository.PlayerRepo;
 import se.ju23.typespeeder.repository.ResultRepo;
 import se.ju23.typespeeder.service.NewsletterService;
+import se.ju23.typespeeder.service.PatchService;
 import se.ju23.typespeeder.service.PlayerService;
 import se.ju23.typespeeder.service.ResultService;
 
@@ -42,6 +43,9 @@ public class GameController {
     @Autowired
     NewsletterService newsletterService;
 
+    @Autowired
+    PatchService patchService;
+
 
     public void startGame() {
         boolean continueGame = true;
@@ -70,21 +74,24 @@ public class GameController {
                                 resultService.inputFromPlayerInGame(typingGame.getCalculatedWords(), io, resultRepo, activePlayer, playerRepo);
                                 playerService.calculatePlayerLevel(playerRepo);
                                 typingGame.getCalculatedWords().removeAll(typingGame.getCalculatedWords());
-                                return;
                             }
                             case 2 -> {
                                 System.out.println("Leaderboards");
                             }
                             case 3 -> {
-                                int userInputNews = menuService.selectNewsOptions();
-                                switch (userInputNews) {
-                                    case 1 -> newsletterService.displayNewsletters();
-                                    case 2 -> newsletterService.createNewsLetter(userChoiceLanguage, activePlayer);
-                                    case 3 -> System.out.println("Patch");
-                                    default -> {
-                                        return;
+                                boolean runNewsMenu = true;
+                                do {
+                                    menuService.displayNewsMenu();
+                                    int userInputNews = menuService.selectNewsOptions();
+                                    switch (userInputNews) {
+                                        case 1 -> newsletterService.displayNewsletters();
+                                        case 2 -> newsletterService.createNewsLetter(userChoiceLanguage, activePlayer);
+                                        case 3 -> patchService.displayPatchNews();
+                                        case 4 -> patchService.createPatchNews(userChoiceLanguage, activePlayer, io);
+                                        case 5 -> runNewsMenu = false;
                                     }
-                                }
+                                } while (runNewsMenu);
+
                             }
                             case 4 -> System.out.println("Edit users");
                             case 5 -> {

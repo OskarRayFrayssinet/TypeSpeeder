@@ -1,6 +1,7 @@
 package se.ju23.typespeeder;
 
 import org.junit.jupiter.api.Test;
+import se.ju23.typespeeder.model.NewsLetter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +13,9 @@ import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PatchTest {
+
+    String patchDate = new NewsLetter().getFormattedPublishDateTime();
+
 
     @Test
     public void testPatchClassExists() {
@@ -41,7 +45,7 @@ public class PatchTest {
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = dateTimeValue.format(formatter);
-            assertEquals("2024-02-01", formattedDateTime, "'releaseDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
+            assertEquals(patchDate, formattedDateTime, "'releaseDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
 
             Method getterMethod = someClass.getDeclaredMethod("getReleaseDateTime");
             assertNotNull(getterMethod, "Getter method for field 'releaseDateTime' should exist.");

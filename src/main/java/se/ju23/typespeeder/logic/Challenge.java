@@ -3,7 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import se.ju23.typespeeder.IO.IO;
-import se.ju23.typespeeder.Menu;
+import se.ju23.typespeeder.IO.Menu;
 import se.ju23.typespeeder.enums.Status;
 import se.ju23.typespeeder.repository.ResultRepo;
 import se.ju23.typespeeder.service.DictionaryService;
