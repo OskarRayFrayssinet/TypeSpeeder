@@ -2,8 +2,6 @@ package se.ju23.typespeeder;
 
 import jakarta.persistence.*;
 
-import static se.ju23.typespeeder.Menu.input;
-
 
 @Entity
 @Table(name = "user")
@@ -60,16 +58,5 @@ public class User {
     }
 
 
-
-    public void updateProfile(String newUsername, String newPassword) {
-        if (newUsername != null && !newUsername.isEmpty()) {
-            setUsername(newUsername);
-        }
-
-        if (newPassword != null && !newPassword.isEmpty()) {
-            setPassword(newPassword);
-        }
-
-    }
 
 }

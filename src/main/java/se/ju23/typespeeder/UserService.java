@@ -35,12 +35,14 @@ public class UserService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        System.out.println("Hej och välkommen till TypeSpeeder!");
+        System.out.println("Börja med att ange dina inloggningsuppgifter nedan.");
 
         Menu.setUserService(this);
         User u = Menu.logIn();
         if (u !=null){
             Menu.displayMenu();
         }
-        Menu.updateUserProfile(u);
+       // Menu.updateUser(u);
     }
 }
