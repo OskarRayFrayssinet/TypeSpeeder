@@ -19,6 +19,7 @@ public class Menu implements MenuService {
     private static UserService userService;
     public static User loggedInUser;
     private static Object LoggedInUser;
+    public static String loggedInUsername;
     private static ResourceBundle messages = ResourceBundle.getBundle("Messages");
     static List<String> MenuOptions = new ArrayList<>();
     public static Scanner input = new Scanner(System.in);
@@ -82,6 +83,7 @@ public class Menu implements MenuService {
        User user = userService.userRepository.findByUsernameAndPassword(userName, passWord);
         if (user != null) {
             System.out.println("Inloggning lyckades!");
+            loggedInUsername = user.getUsername();
             return user;
         } else {
             System.out.println("Felaktiga inloggningsuppgifter. Försök igen.");
