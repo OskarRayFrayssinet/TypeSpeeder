@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import javax.swing.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -19,28 +17,19 @@ import java.io.FileInputStream;
 @Component
 public class Menu implements MenuService {
     private static UserService userService;
-    private static User loggedInUser;
+    public static User loggedInUser;
     private static Object LoggedInUser;
-    private static ResourceBundle messages;
-
-
+    private static ResourceBundle messages = ResourceBundle.getBundle("Messages");
     static List<String> MenuOptions = new ArrayList<>();
-    public static final String WHITE = "\u001B[37m";
-    public static final String RESET = "\u001B[0m";
-    public static final String RED = "\u001B[31m";
-    public static final String GREEN = "\u001B[32m";
     public static Scanner input = new Scanner(System.in);
-    public static boolean stopTimer = false;
-    public static long startTime;
-    public static String game;
-    public static String colorWords;
-    public static List<String> redWords = new ArrayList<>();
 
     public static String userName;
     public static String passWord;
 
     public static void displayMenu() throws IOException {
+        UserService userService = TypeSpeederApplication.userService;
 
+       // System.out.println(messages.getString("welcome.message.sv"));
         //System.out.println(messages.getString("welcome.message"));
         System.out.println("Välkommen till TypeSpeeder!");
 
@@ -63,14 +52,13 @@ public class Menu implements MenuService {
         int menuChoice = input.nextInt();
         input.nextLine();
 
-
         if (loggedInUser == null && menuChoice == 0) {
             loggedInUser = logIn();
         } else {
             switch (menuChoice) {
                 case 0 -> logOut();
-                case 1 -> playGame();
-                case 2 -> showRankingList();
+                case 1 -> Challenge.startChallenge();
+                case 2 -> Challenge.showRankingList();
                 case 3 -> showNewsAndUpdates();
                 case 4 -> changeLanguage();
                 case 5 -> updateUser();
@@ -101,7 +89,6 @@ public class Menu implements MenuService {
         }
     }
 
-
     public static void updateUserProfile(User user) {
         System.out.print("Ange nytt användarnamn (lämna tomt om ingen ändring): ");
         String newUsername = input.nextLine();
@@ -122,99 +109,10 @@ public class Menu implements MenuService {
     static void setUserService(UserService userService) {
        Menu.userService = userService;
     }
+
  //   @Autowired
    // private static UserService userService;
 
-
-    public static void playGame() throws IOException {
-
-       // System.out.println(messages.getString("game.instructions.sv"));
-       // System.out.println(messages.getString("game.instructions"));
-
-        System.out.println(messages.getString("game.instructions"));
-        System.out.println(messages.getString("time.starts"));
-        System.out.print(messages.getString("press.enter.to.play"));
-        input.nextLine();
-        openTextFile();
-        timer();
-        System.out.println();
-        System.out.print(messages.getString("write.here"));
-        game = input.nextLine();
-        stopTimer = true;
-        checkSpelling();
-        checkOrder();
-
-    }
-
-    public static void openTextFile() throws FileNotFoundException {
-        StringBuilder colorWordsBuilder = new StringBuilder();
-        File file = new File("C:\\Users\\janss\\IdeaProjects\\Text2.txt");
-        Scanner scanner = new Scanner(file);
-        while (scanner.hasNextLine()) {
-            String textFile = scanner.nextLine();
-            String[] words = textFile.split(" ");
-            for (String word : words) {
-                String color = Math.random() < 0.5 ? RED : GREEN;
-                colorWordsBuilder.append(color).append(word).append(" ");
-                System.out.print(color + word + " " + RESET);
-            }
-            //System.out.print(RESET);
-        }
-        colorWords = colorWordsBuilder.toString();
-    }
-    public static void timer(){
-    Thread timer = new Thread(()->{
-            startTime = System.currentTimeMillis();
-            while (!stopTimer) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            long timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
-
-            System.out.println(messages.getString("your.time" + timeSeconds + "seconds"));
-            //System.out.println("Din tid blev: " + timeSeconds + " sekunder");
-        });
-        timer.start();
-    }
-    public static void checkSpelling(){
-        String [] words = colorWords.split("\\s+");
-        for (String word : words) {
-            if (word.startsWith(RED)) {
-                redWords.add(word.substring(RED.length()));
-            }
-        }
-        String [] gameList = game.split("\\s+");
-        int countWords = 0;
-        for (String list : gameList){
-            for(String red : redWords){
-                if (red.equals(list)){
-                    countWords++;
-                }
-            }
-        }
-        System.out.println(messages.getString("correct.words" + countWords));
-       // System.out.println("Antal rättstavade ord = " + countWords);
-    }
-    public static void checkOrder(){
-        int countOrder = 0;
-        String[] gameList = game.split("\\s+");
-        int minWord = Math.min(redWords.size(), gameList.length);
-        for(int i = 0; i < minWord; i++){
-            if(gameList[i].equals(redWords.get(i))){
-                countOrder++;
-            } else {
-                break;
-            }
-        }
-        System.out.println("Antal ord i korrekt ordnind: " + countOrder);
-    }
-
-    public static void showRankingList() {
-
-    }
 
     public static void showNewsAndUpdates() throws IOException {
         System.out.println("Nyheter och uppdateringar:");
