@@ -2,6 +2,7 @@ package se.ju23.typespeeder.userInterfaces;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.colors.ConsoleColor;
 import se.ju23.typespeeder.gameLogic.Playable;
 import se.ju23.typespeeder.gameLogic.Translatable;
 
@@ -31,15 +32,15 @@ import java.util.List;
     public String printLoginText() {
         String toReturn = null;
 
-        if (playable.getCurrentEmail(0).equals("2")){
+        if (playable.getCurrentUsername(0).equals("2")){
             toReturn = "Password: ";
-        } else if (playable.getCurrentEmail(0).equals("1")){
+        } else if (playable.getCurrentUsername(0).equals("1")){
             tries--;
-            playable.setCurrentEmail("");
+            playable.setCurrentUsername("");
             toReturn = "\u001B[1mCheck your details or contact admin if troubled" +
                     "\nTries left before shutdown: " + tries + "\n\u001B[0m";
         } else {
-            playable.setCurrentEmail("2");
+            playable.setCurrentUsername("2");
             toReturn = "--Login menu--\nUsername: ";
         }
 
@@ -106,8 +107,8 @@ import java.util.List;
     public String getPasswordChangeText(){
         List<String> menuOptions = new ArrayList<>();
         if (playable.getPassword(1).equals("1")){
-            menuOptions.add("\u001B[1mPASSWORD CHANGED\n" +
-                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
+            menuOptions.add(ConsoleColor.BG_BRIGHT_CYAN + "\u001B[1mPASSWORD CHANGED\n" +
+                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n" + ConsoleColor.RESET);
         } else {
             if (playable.getPassword(1).equals(playable.getPassword(0))){
                 menuOptions.add("New password (Go back 'b'): ");
@@ -127,13 +128,13 @@ import java.util.List;
     @Override
     public String getUsernameChangeText(){
         List<String> menuOptions = new ArrayList<>();
-        if (playable.getCurrentEmail(1).equals("1")){
-            menuOptions.add("\u001B[1mUSERNAME CHANGED\n" +
-                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
+        if (playable.getCurrentUsername(1).equals("1")){
+            menuOptions.add(ConsoleColor.CYAN + "\u001B[1mUSERNAME CHANGED\n" +
+                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n" + ConsoleColor.RESET);
         } else {
-            if (playable.getCurrentEmail(1).equals(playable.getCurrentEmail(0))/* && playable.getCurrentEmail(2).isEmpty()*/){
+            if (playable.getCurrentUsername(1).equals(playable.getCurrentUsername(0))/* && playable.getCurrentEmail(2).isEmpty()*/){
                 menuOptions.add("New Username (Go back 'b'): ");
-            } else if (playable.getCurrentEmail(2).equals("2")){
+            } else if (playable.getCurrentUsername(2).equals("2")){
                 menuOptions.add("\u001B[1mWrong Username Or already taken\u001B[0m\n");
             } else {
                 menuOptions.add("Type your current Username (Go back 'b'): ");
@@ -162,6 +163,7 @@ import java.util.List;
         menuOptions.add("2. Select game\n");
         menuOptions.add("3. Show ranking list\n");
         menuOptions.add("4. Change user info\n");
+        menuOptions.add("5. Show newsletter\n");
         menuOptions.add("Your choice: ");
 
         return menuOptions;

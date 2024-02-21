@@ -11,5 +11,6 @@ public enum Status {
     CHANGING_PASSWORD,
     CHANGING_USERNAME,
     SETTING_LANGUAGE,
-    IN_STATS
+    IN_STATS,
+    NEWSLETTER
 }

@@ -9,7 +9,6 @@ import java.util.Objects;
 public class Attempt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-
     @Column(name = "attempt_id", nullable = false)
     private int attemptId;
     @Basic

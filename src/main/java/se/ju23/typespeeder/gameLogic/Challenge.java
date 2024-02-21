@@ -178,6 +178,7 @@ public class Challenge implements IChallenge {
             numberOfWords += (level * 2);
         }
         playable.setNumOfWords(numberOfWords);
+
         return numberOfWords;
     }
 

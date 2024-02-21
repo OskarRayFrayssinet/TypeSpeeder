@@ -2,10 +2,9 @@ package se.ju23.typespeeder.gameLogic;
 
 
 import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.InfoForUsers.NewsLetter;
 import se.ju23.typespeeder.userInterfaces.IO;
 import se.ju23.typespeeder.userInterfaces.MenuService;
-
-import java.sql.SQLException;
 
 @Component public class Controller implements Controllable {
     Playable playable;
@@ -22,10 +21,12 @@ import java.sql.SQLException;
     }
 
     @Override
-    public void run() throws SQLException, InterruptedException {
-
+    public void run(){
+playable.printNewsletter();
 
         while (true) {
+            NewsLetter news = new NewsLetter();
+            System.out.println(news);
 
             Status status;
             if (playable.getCurrentAlias(0).isEmpty()){
@@ -41,7 +42,7 @@ import java.sql.SQLException;
             } else {
                 io.addString(menuService.displayMenu());
 
-                //io.addString(menuService.displayMenu());
+
                 int input = io.getInt();
                 status = playable.standbyInMainMenu(input);
             }
@@ -76,15 +77,11 @@ import java.sql.SQLException;
                 }
                 case NO_USER_FOUND -> io.addString(menuService.printLoginText());
                 case IN_STATS -> io.addGameText(playable.printScoreBoardBasedOnThree() +
-                playable.printLeaderBoard());
+                playable.printScoreBoardBasedOnLevel());
+                case NEWSLETTER -> io.addString(playable.printNewsletter().toString());
             }
             switch (status){
                 case EXIT -> io.exit();
-                case CONTINUANCE ->{
-                    io.clear();
-                    menuService.displayMenu();
-                    //io.addString(menuService.displayMenu());
-                }
                 case CHANGING_ALIAS -> {
 
                     if (playable.getCurrentAlias(1).equals("1")){
@@ -125,7 +122,7 @@ import java.sql.SQLException;
                     }
                 }
                 case CHANGING_USERNAME -> {
-                    if (playable.getCurrentEmail(1).equals("1")){
+                    if (playable.getCurrentUsername(1).equals("1")){
                         io.addString(menuService.getUsernameChangeText());
                     } else {
                         io.addString(menuService.getUsernameChangeText());
@@ -133,7 +130,7 @@ import java.sql.SQLException;
                         if (checkCurrentEmail.equalsIgnoreCase("b")){
                             run();
                         }
-                        boolean checked = playable.checkCurrentEmail(checkCurrentEmail);
+                        boolean checked = playable.checkCurrentUsername(checkCurrentEmail);
                         if (checked) {
                             io.addString(menuService.getUsernameChangeText());
                             String newEmail = io.getString();

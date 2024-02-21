@@ -1,5 +1,7 @@
 package se.ju23.typespeeder.gameLogic;
 
+import se.ju23.typespeeder.InfoForUsers.NewsLetter;
+
 import java.time.LocalTime;
 import java.util.List;
 
@@ -14,7 +16,9 @@ public interface Playable {
 
     String printScoreBoardBasedOnThree();
 
-    String printLeaderBoard();
+    NewsLetter printNewsletter();
+
+    String printScoreBoardBasedOnLevel();
 
     double totalPoints();
 
@@ -33,15 +37,15 @@ public interface Playable {
 
     void setCurrentTaskId(int currentTaskId);
 
-    String getCurrentEmail(int place);
-    void setCurrentEmail(String newCurrentEmail);
+    String getCurrentUsername(int place);
+    void setCurrentUsername(String newCurrentEmail);
 
     void setNewAlias(String input);
 
 
     void setNewUsername(String newEmail);
 
-    boolean checkCurrentEmail(String input);
+    boolean checkCurrentUsername(String input);
 
     boolean checkIfUserNameIsBusy(String input);
 

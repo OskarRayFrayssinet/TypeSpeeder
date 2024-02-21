@@ -3,11 +3,18 @@ package se.ju23.typespeeder.gameLogic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.InfoForUsers.NewsLetter;
 import se.ju23.typespeeder.classesFromDB.*;
+import se.ju23.typespeeder.colors.ConsoleColor;
 import se.ju23.typespeeder.userInterfaces.MenuService;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -17,7 +24,9 @@ public class TypeSpeederGamePlay implements Playable {
 
     public static LocalTime startGame = LocalTime.now();
     public static LocalTime endGame = LocalTime.now();
+    int xpLimitToLevelUp;
     int totalCalculatedPoints = 0;
+    boolean levelLimit;
     int numOfWords = 0;
     int correctAnswers = 0;
     int correctAnswersInRow = 0;
@@ -27,7 +36,7 @@ public class TypeSpeederGamePlay implements Playable {
     public int currentUserId = 0;
     public int currentTaskId = 0;
     double timeResult = 0;
-    public String[] currentEmail = {"", "", ""};
+    public String[] currentUsername = {"", "", ""};
     public String[] currentAlias = {"", ""};
     public int currentXp = 0;
     public int currentLevel = 0;
@@ -59,19 +68,19 @@ public class TypeSpeederGamePlay implements Playable {
         if (users.isPresent()) {
             Users found = users.get();
             currentUserId = found.getUserId();
-            currentEmail[0] = found.getEmail();
+            currentUsername[0] = found.getEmail();
             currentAlias[0] = found.getAlias();
             currentXp = found.getXp();
             currentLevel = found.getLevel();
             currentPassword[0] = found.getPassword();
+            getXpLimit();
             return Status.VERIFIED;
         } else {
-            currentEmail[0] = "1";
+            currentUsername[0] = "1";
 
             return Status.NO_USER_FOUND;
         }
     }
-
     @Override
     public void calculateTotalPointsForGame(String userAnswer){
 
@@ -89,14 +98,13 @@ public class TypeSpeederGamePlay implements Playable {
         }
         int find = 0;
         for (int i = 0; i < userAnswerList.size(); i++) {
-
+            if (find == numOfWords) break;
             if (userAnswerList.get(i).equals(currentSolution.get(find))){
                 correctAnswersInRow++;
             }
             find++;
         }
         totalPoints();
-
     }
     public void saveAttemptToDB(){
         Tasks t = null;
@@ -115,47 +123,86 @@ public class TypeSpeederGamePlay implements Playable {
         pointParamRepo.save(pointParam);
 
     }
+
+
     @Override
     public String printChallengeResult(){
-        String toReturn = "--------\n" +
-                "| XP: " + currentXp +
+        getXpLimit();
+        String toReturn = ConsoleColor.BLUE + "--------\n" +
                 "| Correct Answers: " + correctAnswers + " |" +
                 "| Correct Answers in row: " + correctAnswersInRow + " |" +
-                "| Your Time: " + getTimeResult() + " Seconds" + "|" + "| Points: " +
-                currentPointsForPrinting + "|" +
-                "\n--------\n";
+                "| Your Time: " + getTimeResult() + " Seconds" + " |" + "| Points: " +
+                currentPointsForPrinting + " |" +
+                "\n--------\n" + ConsoleColor.RESET;
         if (levelUp){
-            return toReturn + "XP: " + currentXp + "NEW LEVEL!: " + currentLevel;
-        } else {
+            return toReturn + ConsoleColor.BRIGHT_YELLOW + "NEW LEVEL!: " + currentLevel + ConsoleColor.RESET +
+                    " | XP: " + currentXp + "/" + xpLimitToLevelUp + " Until next level |" + "\n";
+        } else if (levelLimit){
+            return toReturn + ConsoleColor.BRIGHT_YELLOW + "YOU HAVE REACHED THE HIGHEST LEVEL CONTINUE TO IMPROVE YOUR SCORE!" + ConsoleColor.RESET;
+        }else {
             return toReturn;
         }
     }
     @Override
     public String printScoreBoardBasedOnThree(){
+
         List<Users> users = usersRepo.findAll();
         List<UserScores> userScores = new ArrayList<>();
         for (Users user : users){
-            double correctPercentage = calculateCorrectPercentage(user);
-            double correctInOrderPercentage = calculateCorrectInOrderPercentage(user);
-            double speedAverage = calculateSpeedAverage(user);
-            double userScore = calculateUserScore(correctPercentage, correctInOrderPercentage, speedAverage);
-            userScores.add(new UserScores(user.getEmail(),user.getLevel(),user.getXp(),userScore));
+            List<Attempt> attempts = attemptRepo.findByUserId(user.getUserId());
+            if (attempts.size() > 5){
+                double correctPercentage = calculateCorrectPercentage(user);
+                double correctInOrderPercentage = calculateCorrectInOrderPercentage(user);
+                double speedAverage = calculateSpeedAverage(user);
+                double userScore = calculateUserScore(correctPercentage, correctInOrderPercentage, speedAverage);
+                userScores.add(new UserScores(user.getEmail(),user.getLevel(),user.getXp(),userScore));
+            }
         }
         userScores.sort(Comparator.comparingDouble(UserScores::getScore).reversed());
-        StringBuilder result = new StringBuilder("    SCOREBOARD BASED ON 10 LATEST ACHIEVEMENTS\n SCORE BASED ON: SPEED, ACCURACY, ACCURACY IN ORDER \n    player          Level   XP   Score\n");
+        StringBuilder result = new StringBuilder(ConsoleColor.BRIGHT_MAGENTA + "    \u001B[1mSCOREBOARD BASED ON 5 LATEST ACHIEVEMENTS\n SCORE BASED ON: SPEED, ACCURACY, ACCURACY IN ORDER \n    player          Level   XP   Score\n" + ConsoleColor.RESET);
         int pos = 1;
         for (UserScores userScore : userScores) {
-            result.append(String.format("%5d %-9s%7.0f%7.0f%7.2f%n", pos, userScore.getUsername(),
+            result.append(String.format(ConsoleColor.MAGENTA + "\u001B[1m%5d %-9s%7.0f%7.0f%7.2f%n" + ConsoleColor.RESET, pos, userScore.getUsername(),
                     (double)userScore.getLevel(),
                     (double)userScore.getXp(), userScore.getScore()));
             if (pos++ == 10) break;
         }
         return result.toString();
     }
+    @Override
+    public NewsLetter printNewsletter(){
+        String text = null;
+        Path currentWorkingdir = Paths.get("").toAbsolutePath();
+        System.out.println(currentWorkingdir);
+        File file;
+        String path = currentWorkingdir + File.separator + "src"  + File.separator + "Newsletter.txt";
+        text = readTextFromFile(path);
+
+        NewsLetter newsLetter = new NewsLetter(text, LocalDateTime.of(2024,1,1,12,12,12));
+        System.out.println(newsLetter);
+        return newsLetter;
+    }
+
+    public String readTextFromFile(String filePath) {
+        StringBuilder content = new StringBuilder();
+        try {
+            Path path = Paths.get(filePath);
+            BufferedReader reader = new BufferedReader(new FileReader(path.toFile()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.err.println("An error occurred while reading the file: " + e.getMessage());
+        }
+        return content.toString();
+    }
     private double calculateCorrectPercentage(Users user){
+        double calPro = 0;
         int correct = 0;
         int questions = 0;
-        List<Attempt> attemptsToCount = attemptRepo.findTop10ByUserIdOrderByAttemptIdDesc(user.getUserId());
+        List<Attempt> attemptsToCount = attemptRepo.findTop5ByUserIdOrderByAttemptIdDesc(user.getUserId());
         for (int i = 0; i < attemptsToCount.size(); i++) {
             int attid = attemptsToCount.get(i).getAttemptId();
             List<PointParam> pointParams = pointParamRepo.findPointParamByAttemptId(attid);
@@ -164,14 +211,19 @@ public class TypeSpeederGamePlay implements Playable {
                 questions += pointParams.get(j).getQuestions();
             }
         }
+        if (attemptsToCount.size() < 5){
+            return 0;
+        } else {
+            return ((double) correct /(attemptsToCount.size()*questions)*100);
+        }
 
-        return ((double) correct /(attemptsToCount.size()*questions)*100);
+
     }
 
     private double calculateCorrectInOrderPercentage(Users user) {
         int correctInOrder = 0;
         int questions = 0;
-        List<Attempt> attemptsToCount = attemptRepo.findTop10ByUserIdOrderByAttemptIdDesc(user.getUserId());
+        List<Attempt> attemptsToCount = attemptRepo.findTop5ByUserIdOrderByAttemptIdDesc(user.getUserId());
         for (int i = 0; i < attemptsToCount.size(); i++) {
             int attid = attemptsToCount.get(i).getAttemptId();
             List<PointParam> pointParams = pointParamRepo.findPointParamByAttemptId(attid);
@@ -185,7 +237,7 @@ public class TypeSpeederGamePlay implements Playable {
     private double calculateSpeedAverage(Users user){
         double speed = 0;
 
-        List<Attempt> attemptsToCount = attemptRepo.findTop10ByUserIdOrderByAttemptIdDesc(user.getUserId());
+        List<Attempt> attemptsToCount = attemptRepo.findTop5ByUserIdOrderByAttemptIdDesc(user.getUserId());
         for (int i = 0; i < attemptsToCount.size(); i++) {
             int attid = attemptsToCount.get(i).getAttemptId();
             List<PointParam> pointParams = pointParamRepo.findPointParamByAttemptId(attid);
@@ -209,7 +261,7 @@ public class TypeSpeederGamePlay implements Playable {
     }
     public void setXpToDB(int totPoints){
         levelUp = false;
-        int xpLimit = 20;
+        int xpLimit;
         int latestPoints = 0;
         Optional<Users> finduser = usersRepo.findById(currentUserId);
         if (finduser.isPresent()) {
@@ -221,24 +273,28 @@ public class TypeSpeederGamePlay implements Playable {
             int xp = finduser.get().getXp();
             int xpToCountoff = xp;
             int level = finduser.get().getLevel();
-            if (level > 1 ) {
-                for (int i = 0; i < level; i++) {
-                    xpLimit += 5;
-                }
-                System.out.println("din gräns" +xpLimit);
-            }
-            if (latestPoints > totPoints || totPoints == 0) {
-                xp = (xp - 10);
-                if (xp<0) xp = 0;
+            xpLimit = getXpLimit();
+            if (level >= 25){
+                levelLimit = true;
+                levelUp = false;
             } else {
-                xp += totPoints;
-                if (xp >= xpLimit){
-                    int sum = xpLimit - xpToCountoff;
-                    level++;
-                    levelUp = true;
-                    xp = totPoints - sum;
+                if (latestPoints > totPoints || totPoints == 0) {
+                    xp = (xp - 5);
+                    if (xp<0) xp = 0;
+                } else {
+                    xp += totPoints;
+                    if (xp >= xpLimit){
+                        int sum = xpLimit - xpToCountoff;
+                        level++;
+                        levelUp = true;
+                        xp = totPoints - sum;
+
+
+
+                    }
                 }
             }
+
             currentLevel = level;
             currentXp = xp;
             found.setXp(xp);
@@ -247,29 +303,39 @@ public class TypeSpeederGamePlay implements Playable {
             saveAttemptToDB();
         }
     }
+    public int getXpLimit() {
+        int xpLimit = 20;
+        Optional<Users> found = usersRepo.findByUserId(currentUserId);
+        if (found.isPresent()){
+            int level = found.get().getLevel();
+            if (level > 0 ) {
+                for (int i = 0; i < level; i++) {
+                    xpLimit += 5;
+                }
+                xpLimitToLevelUp = xpLimit;
+            }
+        }
+        return xpLimit;
 
+    }
 
 
     @Override
-    public String printLeaderBoard(){
-        long start = System.nanoTime();
+    public String printScoreBoardBasedOnLevel(){
+
         List<Users> users = usersRepo.findAll();
 
         List<Users> topListOfUsers = new ArrayList<>(users);
-        StringBuilder result = new StringBuilder("    SCOREBOARD BASED ON LEVEL \n    player          Level   XP\n");
+        StringBuilder result = new StringBuilder(ConsoleColor.CYAN + "    \u001B[1mSCOREBOARD BASED ON LEVEL \n    player          Level   XP\n" + ConsoleColor.RESET);
         int pos = 1;
         topListOfUsers.sort((p1,p2) -> Integer.compare(p2.getLevel(), p1.getLevel()));
         for (Users u : topListOfUsers){
-            result.append(String.format("%5d %-9s%7.0f%7.0f%n", pos, (u.getEmail()), (double)u.getLevel(),(double)u.getXp()));
+            result.append(String.format(ConsoleColor.CYAN + "\u001B[1m%5d %-9s%7.0f%7.0f%n" + ConsoleColor.RESET, pos, (u.getEmail()), (double)u.getLevel(),(double)u.getXp()));
             if (pos++ ==10) break;
         }
-        System.out.println(System.nanoTime() - start);
+
         return result.toString();
     }
-    //TODO FORTSÄTT MED XP OCH LEVELUPPGRADERING
-    //TODO FORMATERA UTSKRIFTER TILL TVÅ DECIMALER
-    //TODO OCH SNYGGARE UTSKRIFT AV LEADERBOARD
-    //TODO NÄR MAN LEVLAR SÅ SKA ORDEN BLI 2 FLER
     @Override
     public double totalPoints(){
         double points;
@@ -281,7 +347,7 @@ public class TypeSpeederGamePlay implements Playable {
         } else if (correctAnswers == 0 && correctAnswersInRow == 0){
             points = 0;
         } else {
-            points = (correctAnswers + correctAnswersInRow + (10 * Math.pow((1 - (userTime / maxTime)), 1)));
+            points = (correctAnswers +  correctAnswersInRow+ (10 * Math.pow((1 - (userTime / maxTime)), 1)));
         }
         totalCalculatedPoints = (int) points;
         setXpToDB((int) points);
@@ -300,28 +366,24 @@ public class TypeSpeederGamePlay implements Playable {
         return sb.toString();
     }
 
-    public static List<String> getCurrentSolution() {
-        return currentSolution;
-    }
     @Override
     public void setCurrentSolution(List<String> currentSolution1) {
         currentSolution = currentSolution1;
     }
     @Override
     public String printUserInfo(){
-        return "| Alias " + currentAlias[0] + " | Level: " + currentLevel + " | XP: " + currentXp;
+        return ConsoleColor.BLUE + "| Alias " + currentAlias[0] + " | Level: " + currentLevel + " | XP: " + currentXp + ConsoleColor.RESET;
     }
-
     @Override
     public String beforeGameStartsText(){
-        return "Time starts when you press ENTER, READY?";
+        return ConsoleColor.BOLD + "You will get a text with green marked words write them as fast as you can, " +
+                "this is a case sensitive challenge. " +
+                "\nTime starts when you press ENTER, READY SET...(enter)" + ConsoleColor.RESET;
     }
-
-
     @Override
     public Status standbyInMainMenu(int input) {
         currentPassword[2] = "";
-        currentEmail[2] = "";
+        currentUsername[2] = "";
 
         Status status = null;
         switch (input) {
@@ -330,6 +392,7 @@ public class TypeSpeederGamePlay implements Playable {
             case 2 -> status = Status.ACTIVE_IN_GAME;
             case 3 -> status = Status.IN_STATS;
             case 4 -> status = Status.IN_GAME_SETTINGS;
+            case 5 -> status = Status.NEWSLETTER;
         }
         return status;
     }
@@ -346,6 +409,7 @@ public class TypeSpeederGamePlay implements Playable {
         return status;
     }
     @Override
+    //alias möjligt att ha samma som annan spelare men username är unikt
     public void setNewAlias(String input) {
 
         List<Users> aliasFromDB = usersRepo.findByAlias(getCurrentAlias(0));
@@ -358,34 +422,12 @@ public class TypeSpeederGamePlay implements Playable {
     }
     @Override
     public void setNewUsername(String newUsername) {
-        Optional<Users> emailFromDB = usersRepo.findByUserId(getCurrentUserId());
-        if (emailFromDB.isPresent()) {
-            Users found = emailFromDB.get();
+        Optional<Users> usernameFromDB = usersRepo.findByUserId(getCurrentUserId());
+        if (usernameFromDB.isPresent()) {
+            Users found = usernameFromDB.get();
             found.setEmail(newUsername);
             usersRepo.save(found);
-            currentEmail[1] = "1";
-        }
-    }
-    @Override
-    public boolean checkCurrentEmail(String input) {
-        if (Objects.equals(input, getCurrentEmail(0))) {
-            currentEmail[1] = input;
-            return true;
-        } else {
-            currentEmail[2] = "2";
-            return false;
-        }
-
-    }
-    @Override
-    public boolean checkIfUserNameIsBusy(String input) {
-        Optional<Users> checkIfBusy = usersRepo.findByEmail(input);
-        if (checkIfBusy.isEmpty()) {
-            return true;
-        } else {
-            currentEmail[1] = "";
-            currentEmail[2] = "2";
-            return false;
+            currentUsername[1] = "1";
         }
     }
     @Override
@@ -396,6 +438,28 @@ public class TypeSpeederGamePlay implements Playable {
             found.setPassword(newPassword);
             usersRepo.save(found);
             currentPassword[1] = "1";
+        }
+    }
+    @Override
+    public boolean checkCurrentUsername(String input) {
+        if (Objects.equals(input, getCurrentUsername(0))) {
+            currentUsername[1] = input;
+            return true;
+        } else {
+            currentUsername[2] = "2";
+            return false;
+        }
+
+    }
+    @Override
+    public boolean checkIfUserNameIsBusy(String input) {
+        Optional<Users> checkIfBusy = usersRepo.findByEmail(input);
+        if (checkIfBusy.isEmpty()) {
+            return true;
+        } else {
+            currentUsername[1] = "";
+            currentUsername[2] = "2";
+            return false;
         }
     }
     @Override
@@ -447,12 +511,12 @@ public class TypeSpeederGamePlay implements Playable {
     }
 
     @Override
-    public String getCurrentEmail(int place) {
-        return currentEmail[place];
+    public String getCurrentUsername(int place) {
+        return currentUsername[place];
     }
     @Override
-    public void setCurrentEmail(String input) {
-        currentEmail[0] = input;
+    public void setCurrentUsername(String input) {
+        currentUsername[0] = input;
     }
     @Override
     public int getCurrentUserId() {
