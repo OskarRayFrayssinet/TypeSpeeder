@@ -1,5 +1,6 @@
 package se.ju23.typespeeder;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,24 +26,36 @@ public class Challenge {
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
+    public static ArrayList<PlayerRanking>rankingList = new ArrayList<>();
 
     public static void startChallenge() throws IOException {
-        System.out.println(messages.getString("game.instructions"));
-        System.out.println(messages.getString("time.starts"));
-        System.out.print(messages.getString("press.enter.to.play"));
-        input.nextLine();
-        openTextFile();
-        timer();
-        System.out.println();
-        System.out.print(messages.getString("write.here"));
-        game = input.nextLine();
-        stopTimer = true;
-        checkSpelling();
-        checkOrder();
-        System.out.println(messages.getString("return.menu"));
-        String goBack = input.nextLine().toLowerCase();
-        if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {
-            Menu.displayMenu();
+        boolean continueGame = true;
+        while(continueGame){
+            stopTimer = false;
+            game = "";
+            redWords = new ArrayList<>();
+            countWords = 0;
+            countOrder = 0;
+            System.out.println(messages.getString("game.instructions"));
+            System.out.println(messages.getString("time.starts"));
+            System.out.print(messages.getString("press.enter.to.play"));
+            input.nextLine();
+            openTextFile();
+            timer();
+            System.out.println();
+            System.out.print(messages.getString("write.here"));
+            game = input.nextLine();
+            System.out.println(game);
+            stopTimer = true;
+            checkSpelling();
+            checkOrder();
+            System.out.println(messages.getString("return.menu"));
+            String goBack = input.nextLine().toLowerCase();
+            if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {
+                Menu.displayMenu();
+                continueGame = false;
+            }
+
         }
     }
 
@@ -102,32 +115,36 @@ public class Challenge {
         System.out.println("Antal rättstavade ord: " + countWords);
     }
     public static void checkOrder(){
-        //int countOrder = 0;
         String[] gameList = game.split("\\s+");
         int minWord = Math.min(redWords.size(), gameList.length);
         for(int i = 0; i < minWord; i++){
             if(gameList[i].equals(redWords.get(i))){
                 countOrder++;
-            } else {
-                break;
+            //} else {
+                //break;
             }
         }
-      //  System.out.println("Antal ord i korrekt ordning: " + countOrder);
-        System.out.println(messages.getString("right.order"));
+       System.out.println("Antal ord i korrekt ordning: " + countOrder);
+        //System.out.println(messages.getString("right.order" + countOrder));
     }
 
     public static void printRankingList(ArrayList<PlayerRanking> topList) {
-        System.out.println("Ranking List\n     Player     Score\n");
+        System.out.println("Ranking List:\nPosition   Player     Score\n");
         int position = 1;
         topList.sort((p1, p2) -> Double.compare(p1.result, p2.result));
 
         for(PlayerRanking player : topList){
-            System.out.println(String.format("%3d %-10s%5.2f%n", position, player.name, player.result));
+            System.out.printf(String.format("%-9d%-10s%7.2f%n", position++, player.name, player.result));
         }
     }
-    public static void showRankingList(){
+    public static void showRankingList() throws IOException {
         ArrayList<PlayerRanking> topList = rankingList();
         printRankingList(topList);
+        System.out.println(messages.getString("return.menu"));
+        String goBack = input.nextLine().toLowerCase();
+        if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {
+            Menu.displayMenu();
+        }
     }
     public static class PlayerRanking{
         String name;
@@ -137,17 +154,40 @@ public class Challenge {
             this.name = name;
             this.result = result;
         }
+
+        public String getName() {
+            return name;
+        }
+
+        public double getResult() {
+            return result;
+        }
+
+        public void setResult(double result) {
+            this.result = result;
+        }
     }
 
     public static ArrayList<PlayerRanking> rankingList(){
-        ArrayList<PlayerRanking>RankingList = new ArrayList<>();
-        int wrong = countWords - countOrder;
-        int correct = countWords - wrong;
-        double score = timeSeconds/correct;
-        //User user = userService.userRepository.findByUsernameAndPassword(Menu.userName, Menu.passWord);
-        String user = Menu.loggedInUser.getUsername();
-        //String name = user.getUsername();
-        RankingList.add(new PlayerRanking(user,score));
-        return RankingList;
+        int wordsValue = 1;
+        int orderValue = 2;
+        int wordPoints = countWords * wordsValue;
+        int orderPoints = countOrder * orderValue;
+        int points = wordPoints + orderPoints;
+        float score = (float) points /timeSeconds;
+        String username = Menu.loggedInUsername;
+        boolean playerExist = false;
+        for (PlayerRanking player : rankingList) {
+            if (player.getName().equals(username)) {
+                double result = player.getResult();
+                player.setResult(result + score);
+                playerExist = true;
+                break;
+            }
+        }
+        if (!playerExist){
+            rankingList.add(new PlayerRanking(username, score));
+        }
+        return rankingList;
     }
 }
