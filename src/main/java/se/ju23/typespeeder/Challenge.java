@@ -76,7 +76,7 @@ public class Challenge {
             }
             timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
 
-            //System.out.println(messages.getString("your.time" + timeSeconds + "seconds"));
+           // System.out.println(messages.getString("your.time" + timeSeconds + "seconds"));
             System.out.println("Din tid blev: " + timeSeconds + " sekunder");
         });
         timer.start();
@@ -98,7 +98,7 @@ public class Challenge {
             }
         }
         //System.out.println(messages.getString("correct.words" + countWords));
-        System.out.println("Antal rättstavade ord = " + countWords);
+        System.out.println("Antal rättstavade ord: " + countWords);
     }
     public static void checkOrder(){
         //int countOrder = 0;
@@ -111,7 +111,8 @@ public class Challenge {
                 break;
             }
         }
-        System.out.println("Antal ord i korrekt ordning: " + countOrder);
+      //  System.out.println("Antal ord i korrekt ordning: " + countOrder);
+        System.out.println(messages.getString("right.order"));
     }
 
     public static void printRankingList(ArrayList<PlayerRanking> topList) {
