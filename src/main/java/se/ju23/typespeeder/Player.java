@@ -15,8 +15,41 @@ public class Player {
     private String password;
     private int level;
     private int ranking;
+    private int xp;
     @Column(name = "gamesplayed")
     private int gamesPlayed;
+
+    public void setGamesPlayed(int gamesPlayed) {
+        this.gamesPlayed = gamesPlayed;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public void setXp(int xp) {
+        this.xp = xp;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(int xp) {
+        this.ranking = xp;
+    }
 
     public String getPassword() {
         return password;
