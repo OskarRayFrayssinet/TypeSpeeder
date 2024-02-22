@@ -6,7 +6,9 @@ import se.ju23.typespeeder.IO.IO;
 import se.ju23.typespeeder.IO.MenuService;
 import se.ju23.typespeeder.enums.Status;
 import se.ju23.typespeeder.model.Player;
+import se.ju23.typespeeder.model.RankingTableByLevel;
 import se.ju23.typespeeder.repository.PlayerRepo;
+import se.ju23.typespeeder.repository.RankingTableByLevelRepo;
 import se.ju23.typespeeder.repository.ResultRepo;
 import se.ju23.typespeeder.service.NewsletterService;
 import se.ju23.typespeeder.service.PatchService;
@@ -46,6 +48,8 @@ public class GameController {
     @Autowired
     PatchService patchService;
 
+    @Autowired
+    RankingTableByLevelRepo rankingTableByLevelRepo;
 
     public void startGame() {
         boolean continueGame = true;
@@ -76,7 +80,7 @@ public class GameController {
                                 typingGame.getCalculatedWords().removeAll(typingGame.getCalculatedWords());
                             }
                             case 2 -> {
-                                System.out.println("Leaderboards");
+                                System.out.println( rankingTableByLevelRepo.findAll());
                             }
                             case 3 -> {
                                 boolean runNewsMenu = true;
