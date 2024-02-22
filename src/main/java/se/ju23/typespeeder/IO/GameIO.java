@@ -19,6 +19,17 @@ public class GameIO implements IO {
         inGameMessages.add("Access denied, only admin has access.");
         inGameMessages.add("Skriv in patchversion -> ");
         inGameMessages.add("Please enter the patch version -> ");
+        inGameMessages.add("Please enter the users full name -> ");
+        inGameMessages.add("Ange spelarens användarnamn -> ");
+        inGameMessages.add("Ange spelarens lösenord -> ");
+        inGameMessages.add("Please enter the users password-> ");
+        inGameMessages.add("Ange spelarens gamingnamn -> ");
+        inGameMessages.add("Please enter the users gaming name -> ");
+        inGameMessages.add("Please select the user role from the following numerical options: ");
+        inGameMessages.add("Välj användarroll från följande numrerade alternativ: ");
+        inGameMessages.add("1. Admin" + "\n2. User");
+        inGameMessages.add("Du lade till: ");
+        inGameMessages.add("You added: ");
     }
 
     public ArrayList<String> getInGameMessages() {

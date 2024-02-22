@@ -93,7 +93,19 @@ public class GameController {
                                 } while (runNewsMenu);
 
                             }
-                            case 4 -> System.out.println("Edit users");
+                            case 4 -> {
+                                boolean runEditPlayerMenu = true;
+                                do {
+                                    menuService.displayEditPlayersMenu();
+                                    int userInputNews = menuService.selectEditPlayerMenuOptions();
+                                    switch (userInputNews) {
+                                        case 1 -> playerService.addNewPlayer();
+                                        case 2 -> playerService.editUser();
+                                        case 3 -> runEditPlayerMenu = false;
+                                    }
+                                } while (runEditPlayerMenu);
+
+                            }
                             case 5 -> {
                                 continueGame = false;
                             }

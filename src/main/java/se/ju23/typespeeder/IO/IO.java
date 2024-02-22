@@ -12,4 +12,5 @@ public interface IO {
     Scanner returnScanner();
     public ArrayList<String> getInGameMessages();
     public String inputUserString();
+
 }

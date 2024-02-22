@@ -19,15 +19,18 @@ public class Player {
     private Role role;
     private int points;
     private int level;
+    @Column (name = "playername")
+    private String playerName;
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
-    private List<Result> gamesPlayed;
+    private List<Result> playerNameList;
 
-    public Player(String username, String password, Role role, int points, int level) {
+    public Player(String username, String password, Role role, int points, int level, String playerName) {
         this.username = username;
         this.password = password;
         this.role = role;
         this.points = points;
         this.level = level;
+        this.playerName = playerName;
     }
 
     public Player(){
@@ -81,15 +84,18 @@ public class Player {
         this.level = level;
     }
 
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
     @Override
     public String toString() {
-        return "Player{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", points=" + points +
-                ", level=" + level +
-                '}';
+        return "\n\033[1mPlayerid:\033[0m " + id + " | " + "\033[1mUsername:\033[0m " + username + " | " + "\033[1mPassword:\033[0m " + password + " | " +
+                "\033[1mGamertag: \033[0m " + playerName + " | " + "\033[1mPoints:\033[0m " + points + " | " + "\033[1mLevel:\033[0m " + level +
+                " | " + "\033[1mRole:\033[0m " + role;
     }
 }
