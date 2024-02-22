@@ -60,6 +60,11 @@ public class User {
         this.password = password;
     }
 
+    public void updateCredentials(String newUsername, String newPassword) {
+        this.username = newUsername;
+        this.password = newPassword;
+    }
+
 
 
 }

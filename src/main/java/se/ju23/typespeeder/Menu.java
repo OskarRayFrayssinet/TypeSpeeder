@@ -19,6 +19,7 @@ public class Menu implements MenuService {
 
     public static String userName;
     public static String passWord;
+    public static boolean loggedIn=false;
 
     public static void displayMenu() throws IOException {
         UserService userService = TypeSpeederApplication.userService;
@@ -49,11 +50,12 @@ public class Menu implements MenuService {
 
 
 
+
         int menuChoice = input.nextInt();
         input.nextLine();
 
         if (loggedInUser == null && menuChoice == 0) {
-            loggedInUser = logIn();
+             logIn();
         } else {
             switch (menuChoice) {
                 case 6 -> logOut();
@@ -61,18 +63,17 @@ public class Menu implements MenuService {
                 case 2 -> Challenge.showRankingList();
                 case 3 -> showNewsAndUpdates();
                 case 4 -> changeLanguage();
-              //  case 5 -> updateUser();
+                case 5 -> updateUser();
 
                 default -> System.out.println("Felaktig inmatning, försök igen.");
             }
-            }
         }
+    }
 
 
 
-    public static User logIn() {
-        User user = null;
-        boolean loggedIn = false;
+    public static void logIn() {
+
 
         while (!loggedIn) {
             System.out.print("Ange användarnamn: ");
@@ -80,33 +81,52 @@ public class Menu implements MenuService {
             System.out.print("Ange lösenord: ");
             passWord = input.nextLine();
 
-            user = userService.userRepository.findByUsernameAndPassword(userName, passWord);
+            loggedInUser = userService.userRepository.findByUsernameAndPassword(userName, passWord);
 
-            if (user != null) {
+            if (loggedInUser != null) {
                 System.out.println("Inloggning lyckades!");
-                loggedInUsername = user.getUsername();
+                loggedInUsername = loggedInUser.getUsername();
                 loggedIn = true;
             } else {
                 System.out.println("Felaktiga inloggningsuppgifter. Försök igen.");
             }
         }
 
-        return user;
     }
 
 
-   /* public static void updateUser() {
-        System.out.print("Ange nytt användarnamn (lämna tomt om ingen ändring): ");
-        String newUsername = input.nextLine();
-        user.setUsername(newUsername);
 
-        System.out.print("Ange nytt lösenord (lämna tomt om ingen ändring): ");
-        String newPassword = input.nextLine();
-        user.setPassword(newPassword);
+    public static void updateUser() throws IOException {
+        while (true) {
+            if (loggedInUser != null) {
+                System.out.print("Ange nytt användarnamn (tryck enter om du inte vill ändra): ");
+                String newUsername = input.nextLine();
+
+                System.out.print("Ange nytt lösenord (tryck enter om du inte vill ändra): ");
+                String newPassword = input.nextLine();
+
+                if (!newUsername.isEmpty() || !newPassword.isEmpty()) {
+
+                    loggedInUser.updateCredentials(newUsername, newPassword);
+                    userService.userRepository.save(loggedInUser);
+                    System.out.println("Användarnamn och/eller lösenord är uppdaterade!");
+                    System.out.println("Vill du återgå till huvudmenyn? (ja/nej): ");
+                    String goBack = input.nextLine().toLowerCase();
+
+                    if ("ja".equals(goBack)) {
+                        displayMenu();
+                    } else {
+                        System.out.println("Programmet avslutas.");
+
+                    }
+                }
+
+            }
 
 
+        }
+    }
 
-        }*/
 
 
 

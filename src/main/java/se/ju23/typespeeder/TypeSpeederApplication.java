@@ -23,7 +23,7 @@ public class TypeSpeederApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
       //  System.out.println("Hej och välkommen till TypeSpeeder!");
       //  System.out.println("Börja med att ange dina inloggningsuppgifter nedan.");
-       Menu.setUserService(userService);
+      Menu.setUserService(userService);
        // Menu.displayMenu();
 
     }

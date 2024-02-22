@@ -39,8 +39,8 @@ public class UserService implements CommandLineRunner {
         System.out.println("Börja med att ange dina inloggningsuppgifter nedan.");
 
         Menu.setUserService(this);
-        User u = Menu.logIn();
-        if (u !=null){
+        Menu.logIn();
+        if (Menu.loggedInUser !=null){
             Menu.displayMenu();
         }
        // Menu.updateUser(u);
