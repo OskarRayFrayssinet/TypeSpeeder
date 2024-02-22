@@ -6,7 +6,11 @@ public class DAOManager {
     private PlayerRepo playerRepo;
     private TypeGoalTextRepo typeGoalTextRepo;
     private Player player;
+    private AdminMessageRepo adminMessageRepo;
 
+    public void createAdminMessage(AdminMessage adminMessage){
+        adminMessageRepo.save(adminMessage);
+    }
     public Player getPlayer() {
         return player;
     }

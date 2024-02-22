@@ -173,6 +173,7 @@ public class Challenge {
         lettersToType();
         startTimer();
     }
+
     public void startTimer() {
         startTimerInMillis = System.currentTimeMillis();
     }

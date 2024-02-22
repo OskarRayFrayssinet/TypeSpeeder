@@ -1,7 +1,7 @@
 package se.ju23.typespeeder;
 
 public interface MenuService {
-    void displayMenu();
+    String displayMenu();
     void logInMenu();
     Player verifyPlayer();
     boolean verifyPassword();
@@ -11,9 +11,12 @@ public interface MenuService {
     void setLoggedInPlayer(Player player);
     void setSystemIO(SystemIO systemIO);
     void setPlayerRepo(PlayerRepo playerRepo);
-    void changeLanguage();
     void printTypeSpeederAnsi();
     int chooseDifficulty();
     String postGameResults(double[] results);
     void setDaoManager(DAOManager daoManager);
+    void settingsMenu();
+    void patchNotesAndNewsMenu();
+    void continueOrExit();
+    String getExitMessage();
 }

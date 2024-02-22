@@ -11,6 +11,7 @@ public class Menu implements MenuService {
     private ArrayList<String> startMenuOptions;
     private ArrayList<String> logInMenuOptions;
     private String wrongUsernameMessage;
+    private String exitMessage;
     private Player loggedInPlayer;
     private SystemIO systemIO;
     private PlayerRepo playerRepo;
@@ -24,11 +25,24 @@ public class Menu implements MenuService {
     public ArrayList<String> getMenuOptions() {
         return menuOptions;
     }
-    public void displayMenu() {
+    public String displayMenu() {
         for (String menuOption : menuOptions) {
             systemIO.addString("\n" + menuOption);
         }
+        systemIO.addString("\n6. Välj språk (svenska/engelska):");
         systemIO.addString("\n>");
+        String choice = systemIO.getString();
+
+        if (choice.equals("svenska")) {
+            choice = "Svenska valt.";
+            systemIO.addString(choice);
+            setLanguageToSwedish();
+        } else if (choice.equals("engelska")) {
+            choice = "English selected.";
+            systemIO.addString(choice);
+            setLanguageToEnglish();
+        }
+        return choice;
     }
     public int chooseDifficulty() {
         int difficulty;
@@ -116,6 +130,27 @@ public class Menu implements MenuService {
             }
         }
     }
+    public void settingsMenu() {
+        systemIO.addString("""
+                1. Kontoinställningar
+                2. Ändra språk
+                3. Se din statistik
+                0. Backa
+                >""");
+    }
+    public void patchNotesAndNewsMenu() {
+        systemIO.addString("""
+                1. Visa nyhetsbrev
+                2. Visa Patch notes
+                0. Backa
+                >""");
+    }
+    public void continueOrExit() {
+        systemIO.addString("""
+                1. Fortsätt
+                0. Spara och avsluta
+                >""");
+    }
 
     public Player getLoggedInPlayer() {
         return loggedInPlayer;
@@ -135,6 +170,15 @@ public class Menu implements MenuService {
     public void setDaoManager(DAOManager daoManager) {
         this.daoManager = daoManager;
     }
+
+    public String getExitMessage() {
+        return exitMessage;
+    }
+
+    public void setExitMessage(String exitMessage) {
+        this.exitMessage = exitMessage;
+    }
+
     public void setLanguageToSwedish(){
         Challenge.setSwedish(true);
         menuOptions = new ArrayList<>();
@@ -163,6 +207,8 @@ public class Menu implements MenuService {
         logInMenuOptions.add(" försök kvar.");
 
         wrongUsernameMessage = "Felaktigt användarid, försök igen. \nAnge användarid:\n>";
+
+        exitMessage = "\nTack för att du spelade TypeSpeeder! Programmet avslutas...";
     }
     public void setLanguageToEnglish(){
         Challenge.setSwedish(false);
@@ -192,13 +238,5 @@ public class Menu implements MenuService {
         logInMenuOptions.add(" attempts remaining.");
 
         wrongUsernameMessage = "Incorrect username, try again. \nEnter username:\n>";
-    }
-
-    public void changeLanguage() {
-        if (Challenge.isSwedish()) {
-            setLanguageToEnglish();
-        } else {
-            setLanguageToSwedish();
-        }
     }
 }
