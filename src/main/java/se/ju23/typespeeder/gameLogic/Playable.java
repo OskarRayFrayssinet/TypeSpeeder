@@ -16,11 +16,10 @@ public interface Playable {
 
     String printScoreBoardBasedOnThree();
 
-    NewsLetter printNewsletter();
+    //NewsLetter printNewsletter();
 
     String printScoreBoardBasedOnLevel();
 
-    double totalPoints();
 
     void setCurrentSolution(List<String> currentSolution1);
 
@@ -32,6 +31,8 @@ public interface Playable {
 
     Status standbyInMainMenu(int input);
 
+
+    void setGameDifficulty(int gameDifficulty1);
 
     Status standbyInSettingsMenu(int input);
 
@@ -58,17 +59,14 @@ public interface Playable {
 
     void setNumOfWords(int words);
 
-    void setStartGame(LocalTime startGame1);
-
-    void setEndGame(LocalTime endGame1);
 
 
     int getCurrentUserId();
-    String noUserFoundText();
+
     String getCurrentAlias(int place);
 
     String getPassword(int place);
 
-    int getCurrentXp();
+
     int getCurrentLevel();
 }

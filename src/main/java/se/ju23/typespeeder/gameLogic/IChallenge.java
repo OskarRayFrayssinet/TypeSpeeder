@@ -6,27 +6,20 @@ import java.util.List;
 public interface IChallenge {
     String printListOfGames();
 
+    String printListOfEasyGames();
+
     String chooseGame(int id);
-
-
-
-
 
     void calculateTimeToDouble();
 
-
-    //TODO OPTIMERA HÄR ENKELT
     int getRandomWordsAccordingToLevel();
 
     void startChallenge();
 
     void endChallenge();
-
-
-    int getCurrentGameTaskId();
-
     void setCurrentGameTaskId();
 
     void getAndSetCurrentLanguage();
 
+    int getGameListSize();
 }

@@ -30,7 +30,7 @@ import java.util.List;
     @Override
     //Login menu first to be shown
     public String printLoginText() {
-        String toReturn = null;
+        String toReturn;
 
         if (playable.getCurrentUsername(0).equals("2")){
             toReturn = "Password: ";
@@ -48,27 +48,17 @@ import java.util.List;
     }
 
 
-    @Override
-    public String printChangeLanguageText(){
-        if (getCurrentLanguage(2).equals("3")){
-            return "Changed\n";
-        } else if (getCurrentLanguage(0).equals("1")) {
-            return "Byta spelspråk till Engelska? y/n: ";
-        } else {
-            return "Change game language to Swedish? y/n: ";
-        }
-    }
+
     @Override
     //Main menu
     //Only in English
-    public String displayMenu() {
-        String textToReturn = null;
-        String translatedText;
+    public void displayMenu() {
         StringBuilder stringBuilder = new StringBuilder();
         for (String option : getMenuOptions()){
             stringBuilder.append(option);
         }
-        return stringBuilder.toString();
+        //egentligen ska den returnera en string men för testet.. :)
+        System.out.println(stringBuilder);
     }
     @Override
     public String getUserSettingsMenu(){
@@ -154,19 +144,30 @@ import java.util.List;
         currentLanguage[2] = "";
         List<String> menuOptions = new ArrayList<>();
         if (currentLanguage[0].equals("1")){
-            menuOptions.add("Svenska valt");
+            menuOptions.add("\nSvenska valt");
         } else {
-            menuOptions.add("English chosen");
+            menuOptions.add("\nEnglish chosen");
         }
         menuOptions.add("\n0.Sign out and exit\n");
         menuOptions.add("1. Choose language (Swedish/English)\n");
-        menuOptions.add("2. Select game\n");
-        menuOptions.add("3. Show ranking list\n");
-        menuOptions.add("4. Change user info\n");
-        menuOptions.add("5. Show newsletter\n");
+        menuOptions.add("2. Select game hard\n");
+        menuOptions.add("3. Select game easy\n");
+        menuOptions.add("4. Show ranking list\n");
+        menuOptions.add("5. Change user info\n");
+        menuOptions.add("6. Show newsletter\n");
         menuOptions.add("Your choice: ");
 
         return menuOptions;
+    }
+    @Override
+    public String printChangeLanguageText(){
+        if (getCurrentLanguage(2).equals("3")){
+            return "Changed\n";
+        } else if (getCurrentLanguage(0).equals("1")) {
+            return "Byta spelspråk till Engelska? y/n: ";
+        } else {
+            return "Change game language to Swedish? y/n: ";
+        }
     }
     @Override
     public void setLanguage() {

@@ -2,7 +2,8 @@ package se.ju23.typespeeder.gameLogic;
 
 public enum Status {
     EXIT,
-    ACTIVE_IN_GAME,
+    ACTIVE_IN_GAME_HARD,
+    ACTIVE_IN_GAME_EASY,
     NO_USER_FOUND,
     VERIFIED,
     CONTINUANCE,

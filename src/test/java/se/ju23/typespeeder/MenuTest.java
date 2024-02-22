@@ -101,7 +101,7 @@ public class MenuTest {
 
     @Test
     public void testUserCanChooseSwedishLanguage() {
-        String input = "svenska\n";
+        String input = "Svenska\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
 

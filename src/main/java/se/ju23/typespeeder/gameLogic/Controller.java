@@ -1,6 +1,7 @@
 package se.ju23.typespeeder.gameLogic;
 
 
+
 import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.InfoForUsers.NewsLetter;
 import se.ju23.typespeeder.userInterfaces.IO;
@@ -22,11 +23,9 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
 
     @Override
     public void run(){
-playable.printNewsletter();
+
 
         while (true) {
-            NewsLetter news = new NewsLetter();
-            System.out.println(news);
 
             Status status;
             if (playable.getCurrentAlias(0).isEmpty()){
@@ -40,7 +39,7 @@ playable.printNewsletter();
 
                 status = playable.checkUser(email, password);
             } else {
-                io.addString(menuService.displayMenu());
+                menuService.displayMenu();
 
 
                 int input = io.getInt();
@@ -59,11 +58,13 @@ playable.printNewsletter();
                         status = playable.standbyInSettingsMenu(input);
                     }
                 }
-                case ACTIVE_IN_GAME -> {
+                case ACTIVE_IN_GAME_HARD -> {
                     io.addString(challenge.printListOfGames());
                     int input = io.getInt();
                     if (input == 0){
                         status = Status.VERIFIED;
+                    } else if (input > challenge.getGameListSize()) {
+                        io.addString("hittade ingen");
                     } else {
                         io.addString(playable.beforeGameStartsText());
                         io.getEnter();
@@ -75,10 +76,32 @@ playable.printNewsletter();
                         io.addString(playable.printChallengeResult());
                     }
                 }
+                //TODO GÖR KLART ENKLA SPEL
+                case ACTIVE_IN_GAME_EASY -> {
+
+                    io.addString(challenge.printListOfEasyGames());
+                    int input = io.getInt();
+                    if (input == 0){
+                        status = Status.VERIFIED;
+                    }else if (input > challenge.getGameListSize()) {
+                        io.addString("hittade ingen");
+                    } else {
+                        io.addString(playable.beforeGameStartsText());
+                        io.getEnter();
+                        io.addGameText(challenge.chooseGame(input));
+                        challenge.startChallenge();
+                        String answer = io.getString();
+                        challenge.endChallenge();
+                        playable.calculateTotalPointsForGame(answer);
+                        io.addString(playable.printChallengeResult());
+                    }
+
+
+                }
                 case NO_USER_FOUND -> io.addString(menuService.printLoginText());
                 case IN_STATS -> io.addGameText(playable.printScoreBoardBasedOnThree() +
                 playable.printScoreBoardBasedOnLevel());
-                case NEWSLETTER -> io.addString(playable.printNewsletter().toString());
+                case NEWSLETTER -> io.addString(String.valueOf(new NewsLetter()));
             }
             switch (status){
                 case EXIT -> io.exit();

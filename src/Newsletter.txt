@@ -1,1 +1,15 @@
-hej hallåååå
+Welcome to Typespeeder 1.0.0 BETAVERSION.
+In this version our game is fully playable. For playing you need to contact an Admin for registration.
+Feel free to contact our admin to invite some friends.
+If you have any feedback that could improve the game we would very much appreciate that!
+
+INFO ABOUT GAME:
+When you play on HARD level you gain more points and earn more score and xp. For EASY game play you gain half as much.
+Highest level is 25. Continue to play to earn score to get high up in the Scoreboard!
+If your game generate less points than your last game you will lose xp.
+Words and letters are generated randomly for each game.
+
+//TODO ÄNDRA LÄNGDEN HÄR
+
+ENJOY!
+CONTACT Admin: Hussein.adem@iths.se

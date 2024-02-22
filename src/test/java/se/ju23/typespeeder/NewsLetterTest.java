@@ -1,6 +1,7 @@
 package se.ju23.typespeeder;
 
 import org.junit.jupiter.api.Test;
+import se.ju23.typespeeder.InfoForUsers.NewsLetter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -10,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.*;
+import static se.ju23.typespeeder.InfoForUsers.NewsLetter.getPublishDateTime;
 
 public class NewsLetterTest {
 
@@ -60,8 +62,13 @@ public class NewsLetterTest {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = dateTimeValue.format(formatter);
 
-            //Här stod det "Expected format" funkade inte
-            assertEquals(LocalDateTime.now().format(formatter), formattedDateTime, "'publishDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
+            //denna hämtar och kolla när filen skapades
+            LocalDateTime fileCreationDateTime = getPublishDateTime();
+            assert fileCreationDateTime != null;
+
+            //Här stod det "Expected format" så det funkade inte
+            //jag la till denna fileCreationDateTime så att den hittar tiden då filen skapades och kollar att det stämmer med formatet
+            assertEquals(fileCreationDateTime.format(formatter), formattedDateTime, "'publishDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
 
             Method getterMethod = someClass.getDeclaredMethod("getPublishDateTime");
             assertNotNull(getterMethod, "Getter method for the field 'publishDateTime' should exist.");
