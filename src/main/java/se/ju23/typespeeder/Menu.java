@@ -27,8 +27,7 @@ public class Menu implements MenuService {
     public static void displayMenu() throws IOException {
         UserService userService = TypeSpeederApplication.userService;
 
-
-        System.out.println("Ange siffran för ditt val: ");
+        MenuOptions.clear();
         MenuOptions.add("1. Starta spelet");
         MenuOptions.add("2. Rankningslista");
         MenuOptions.add("3. Nyheter och updateringar");
@@ -38,6 +37,7 @@ public class Menu implements MenuService {
         for (String list: MenuOptions){
             System.out.println(list);
         }
+        System.out.print("Ange siffran för ditt val: ");
 
 
 

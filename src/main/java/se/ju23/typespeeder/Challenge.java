@@ -27,6 +27,9 @@ public class Challenge {
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
+    public static String username = Menu.loggedInUsername;
+    public static float score;
+    public static int levelNumber;
     public static ArrayList<PlayerRanking>rankingList = new ArrayList<>();
 
     public static void startChallenge() throws IOException {
@@ -51,13 +54,7 @@ public class Challenge {
             stopTimer = true;
             checkSpelling();
             checkOrder();
-            System.out.println(messages.getString("return.menu"));
-            String goBack = input.nextLine().toLowerCase();
-            if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {
-                Menu.displayMenu();
-                continueGame = false;
-            }
-
+            returnToMenu();
         }
     }
 
@@ -131,30 +128,32 @@ public class Challenge {
     }
 
     public static void printRankingList(ArrayList<PlayerRanking> topList) {
-        System.out.println("Ranking List:\nPosition   Player     Score\n");
+        System.out.println("Ranking List:\nPlace    Player      Score       Level\n");
         int position = 1;
         topList.sort((p1, p2) -> Double.compare(p1.result, p2.result));
 
         for(PlayerRanking player : topList){
-            System.out.printf(String.format("%-9d%-10s%7.2f%n", position++, player.name, player.result));
+            System.out.printf(String.format("%-9d%-10s%7.2f%9d%n", position++, player.name, player.result, player.level));
         }
     }
     public static void showRankingList() throws IOException {
         ArrayList<PlayerRanking> topList = rankingList();
         printRankingList(topList);
-        System.out.println(messages.getString("return.menu"));
-        String goBack = input.nextLine().toLowerCase();
-        if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {
-            Menu.displayMenu();
-        }
+        returnToMenu();
     }
     public static class PlayerRanking{
         String name;
         double result;
+        int level;
 
         public PlayerRanking(String name, double result) {
             this.name = name;
             this.result = result;
+        }
+        public PlayerRanking(String name, double result, int level) {
+            this.name = name;
+            this.result = result;
+            this.level = level;
         }
 
         public String getName() {
@@ -168,6 +167,10 @@ public class Challenge {
         public void setResult(double result) {
             this.result = result;
         }
+
+        public void setLevel(int level) {
+            this.level = level;
+        }
     }
 
     public static ArrayList<PlayerRanking> rankingList(){
@@ -176,8 +179,10 @@ public class Challenge {
         int wordPoints = countWords * wordsValue;
         int orderPoints = countOrder * orderValue;
         int points = wordPoints + orderPoints;
-        float score = (float) points /timeSeconds;
-        String username = Menu.loggedInUsername;
+        score = 0.0f;
+        if(timeSeconds!=0) {
+            score = (float) points / timeSeconds;
+        }
         boolean playerExist = false;
         for (PlayerRanking player : rankingList) {
             if (player.getName().equals(username)) {
@@ -187,9 +192,32 @@ public class Challenge {
                 break;
             }
         }
+        level();
         if (!playerExist){
-            rankingList.add(new PlayerRanking(username, score));
+            rankingList.add(new PlayerRanking(username, score, levelNumber));
         }
         return rankingList;
+    }
+
+    public static void level(){
+        levelNumber = 1;
+        for (PlayerRanking player : rankingList) {
+            if (player.getName().equals(username)) {
+                double result = player.getResult();
+                if (result>=5){
+                    levelNumber = (int) (result / 5 + 1);
+                } else {
+                    levelNumber = 1;
+                }
+                player.setLevel(levelNumber);
+            }
+        }
+    }
+    public static void returnToMenu() throws IOException {
+        System.out.print(messages.getString("return.menu"));
+        String goBack = input.nextLine().toLowerCase();
+        if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {
+            Menu.displayMenu();
+        }
     }
 }
