@@ -7,7 +7,7 @@ public class NewsLetter {
 
     public NewsLetter() {
 
-        this.content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. \" +\n" +
+        this.content = "NEWS ABOUT NEW CONTENT, consectetur adipiscing elit. \" +\n" +
                 "                       \"Nulla eget arcu nec turpis eleifend dictum.\";";
         this.publishDateTime = LocalDateTime.of(2024, 02, 18, 13, 34, 25);
     }

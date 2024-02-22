@@ -4,6 +4,7 @@ import se.ju23.typespeeder.challenge.Challenge;
 import se.ju23.typespeeder.classer.PlayersService;
 import se.ju23.typespeeder.database.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
+import se.ju23.typespeeder.database.ResultatRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +97,7 @@ public class Menu implements MenuService {
 
     }
 
-    public void handleMenuOption(PlayersRepo playersRepo, PlayersService playersService, Scanner scanner) {
+    public void handleMenuOption(PlayersRepo playersRepo, PlayersService playersService, ResultatRepo resultatRepo, Players players, Scanner scanner) {
 
         int option = scanner.nextInt();
         scanner.nextLine();
@@ -111,7 +112,7 @@ public class Menu implements MenuService {
                 playersService.addNewPlayer(playersRepo, scanner);
                 break;
             case 4:
-                System.out.println("CASE 4");
+                playersService.printYourStatistics(playersRepo, resultatRepo, currentPlayer, scanner);
                 break;
             case 5:
                 playersService.deletePlayer(playersRepo, scanner);
@@ -127,10 +128,10 @@ public class Menu implements MenuService {
 
     public void handleMenuOptionEnglish(PlayersRepo playersRepo, PlayersService playersService, Scanner scanner) {
         System.out.println("Welcome to the english menu.");
-        System.out.println("Option 1");
-        System.out.println("Option 2");
-        System.out.println("3");
-        System.out.println("4");
+        System.out.println("Play game");
+        System.out.println("Update player");
+        System.out.println("Add new player");
+        System.out.println("Get your results");
         System.out.println("Delete player");
         System.out.println("6");
 
@@ -138,14 +139,13 @@ public class Menu implements MenuService {
         scanner.nextLine();
         switch (option) {
             case 1:
-                System.out.println("Play game");
                 challenge.basicGame(currentPlayer);
                 break;
             case 2:
                 playersService.updatePlayer(playersRepo, scanner);
                 break;
             case 3:
-                System.out.println("CASE 3");
+                playersService.addNewPlayer(playersRepo, scanner);
                 break;
             case 4:
                 System.out.println("CASE 4");
@@ -188,7 +188,7 @@ public class Menu implements MenuService {
         } while (choice != 0);
     }
 
-    public void login(PlayersRepo playersRepo, PlayersService playersService, Scanner input) {
+    public void login(PlayersRepo playersRepo, PlayersService playersService, ResultatRepo resultatRepo, Players players, Scanner input) {
         boolean runProgram = true;
         do {
             System.out.println("Enter your username: ");
@@ -208,7 +208,7 @@ public class Menu implements MenuService {
                 System.out.println("Your current role is " + foundPLayer.getRole());
                 currentPlayer = foundPLayer;
                 displayMenu();
-                handleMenuOption(playersRepo, playersService, input);
+                handleMenuOption(playersRepo, playersService, resultatRepo,players, input);
                 runProgram = false;
             }
         } while (runProgram);

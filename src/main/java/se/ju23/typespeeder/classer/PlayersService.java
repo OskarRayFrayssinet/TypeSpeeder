@@ -3,6 +3,8 @@ package se.ju23.typespeeder.classer;
 import org.springframework.stereotype.Service;
 import se.ju23.typespeeder.database.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
+import se.ju23.typespeeder.database.Resultat;
+import se.ju23.typespeeder.database.ResultatRepo;
 
 import java.util.List;
 import java.util.Scanner;
@@ -114,4 +116,25 @@ public class PlayersService {
         } while (carryOn);
 
     }
+    public void printYourStatistics(PlayersRepo playersRepo, ResultatRepo resultatRepo, Players players, Scanner scanner) {
+        if (players != null) {
+            System.out.println("Here are the results for " + players.getNickname());
+            Players foundPlayer = playersRepo.findByNickname(players.getNickname());
+            if (foundPlayer != null) {
+                List<Resultat> resultatList = foundPlayer.getResultat();
+                if (resultatList != null && !resultatList.isEmpty()) {
+                    for (Resultat resultat : resultatList) {
+                        System.out.println(resultat);
+                    }
+                } else {
+                    System.out.println("No results found");
+                }
+            } else {
+                System.out.println("Player not found");
+            }
+        } else {
+            System.out.println("No player object provided");
+        }
+    }
+
 }
