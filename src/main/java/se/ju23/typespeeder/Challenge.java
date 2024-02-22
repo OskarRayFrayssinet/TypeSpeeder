@@ -12,7 +12,8 @@ import java.util.Scanner;
 import static se.ju23.typespeeder.TypeSpeederApplication.userService;
 
 public class Challenge {
-    private static ResourceBundle messages = ResourceBundle.getBundle("Messages");
+    public static ResourceBundle messages = ResourceBundle.getBundle("Messages");
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     public static Scanner input = new Scanner(System.in);
     public static boolean stopTimer = false;
     public static long startTime;
@@ -36,6 +37,7 @@ public class Challenge {
             redWords = new ArrayList<>();
             countWords = 0;
             countOrder = 0;
+            String language = input.nextLine();
             System.out.println(messages.getString("game.instructions"));
             System.out.println(messages.getString("time.starts"));
             System.out.print(messages.getString("press.enter.to.play"));

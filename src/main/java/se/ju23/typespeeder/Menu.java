@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.util.*;
 
+import static se.ju23.typespeeder.Challenge.startChallenge;
+
 @SpringBootApplication
 @Component
 public class Menu implements MenuService {
@@ -13,7 +15,8 @@ public class Menu implements MenuService {
     public static User loggedInUser;
     private static Object LoggedInUser;
     public static String loggedInUsername;
-    private static ResourceBundle messages = ResourceBundle.getBundle("Messages");
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    public static ResourceBundle messages = ResourceBundle.getBundle("Messages");
     static List<String> MenuOptions = new ArrayList<>();
     public static Scanner input = new Scanner(System.in);
 
@@ -23,18 +26,6 @@ public class Menu implements MenuService {
 
     public static void displayMenu() throws IOException {
         UserService userService = TypeSpeederApplication.userService;
-
-       // System.out.println(messages.getString("welcome.message.sv"));
-        //System.out.println(messages.getString("welcome.message"));
-
-
-     //   if (loggedInUser == null) {
-         //   System.out.println("0. Logga in");
-       // } else {
-         //   System.out.println("0. Logga ut");
-          //  System.out.println("Inloggad som: " + loggedInUser.getUsername());
-      //  }
-
 
 
         System.out.println("Ange siffran för ditt val: ");
@@ -59,7 +50,7 @@ public class Menu implements MenuService {
         } else {
             switch (menuChoice) {
                 case 6 -> logOut();
-                case 1 -> Challenge.startChallenge();
+                case 1 -> startChallenge();
                 case 2 -> Challenge.showRankingList();
                 case 3 -> showNewsAndUpdates();
                 case 4 -> changeLanguage();
@@ -128,9 +119,6 @@ public class Menu implements MenuService {
     }
 
 
-
-
-
     public static void logOut() {
         LoggedInUser = null;
         System.out.println("Du har loggats ut.");
@@ -164,7 +152,6 @@ public class Menu implements MenuService {
         System.out.print("Välj språk (sv/en): ");
         String language = input.nextLine().toLowerCase();
 
-        // Uppdatera ResourceBundle för det valda språket
         System.out.println("Valt språk: " + language);
         if ("en".equalsIgnoreCase(language)) {
             messages = ResourceBundle.getBundle("messages", new Locale(language, "US"));
@@ -177,12 +164,23 @@ public class Menu implements MenuService {
             messages = ResourceBundle.getBundle("messages", Locale.getDefault());
         }
 
-        System.out.println(messages.getString("return.menu"));
+        startGameAfterLanguageSelection();
+       /* System.out.println(messages.getString("return.menu"));
         String goBack = input.nextLine().toLowerCase();
         if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {
             displayMenu();
-        }
+        }*/
 
+    }
+
+    public static void startGameAfterLanguageSelection() throws IOException {
+        System.out.print(messages.getString("you.want.play"));
+        String playGame = input.nextLine().toLowerCase();
+        if ("ja".equalsIgnoreCase(playGame) || "yes".equalsIgnoreCase(playGame)) {
+            startChallenge();
+        } else {
+            displayMenu();
+        }
     }
 
 
