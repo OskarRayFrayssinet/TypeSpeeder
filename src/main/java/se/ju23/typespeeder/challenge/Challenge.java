@@ -1,18 +1,12 @@
 package se.ju23.typespeeder.challenge;
 
-import com.sun.tools.javac.Main;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.MyRunner;
-import se.ju23.typespeeder.classer.PlayersService;
-import se.ju23.typespeeder.classer.ResultatService;
 import se.ju23.typespeeder.classer.TerminalColors;
 import se.ju23.typespeeder.database.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
 import se.ju23.typespeeder.database.Resultat;
 import se.ju23.typespeeder.database.ResultatRepo;
 
-import javax.xml.transform.Result;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -22,8 +16,6 @@ public class Challenge implements iChallenge {
     public Scanner scanner = new Scanner(System.in);
     private Instant startTime;
     private Instant endTime;
-    Players player = new Players();
-
 
     @Override
     public List<Character> lettersToType() {
@@ -51,15 +43,38 @@ public class Challenge implements iChallenge {
 
         String typedText = String.join(" ", playersInputList);
 
-        double accuracy = calculateAccuracy(typedText.trim(), wordString.toString().trim());
+        double accuracy = calculateAccuracyBasicGame(typedText.trim(), wordString.toString().trim());
         System.out.println("Accuracy: " + accuracy);
         endTime = Instant.now();
         if (accuracy == 100.0) {
-            calculateTime();
+            calculateTime2();
         }
     }
 
-    public void basicGame() {
+    public void calculateTime2() {
+        if (startTime != null && endTime != null) {
+            Duration duration = Duration.between(startTime, endTime);
+            long seconds = duration.getSeconds();
+            long minutes = seconds / 60;
+            seconds %= 60;
+            System.out.println("Time taken: " + minutes + " minutes " + seconds + " seconds");
+
+           /* Players players = new Players("Abba", "Abba", "Abba", 1, "admin");
+            MyRunner.playersRepo.save(players);
+
+            Resultat resultat = new Resultat(1, seconds, 4, players);
+            MyRunner.resultatRepo.save(resultat);*/
+
+            //Resultat resultat = new Resultat(0,seconds,4, players);
+            // MyRunner.resultatRepo.save(resultat);
+
+        } else {
+            System.out.println("Time calculation failed. Start and end times are not properly set.");
+
+        }
+    }
+
+    public void basicGame(Players players) {
         startTime = Instant.now();
         System.out.println("Type the following characters: ");
         List<String> words = generateRandomEnglishWords(10);
@@ -77,11 +92,11 @@ public class Challenge implements iChallenge {
 
         String typedText = String.join(" ", playersInputList);
 
-        double accuracy = calculateAccuracy(typedText.trim(), wordString.toString().trim());
+        double accuracy = calculateAccuracyBasicGame(typedText.trim(), wordString.toString().trim());
         System.out.println("Accuracy: " + accuracy);
         endTime = Instant.now();
         if (accuracy == 100.0) {
-            calculateTime();
+            calculateTime(players);
         }
     }
 
@@ -98,7 +113,7 @@ public class Challenge implements iChallenge {
         return words;
     }
 
-    public void colourGame() {
+    public void colourGame(Players players) {
         startTime = Instant.now();
         System.out.println("Type the following characters: ");
         List<String> originalWords = generateRandomEnglishWords(10);
@@ -115,11 +130,10 @@ public class Challenge implements iChallenge {
         String inputLine = scanner.nextLine();
         String[] typedWord = inputLine.split("\\s+");
 
-
         double accuracy = calculateAccuracyColouredGame(typedWord, highlightedWords);
         endTime = Instant.now();
         if (accuracy == 100.0) {
-            calculateTime();
+            calculateTime(players);
         }
     }
 
@@ -142,7 +156,7 @@ public class Challenge implements iChallenge {
         return highlightedWords;
     }
 
-    public int calculateAccuracy(String typedText, String originalText) {
+    public int calculateAccuracyBasicGame(String typedText, String originalText) {
 
         int minLength = Math.min(typedText.length(), originalText.length());
         int maxLength = Math.max(typedText.length(), originalText.length());
@@ -163,7 +177,6 @@ public class Challenge implements iChallenge {
         } else {
             System.out.println("You made " + errors + " mistake(s).");
         }
-
         return accuracy;
     }
 
@@ -190,19 +203,25 @@ public class Challenge implements iChallenge {
 
         accuracy = Math.round(accuracy * 100.0) / 100.0;
         System.out.println("Accuracy: " + accuracy);
+
         return (int) accuracy;
     }
 
-    public void calculateTime() {
+    public void calculateTime(Players players) {
         if (startTime != null && endTime != null) {
             Duration duration = Duration.between(startTime, endTime);
             long seconds = duration.getSeconds();
             long minutes = seconds / 60;
             seconds %= 60;
             System.out.println("Time taken: " + minutes + " minutes " + seconds + " seconds");
-            Players players = new Players("Abba", "Abba", "Abba", 1, "admin");
+
+           /* Players players = new Players("Abba", "Abba", "Abba", 1, "admin");
             MyRunner.playersRepo.save(players);
+
             Resultat resultat = new Resultat(1, seconds, 4, players);
+            MyRunner.resultatRepo.save(resultat);*/
+
+            Resultat resultat = new Resultat(0,seconds,4, players);
             MyRunner.resultatRepo.save(resultat);
 
         } else {

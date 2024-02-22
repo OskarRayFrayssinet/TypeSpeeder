@@ -18,11 +18,13 @@ public class MyRunner implements CommandLineRunner {
     public static PlayersRepo playersRepo;
     @Autowired
     public static ResultatRepo resultatRepo;
+
     @Autowired
-    public MyRunner(PlayersRepo playersRepo, ResultatRepo resultatRepo){
+    public MyRunner(PlayersRepo playersRepo, ResultatRepo resultatRepo) {
         this.playersRepo = playersRepo;
         this.resultatRepo = resultatRepo;
     }
+
     Scanner input = new Scanner(System.in);
     PlayersService playersService = new PlayersService();
     Menu menu = new Menu();

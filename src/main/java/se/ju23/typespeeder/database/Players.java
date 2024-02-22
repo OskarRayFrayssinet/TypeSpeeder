@@ -46,6 +46,10 @@ public class Players {
         this.nickname = nickname;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getUsername() {
         return username;
     }

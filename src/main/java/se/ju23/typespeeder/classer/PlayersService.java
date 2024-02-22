@@ -4,12 +4,13 @@ import org.springframework.stereotype.Service;
 import se.ju23.typespeeder.database.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
 
+import java.util.List;
 import java.util.Scanner;
 
 @Service
 public class PlayersService {
 
-       public void addNewPlayer(PlayersRepo playersRepo, Scanner input) {
+    public void addNewPlayer(PlayersRepo playersRepo, Scanner input) {
 
         Players players = new Players();
 
@@ -31,10 +32,11 @@ public class PlayersService {
         playersRepo.save(players);
 
     }
+
     public void updatePlayer(PlayersRepo playersRepo, Scanner input) {
         boolean carryOn = true;
 
-        do{
+        do {
             System.out.println("Här kan du uppdatera dina upggifter");
             System.out.println("Ange den info som du vill uppdatera");
             System.out.println("1. Ändra nickname." + "\n2. Ändra username" + "\n3. Lämna menu.");
@@ -78,4 +80,38 @@ public class PlayersService {
 
     }
 
+    public void deletePlayer(PlayersRepo playersRepo, Scanner scanner) {
+        boolean carryOn = true;
+
+        do {
+            System.out.println("Här kan du radera en spelare");
+            System.out.println("Nedan ser du en lista med nuvarande spelare");
+            List<Players> playersList = playersRepo.findAll();
+            for (Players players : playersList) {
+                System.out.println(players.getNickname() + " " + players.getId());
+            }
+            System.out.println("Ange spelar-id eller nickname som ska tas bort");
+            String choice = scanner.nextLine();
+
+            if (choice.equals("0")) {
+                carryOn = false;
+                continue;
+            }
+            try {
+                int playerId = Integer.parseInt(choice);
+                playersRepo.deleteById(playerId);
+                System.out.println("Spelare med id " + playerId + "tagits bort");
+            } catch (NumberFormatException e){
+                Players playerToDelete = playersRepo.findByNickname(choice);
+                if (playerToDelete != null) {
+                    playersRepo.delete(playerToDelete);
+                    System.out.println("Spelare med nickname " + choice + "tagits bort");
+                } else {
+                    System.out.println("Inte hittats");
+                }
+            }
+
+        } while (carryOn);
+
+    }
 }
