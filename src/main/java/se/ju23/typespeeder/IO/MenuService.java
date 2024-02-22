@@ -14,5 +14,7 @@ public interface MenuService {
     int setMenuInput();
     public int selectNewsOptions();
     void displayNewsMenu();
+    int selectEditPlayerMenuOptions();
+    void displayEditPlayersMenu();
 
 }

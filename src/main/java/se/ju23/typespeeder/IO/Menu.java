@@ -36,16 +36,20 @@ public class Menu implements MenuService {
         menuOptions.add(ANSI_DARK_GREY + "Redigera spelare" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_GREY + "Logga ut" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_GREY + "Avsluta spel" + ANSI_RESET);
-        menuOptions.add(ANSI_DARK_GREY +"Visa nyhetsbrev"+ ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Visa nyhetsbrev" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_BLUE + "Redigera nyhetsbrev" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_GREY + "Läs patchnyheter" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_BLUE + "Redigera patchnyheter" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_GREY + "Avsluta" + ANSI_RESET);
-        menuOptions.add(ANSI_DARK_GREY +"Display newsletter"+ ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Display newsletter" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_BLUE + "Edit newsletter" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_GREY + "Read patch news" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_BLUE + "Edit patch news" + ANSI_RESET);
         menuOptions.add(ANSI_DARK_GREY + "Exit" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Lägg till spelare" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Redigera spelare" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Add player" + ANSI_RESET);
+        menuOptions.add(ANSI_DARK_GREY + "Edit player" + ANSI_RESET);
     }
 
 
@@ -77,7 +81,7 @@ public class Menu implements MenuService {
     }
 
     @Override
-    public Status displayMenu(){
+    public Status displayMenu() {
         System.out.println("Välj språk (svenska/engelska):");
         System.out.println("Svenska valt.");
         int menuNumber = 1;
@@ -96,12 +100,12 @@ public class Menu implements MenuService {
         int menuNumber = 1;
         LinkedList<String> tempmenuOptions = new LinkedList<>(getMenuOptions());
         for (String options : tempmenuOptions) {
-                System.out.println(menuNumber + ". " + options);
-                menuNumber++;
-                if (menuNumber == 7) {
-                    break;
-                }
+            System.out.println(menuNumber + ". " + options);
+            menuNumber++;
+            if (menuNumber == 7) {
+                break;
             }
+        }
         return setStatus(Status.ENGLISH);
     }
 
@@ -136,16 +140,47 @@ public class Menu implements MenuService {
     public void displayNewsMenu() {
         int menuNumber = 1;
         LinkedList<String> tempmenuOptions = new LinkedList<>(getMenuOptions());
-        if (getStatus().equals(Status.SVENSKA)){
+        if (getStatus().equals(Status.SVENSKA)) {
             for (int i = 0; i < tempmenuOptions.size(); i++) {
                 if ((i >= 13) && (i <= 17)) {
                     System.out.println(menuNumber + ". " + tempmenuOptions.get(i));
                     menuNumber++;
                 }
             }
-        } else if (getStatus().equals(Status.ENGLISH)){
+        } else if (getStatus().equals(Status.ENGLISH)) {
             for (int i = 0; i < tempmenuOptions.size(); i++) {
                 if ((i >= 18) && (i <= 22)) {
+                    System.out.println(menuNumber + ". " + tempmenuOptions.get(i));
+                    menuNumber++;
+                }
+            }
+
+        }
+
+    }
+
+    public int selectEditPlayerMenuOptions() {
+        if (getStatus().equals(Status.SVENSKA)) {
+            System.out.println("Vänlingen välj ett av följande alternativ genom att ange nummer: ");
+        } else if (getStatus().equals(Status.ENGLISH)) {
+            System.out.println(ANSI_DARK_GREY + "Please select one of the following options by entering the number:  " + ANSI_RESET);
+        }
+        return io.getValidIntegerInput(io.returnScanner(), 1, 3);
+    }
+
+    public void displayEditPlayersMenu() {
+        int menuNumber = 1;
+        LinkedList<String> tempmenuOptions = new LinkedList<>(getMenuOptions());
+        if (getStatus().equals(Status.SVENSKA)) {
+            for (int i = 0; i < tempmenuOptions.size(); i++) {
+                if ((i >= 23) && (i <= 24)) {
+                    System.out.println(menuNumber + ". " + tempmenuOptions.get(i));
+                    menuNumber++;
+                }
+            }
+        } else if (getStatus().equals(Status.ENGLISH)) {
+            for (int i = 0; i < tempmenuOptions.size(); i++) {
+                if ((i >= 25) && (i <= 27)) {
                     System.out.println(menuNumber + ". " + tempmenuOptions.get(i));
                     menuNumber++;
                 }
