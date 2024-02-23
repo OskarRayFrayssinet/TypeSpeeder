@@ -13,7 +13,7 @@ import java.util.Collection;
     private int userId;
     @Basic
     @Column(name = "email", nullable = false, length = 200)
-    private String email; //Username
+    private String email;
     @Basic
     @Column(name = "password", nullable = false, length = 45)
     private String password;

@@ -38,6 +38,8 @@ public class NewsLetterTest {
             field.setAccessible(true);
             String contentValue = (String) field.get(instance);
 
+
+
             assertTrue(contentValue.length() >= 100, "Content field length should be at least 100 characters.");
             assertTrue(contentValue.length() <= 200, "Content field length should be at most 200 characters.");
 
@@ -62,12 +64,14 @@ public class NewsLetterTest {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = dateTimeValue.format(formatter);
 
-            //denna hämtar och kolla när filen skapades
+            //denna hämtar och kolla när filen skapades för att så samma struktur på equals eftersom,
+            //assertEquals kollar att det är exakt samma tid
             LocalDateTime fileCreationDateTime = getPublishDateTime();
             assert fileCreationDateTime != null;
 
             //Här stod det "Expected format" så det funkade inte
-            //jag la till denna fileCreationDateTime så att den hittar tiden då filen skapades och kollar att det stämmer med formatet
+            //jag la till denna fileCreationDateTime så att den hittar tiden
+            //då filen skapades och kollar att det stämmer med formatet
             assertEquals(fileCreationDateTime.format(formatter), formattedDateTime, "'publishDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
 
             Method getterMethod = someClass.getDeclaredMethod("getPublishDateTime");

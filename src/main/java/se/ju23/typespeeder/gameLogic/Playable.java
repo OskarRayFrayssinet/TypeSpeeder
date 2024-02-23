@@ -1,8 +1,5 @@
 package se.ju23.typespeeder.gameLogic;
 
-import se.ju23.typespeeder.InfoForUsers.NewsLetter;
-
-import java.time.LocalTime;
 import java.util.List;
 
 public interface Playable {
@@ -12,18 +9,17 @@ public interface Playable {
     void calculateTotalPointsForGame(String userAnswer);
 
 
-    String printChallengeResult();
+    String returnChallengeResult();
 
-    String printScoreBoardBasedOnThree();
+    String scoreBoardBasedOnThree();
 
-    //NewsLetter printNewsletter();
 
-    String printScoreBoardBasedOnLevel();
+    String scoreBoardBasedOnLevel();
 
 
     void setCurrentSolution(List<String> currentSolution1);
 
-    String printUserInfo();
+    String returnUserInfo();
 
     String beforeGameStartsText();
 

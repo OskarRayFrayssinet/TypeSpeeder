@@ -5,12 +5,22 @@ public class UserScores {
     private int level;
     private int xp;
     private double score;
+    private String alias;
 
-    public UserScores(String username, int level, int xp, double score) {
+    public UserScores(String username,String alias, int level, int xp, double score) {
         this.username = username;
+        this.alias = alias;
         this.level = level;
         this.xp = xp;
         this.score = score;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getUsername() {

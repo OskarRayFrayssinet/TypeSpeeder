@@ -44,11 +44,14 @@ public class PatchTest {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = dateTimeValue.format(formatter);
 
+            //denna hämtar och kolla när filen skapades för att så samma struktur på equals eftersom,
+            //assertEquals kollar att det är exakt samma tid
             LocalDateTime fileCreationDateTime = getReleaseDateTime();
             assert fileCreationDateTime != null;
 
             //Här stod det "Expected format" så det funkade inte
-            //jag la till denna fileCreationDateTime så att den hittar tiden då filen skapades och kollar att det stämmer med formatet
+            //jag la till denna fileCreationDateTime så att den hittar tiden
+            //då filen skapades och kollar att det stämmer med formatet
             assertEquals(fileCreationDateTime.format(formatter), formattedDateTime, "'releaseDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
 
             Method getterMethod = someClass.getDeclaredMethod("getReleaseDateTime");

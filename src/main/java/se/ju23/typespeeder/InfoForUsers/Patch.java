@@ -1,5 +1,7 @@
 package se.ju23.typespeeder.InfoForUsers;
 
+import se.ju23.typespeeder.colors.ConsoleColor;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -64,13 +66,8 @@ public class Patch {
 
         return content.toString();
     }
-
-    //TODO SÄTT FÄRG
     @Override
     public String toString() {
-        return "Patch" +
-                "content='" + patchVersion + '\'' +
-                ", publishDateTime=" + getFormattedPublishDateTime(releaseDateTime) +
-                '}';
+        return ConsoleColor.BOLD + "Patch: " +  patchVersion + "Published: " + getFormattedPublishDateTime(releaseDateTime) + "\n" + ConsoleColor.RESET;
     }
 }

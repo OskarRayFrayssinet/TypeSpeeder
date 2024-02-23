@@ -1,5 +1,7 @@
 package se.ju23.typespeeder.InfoForUsers;
 
+import se.ju23.typespeeder.colors.ConsoleColor;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,13 +24,6 @@ public class NewsLetter {
         this.content = getContent();
         this.publishDateTime = getPublishDateTime();
     }
-    /*
-    public String getContent() {
-        return content;
-    }
-
-
-*/
     public static String getFormattedPublishDateTime(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return localDateTime.format(formatter);
@@ -73,12 +68,9 @@ public class NewsLetter {
         return content.toString();
     }
 
-    //TODO SÄTT FÄRG
     @Override
     public String toString() {
-        return "NewsLetter" +
-                "content='" + content + '\'' +
-                ", publishDateTime=" + getFormattedPublishDateTime(publishDateTime) +
-                '}';
+        return "NewsLetter\n" + content +
+                "PublishDateTime: " + getFormattedPublishDateTime(publishDateTime) + "\n" ;
     }
 }

@@ -122,7 +122,7 @@ import java.util.List;
             menuOptions.add(ConsoleColor.CYAN + "\u001B[1mUSERNAME CHANGED\n" +
                     "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n" + ConsoleColor.RESET);
         } else {
-            if (playable.getCurrentUsername(1).equals(playable.getCurrentUsername(0))/* && playable.getCurrentEmail(2).isEmpty()*/){
+            if (playable.getCurrentUsername(1).equals(playable.getCurrentUsername(0))){
                 menuOptions.add("New Username (Go back 'b'): ");
             } else if (playable.getCurrentUsername(2).equals("2")){
                 menuOptions.add("\u001B[1mWrong Username Or already taken\u001B[0m\n");
@@ -153,7 +153,7 @@ import java.util.List;
         menuOptions.add("2. Select game hard\n");
         menuOptions.add("3. Select game easy\n");
         menuOptions.add("4. Show ranking list\n");
-        menuOptions.add("5. Change user info\n");
+        menuOptions.add("5. Account settings\n");
         menuOptions.add("6. Show newsletter\n");
         menuOptions.add("Your choice: ");
 

@@ -4,6 +4,7 @@ package se.ju23.typespeeder.gameLogic;
 
 import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.InfoForUsers.NewsLetter;
+import se.ju23.typespeeder.InfoForUsers.Patch;
 import se.ju23.typespeeder.userInterfaces.IO;
 import se.ju23.typespeeder.userInterfaces.MenuService;
 
@@ -23,7 +24,7 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
 
     @Override
     public void run(){
-
+        System.out.println(new Patch());
 
         while (true) {
 
@@ -43,16 +44,21 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
 
 
                 int input = io.getInt();
-                status = playable.standbyInMainMenu(input);
+                if (input > 6){
+                    status = Status.VERIFIED;
+                } else {
+                    status = playable.standbyInMainMenu(input);
+                }
+
             }
 
 
             switch (status){
                 case IN_GAME_SETTINGS -> {
-                    io.addString(playable.printUserInfo());
+                    io.addString(playable.returnUserInfo());
                     io.addString(menuService.getUserSettingsMenu());
                     int input = io.getInt();
-                    if(input == 0){
+                    if(input == 0 || input > 3){
                         status = Status.VERIFIED;
                     } else {
                         status = playable.standbyInSettingsMenu(input);
@@ -64,7 +70,7 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
                     if (input == 0){
                         status = Status.VERIFIED;
                     } else if (input > challenge.getGameListSize()) {
-                        io.addString("hittade ingen");
+                        io.addString("No found, try again");
                     } else {
                         io.addString(playable.beforeGameStartsText());
                         io.getEnter();
@@ -73,10 +79,9 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
                         String answer = io.getString();
                         challenge.endChallenge();
                         playable.calculateTotalPointsForGame(answer);
-                        io.addString(playable.printChallengeResult());
+                        io.addString(playable.returnChallengeResult());
                     }
                 }
-                //TODO GÖR KLART ENKLA SPEL
                 case ACTIVE_IN_GAME_EASY -> {
 
                     io.addString(challenge.printListOfEasyGames());
@@ -84,7 +89,7 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
                     if (input == 0){
                         status = Status.VERIFIED;
                     }else if (input > challenge.getGameListSize()) {
-                        io.addString("hittade ingen");
+                        io.addString("No found, try again2");
                     } else {
                         io.addString(playable.beforeGameStartsText());
                         io.getEnter();
@@ -93,16 +98,17 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
                         String answer = io.getString();
                         challenge.endChallenge();
                         playable.calculateTotalPointsForGame(answer);
-                        io.addString(playable.printChallengeResult());
+                        io.addString(playable.returnChallengeResult());
                     }
 
 
                 }
                 case NO_USER_FOUND -> io.addString(menuService.printLoginText());
-                case IN_STATS -> io.addGameText(playable.printScoreBoardBasedOnThree() +
-                playable.printScoreBoardBasedOnLevel());
+                case IN_STATS -> io.addGameText(playable.scoreBoardBasedOnThree() +
+                playable.scoreBoardBasedOnLevel());
                 case NEWSLETTER -> io.addString(String.valueOf(new NewsLetter()));
             }
+
             switch (status){
                 case EXIT -> io.exit();
                 case CHANGING_ALIAS -> {

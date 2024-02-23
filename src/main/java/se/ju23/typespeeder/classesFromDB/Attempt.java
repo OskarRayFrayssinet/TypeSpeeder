@@ -14,11 +14,9 @@ public class Attempt {
     private int attemptId;
     @Basic
     @Column(name = "user_id", insertable=false, updatable=false)
-    //@Column(name = "user_id", nullable = false)
     private int userId;
     @Basic
     @Column(name = "task_id", insertable=false, updatable=false)
-    //@Column(name = "task_id", nullable = false)
     private int taskId;
     @Basic
     @Column(name = "total_points", nullable = false)

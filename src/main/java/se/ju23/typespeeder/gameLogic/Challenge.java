@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.classesFromDB.Tasks;
 import se.ju23.typespeeder.classesFromDB.TasksRepo;
+import se.ju23.typespeeder.colors.ConsoleColor;
 import se.ju23.typespeeder.userInterfaces.MenuService;
 
 import java.time.Duration;
@@ -51,7 +52,6 @@ public class Challenge implements IChallenge {
     public String printListOfGames() {
         gameDifficulty = 2;
         setGameDifficulty();
-        System.out.println("NIVÅ" + gameDifficulty);
         List<Tasks> tasksList = tasksRepo.findByDifficulty("HARD");
         return getGameList(tasksList);
     }
@@ -59,7 +59,6 @@ public class Challenge implements IChallenge {
     public String printListOfEasyGames(){
         gameDifficulty = 1;
         setGameDifficulty();
-        System.out.println("NIVÅ" + gameDifficulty);
         List<Tasks> tasksList = tasksRepo.findByDifficulty("EASY");
         return getGameList(tasksList);
     }
@@ -71,7 +70,12 @@ public class Challenge implements IChallenge {
         }
         listOfCurrentGames = tasksList;
         gameListSize = tasksList.size();
-        return "0. Go back\n" + stringBuilder;
+        if (gameDifficulty == 1){
+            return ConsoleColor.GREEN + "EASY GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD +  "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET ;
+        } else {
+            return ConsoleColor.RED + "HARD GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD + "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET ;
+        }
+
     }
 
 
@@ -98,25 +102,33 @@ public class Challenge implements IChallenge {
     }
 
     private void generateAndMarkWords() {
-        String translatedText;
         StringBuilder stringBuilder = new StringBuilder();
-        if (currentLanguage.equals("1")) {
-            try {
-                translatedText = translator.translate(currentGameText, "sv");
-                currentGameText = translatedText;
-            } catch (Exception e) {
-                throw new RuntimeException();
+
+        if (!containsOnlySingleLetters(currentGameText)) {
+            if (currentLanguage.equals("1")) {
+                try {
+                    currentGameText = translator.translate(currentGameText, "sv");
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
             }
         }
-
         List<String> textInWords = Arrays.asList(currentGameText.split("\\s+"));
-
         List<String> textWithYellowWords = addYellowHighlight(textInWords, generateRandomWords(currentGameText));
 
         for (String t : textWithYellowWords) {
             stringBuilder.append(t).append(" ");
         }
         stringToPrint = stringBuilder.toString();
+    }
+    private boolean containsOnlySingleLetters(String text) {
+        String[] words = text.split("\\s+");
+        for (String word : words) {
+            if (word.length() != 1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public String lettersToType() {
@@ -174,12 +186,12 @@ public class Challenge implements IChallenge {
             wordsIndicies = 3;
         }
 
-        int[] indices = new int[wordsIndicies];//en array för att lagra dom slumpmässiga orden. hur många ord som lagras beror på level enligt insatt metod
-        Set<Integer> chosenIndices = new HashSet<>(); //här sparas alla ord i en hashset för att säkerställa att det inte finns samma ord mer än en gång
+        int[] indices = new int[wordsIndicies];
+        Set<Integer> chosenIndices = new HashSet<>();
         for (int i = 0; i < wordsIndicies; i++) {
-            int index = random.nextInt(words.length); //väljer random index i words Arrayen, dessa blir slumpmässiga ord som ska med i spelet
-            while (chosenIndices.contains(index)) { //om ordet finns i
-                index = random.nextInt(words.length);//om det finns samma ord på ett annat index så hämtar denna en ny index att kolla ord på
+            int index = random.nextInt(words.length);
+            while (chosenIndices.contains(index)) {
+                index = random.nextInt(words.length);
             }
             chosenIndices.add(index);
             indices[i] = index;

@@ -92,7 +92,7 @@ public class TypeSpeederGamePlay implements Playable {
         correctAnswers = 0;
         correctAnswersInRow = 0;
         currentUserGuess = userAnswer;
-//TODO FIXA SÅÅ ATT MAN KAN SPELA MED ORD TYPOKÄNSLIGT OCH ÄVEN BOKSTÄVER
+
         if (gameDifficulty == 1){
 
             if (isLetterGame(currentSolution)){
@@ -153,7 +153,6 @@ public class TypeSpeederGamePlay implements Playable {
         return countWordsWithMoreThanOneLetter > 2;
     }
 
-    // Metod för att avgöra om det är en bokstavslek
     public boolean isLetterGame(List<String> letters) {
         for (String letter : letters) {
             if (letter.length() != 1) {
@@ -162,48 +161,56 @@ public class TypeSpeederGamePlay implements Playable {
         }
         return true;
     }
-    public void saveAttemptToDB(){
-        Tasks t = null;
-        Users u = null;
-        Optional<Tasks> findTask = tasksRepo.findById(currentTaskId);
-        if (findTask.isPresent()){
-            t = findTask.get();
-        }
-        Optional<Users> findUser = usersRepo.findById(currentUserId);
-        if (findUser.isPresent()){
-            u = findUser.get();
-        }
-        Attempt newAttempt = new Attempt(totalCalculatedPoints,currentSolutionToString(),currentUserGuess,u,t, getCurrentTime());
-        attemptRepo.save(newAttempt);
-        PointParam pointParam = new PointParam(getTimeResult(),correctAnswers,correctAnswersInRow,newAttempt,numOfWords);
-        pointParamRepo.save(pointParam);
 
-    }
     public static Timestamp getCurrentTime(){
         return (new Timestamp(System.currentTimeMillis()));
     }
 
-    //TODO FIXA SÅ ATT CORRECTANSWERSINROW INTE SKRIVS IF GAMEDIFFICULTY ÄR 1
     @Override
-    public String printChallengeResult(){
-        getXpLimit();
-        String toReturn = ConsoleColor.BLUE + "--------\n" +
-                "| Correct Answers: " + correctAnswers + " |" +
-                "| Correct Answers in row: " + correctAnswersInRow + " |" +
-                "| Your Time: " + getTimeResult() + " Seconds" + " |" + "| Points: " +
-                currentPointsForPrinting + " |" +
-                "\n--------\n" + ConsoleColor.RESET;
+    public String returnChallengeResult(){
+        String toReturn;
+        if (gameDifficulty == 1){
+            toReturn = ConsoleColor.BLUE + "--------\n" +
+                    "| Correct Answers: " + correctAnswers + " |" +
+                    "| Your Time: " + getTimeResult() + " Seconds" + " |" + "| Points: " +
+                    currentPointsForPrinting + " |" +
+                    "\n--------\n" + ConsoleColor.RESET;
+        } else {
+            toReturn = ConsoleColor.BLUE + "--------\n" +
+                    "| Correct Answers: " + correctAnswers + " |" +
+                    "| Correct Answers in row: " + correctAnswersInRow + " |" +
+                    "| Your Time: " + getTimeResult() + " Seconds" + " |" + "| Points: " +
+                    currentPointsForPrinting + " |" +
+                    "\n--------\n" + ConsoleColor.RESET;
+        }
         if (levelUp){
-            return toReturn + ConsoleColor.BRIGHT_YELLOW + "NEW LEVEL!: " + currentLevel + ConsoleColor.RESET +
-                    " | XP: " + currentXp + "/" + xpLimitToLevelUp + " Until next level |" + "\n";
+            return toReturn + ConsoleColor.BRIGHT_YELLOW + "NEW LEVEL!: " + currentLevel + ConsoleColor.RESET + "\n";
         } else if (levelLimit){
             return toReturn + ConsoleColor.BRIGHT_YELLOW + "YOU HAVE REACHED THE HIGHEST LEVEL CONTINUE TO IMPROVE YOUR SCORE!" + ConsoleColor.RESET;
         }else {
             return toReturn;
         }
+
+
     }
     @Override
-    public String printScoreBoardBasedOnThree(){
+    public String scoreBoardBasedOnLevel(){
+
+        List<Users> users = usersRepo.findAll();
+
+        List<Users> topListOfUsers = new ArrayList<>(users);
+        StringBuilder result = new StringBuilder(ConsoleColor.CYAN + "    \u001B[1mSCOREBOARD BASED ON LEVEL \n    player                        Level     XP\n" + ConsoleColor.RESET);
+        int pos = 1;
+        topListOfUsers.sort((p1,p2) -> Integer.compare(p2.getLevel(), p1.getLevel()));
+        for (Users u : topListOfUsers){
+            result.append(String.format(ConsoleColor.CYAN + "\u001B[1m%5d %-5s%-17s%9.0f%9.0f%n" + ConsoleColor.RESET, pos, u.getAlias(), " (" +  u.getEmail() + ")", (double)u.getLevel(),(double)u.getXp()));
+            if (pos++ ==10) break;
+        }
+
+        return result.toString();
+    }
+    @Override
+    public String scoreBoardBasedOnThree(){
 
         List<Users> users = usersRepo.findAll();
         List<UserScores> userScores = new ArrayList<>();
@@ -214,14 +221,16 @@ public class TypeSpeederGamePlay implements Playable {
                 double correctInOrderPercentage = calculateCorrectInOrderPercentage(user);
                 double speedAverage = calculateSpeedAverage(user);
                 double userScore = calculateUserScore(correctPercentage, correctInOrderPercentage, speedAverage);
-                userScores.add(new UserScores(user.getEmail(),user.getLevel(),user.getXp(),userScore));
+                userScores.add(new UserScores(user.getEmail(),user.getAlias(),user.getLevel(),user.getXp(),userScore));
             }
         }
         userScores.sort(Comparator.comparingDouble(UserScores::getScore).reversed());
-        StringBuilder result = new StringBuilder(ConsoleColor.BRIGHT_MAGENTA + "    \u001B[1mSCOREBOARD BASED ON 5 LATEST ACHIEVEMENTS\n SCORE BASED ON: SPEED, ACCURACY, ACCURACY IN ORDER \n    player          Level   XP   Score\n" + ConsoleColor.RESET);
+        StringBuilder result = new StringBuilder(ConsoleColor.BRIGHT_MAGENTA + "    \u001B[1mSCOREBOARD BASED ON 5 LATEST ACHIEVEMENTS\n SCORE BASED ON:" +
+                " SPEED, ACCURACY, ACCURACY IN ORDER " +
+                "\n    player                            Level     XP     Score\n" + ConsoleColor.RESET);
         int pos = 1;
         for (UserScores userScore : userScores) {
-            result.append(String.format(ConsoleColor.MAGENTA + "\u001B[1m%5d %-9s%7.0f%7.0f%7.2f%n" + ConsoleColor.RESET, pos, userScore.getUsername(),
+            result.append(String.format(ConsoleColor.MAGENTA + "\u001B[1m%5d %-9s%-17s%9.0f%9.0f%9.0f%n" + ConsoleColor.RESET, pos, userScore.getAlias(), "(" + userScore.getUsername() + ")",
                     (double)userScore.getLevel(),
                     (double)userScore.getXp(), userScore.getScore()));
             if (pos++ == 10) break;
@@ -287,6 +296,48 @@ public class TypeSpeederGamePlay implements Playable {
                 (correctInOrderPercentage * weightCorrectInOrderPercentage) +
                 (speedAverage * weightSpeedAverage);
     }
+
+    public int getXpLimit() {
+        int xpLimit = 20;
+        Optional<Users> found = usersRepo.findByUserId(currentUserId);
+        if (found.isPresent()){
+            int level = found.get().getLevel();
+            if (level > 0 ) {
+                for (int i = 0; i < level; i++) {
+                    xpLimit += 5;
+                }
+                xpLimitToLevelUp = xpLimit;
+            }
+        }
+        return xpLimit;
+
+    }
+
+    public void totalPointsAfterCountingWords(){
+        double points;
+        double userTime = getTimeResult();
+        double maxTime = 120;
+        if (userTime>maxTime){
+            points = 0;
+
+        } else if (correctAnswers == 0 && correctAnswersInRow == 0){
+            points = 0;
+        } else {
+            if (gameDifficulty == 1){
+                points = ((double) correctAnswers /4 + (10 * Math.pow((0.5 - (userTime / maxTime)), 1)));
+            } else {
+                points = (correctAnswers +  correctAnswersInRow + (10 * Math.pow((1 - (userTime / maxTime)), 1)));
+            }
+
+        }
+        totalCalculatedPoints = (int) points;
+        setXpToDB((int) points);
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.US);
+        DecimalFormat df = new DecimalFormat("#.##", symbols);
+        double a = Double.parseDouble(df.format(points));
+        currentPointsForPrinting = String.valueOf(a);
+
+    }
     public void setXpToDB(int totPoints){
         levelUp = false;
         int xpLimit;
@@ -331,62 +382,21 @@ public class TypeSpeederGamePlay implements Playable {
             saveAttemptToDB();
         }
     }
-    public int getXpLimit() {
-        int xpLimit = 20;
-        Optional<Users> found = usersRepo.findByUserId(currentUserId);
-        if (found.isPresent()){
-            int level = found.get().getLevel();
-            if (level > 0 ) {
-                for (int i = 0; i < level; i++) {
-                    xpLimit += 5;
-                }
-                xpLimitToLevelUp = xpLimit;
-            }
+    public void saveAttemptToDB(){
+        Tasks t = null;
+        Users u = null;
+        Optional<Tasks> findTask = tasksRepo.findById(currentTaskId);
+        if (findTask.isPresent()){
+            t = findTask.get();
         }
-        return xpLimit;
-
-    }
-
-
-    @Override
-    public String printScoreBoardBasedOnLevel(){
-
-        List<Users> users = usersRepo.findAll();
-
-        List<Users> topListOfUsers = new ArrayList<>(users);
-        StringBuilder result = new StringBuilder(ConsoleColor.CYAN + "    \u001B[1mSCOREBOARD BASED ON LEVEL \n    player          Level   XP\n" + ConsoleColor.RESET);
-        int pos = 1;
-        topListOfUsers.sort((p1,p2) -> Integer.compare(p2.getLevel(), p1.getLevel()));
-        for (Users u : topListOfUsers){
-            result.append(String.format(ConsoleColor.CYAN + "\u001B[1m%5d %-9s%7.0f%7.0f%n" + ConsoleColor.RESET, pos, (u.getEmail()), (double)u.getLevel(),(double)u.getXp()));
-            if (pos++ ==10) break;
+        Optional<Users> findUser = usersRepo.findById(currentUserId);
+        if (findUser.isPresent()){
+            u = findUser.get();
         }
-
-        return result.toString();
-    }
-    public void totalPointsAfterCountingWords(){
-        double points;
-        double userTime = getTimeResult();
-        double maxTime = 120;
-        if (userTime>maxTime){
-            points = 0;
-
-        } else if (correctAnswers == 0 && correctAnswersInRow == 0){
-            points = 0;
-        } else {
-            if (gameDifficulty == 1){
-                points = ((double) correctAnswers /2 + (10 * Math.pow((0.5 - (userTime / maxTime)), 1)));
-            } else {
-                points = (correctAnswers +  correctAnswersInRow + (10 * Math.pow((1 - (userTime / maxTime)), 1)));
-            }
-
-        }
-        totalCalculatedPoints = (int) points;
-        setXpToDB((int) points);
-        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.US);
-        DecimalFormat df = new DecimalFormat("#.##", symbols);
-        double a = Double.parseDouble(df.format(points));
-        currentPointsForPrinting = String.valueOf(a);
+        Attempt newAttempt = new Attempt(totalCalculatedPoints,currentSolutionToString(),currentUserGuess,u,t, getCurrentTime());
+        attemptRepo.save(newAttempt);
+        PointParam pointParam = new PointParam(getTimeResult(),correctAnswers,correctAnswersInRow,newAttempt,numOfWords);
+        pointParamRepo.save(pointParam);
 
     }
     public String currentSolutionToString(){
@@ -402,14 +412,13 @@ public class TypeSpeederGamePlay implements Playable {
         currentSolution = currentSolution1;
     }
     @Override
-    public String printUserInfo(){
+    public String returnUserInfo(){
         return ConsoleColor.BLUE + "| Alias " + currentAlias[0] + " | Level: " + currentLevel + " | XP: " + currentXp + "/" + getXpLimit() + " Next level: " + (getCurrentLevel()+1) + ConsoleColor.RESET;
     }
     @Override
-    //TODO FIXA HÄR  LITE TYDLIGARE
     public String beforeGameStartsText(){
         if (gameDifficulty == 1){
-            return ConsoleColor.BOLD + "This is an easy test, you will gain points for every correct highlighted word you type. Maximum time 2 min. " +
+            return ConsoleColor.BOLD + "This is an easy test, you will gain points for every correct highlighted you type. Maximum time 2 min. " +
                     "It's \u001B[92mTYPE INSENSITIVE\u001B[0m\nTime starts when you press ENTER, READY SET...(enter)" + ConsoleColor.RESET;
         } else {
             return  ConsoleColor.BOLD + "You will get a text with highlighted words write them as fast as you can, " +
@@ -553,7 +562,7 @@ public class TypeSpeederGamePlay implements Playable {
     public int getCurrentLevel() {
         return currentLevel;
     }
-    //TODO FLER NIVÅ ÖVNINGAR
+
 
 
 }
