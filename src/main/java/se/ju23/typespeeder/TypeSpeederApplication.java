@@ -8,15 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.awt.Color;
 
 @SpringBootApplication
-public class TypeSpeederApplication implements CommandLineRunner {
+public class TypeSpeederApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TypeSpeederApplication.class, args);
     }
-
-    @Override
-    public void run(String... args) throws Exception {
-
-    }
-
 }
