@@ -4,6 +4,7 @@ import se.ju23.typespeeder.challenge.Challenge;
 import se.ju23.typespeeder.classer.PlayersService;
 import se.ju23.typespeeder.database.Players;
 import se.ju23.typespeeder.database.PlayersRepo;
+import se.ju23.typespeeder.database.ResultatRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class Menu implements MenuService {
 
     public Challenge challenge = new Challenge();
     private String language = "svenska";
-
+    private Players currentPlayer;
 
     public PlayersService playersService = new PlayersService();
 
@@ -25,8 +26,8 @@ public class Menu implements MenuService {
         options.add("1. Spela spel");
         options.add("2. Redigera spelare");
         options.add("3. Lägg till spelare");
-        options.add("4. Få fram dina resultat");
-        options.add("5. Få fram andras resultat");
+        options.add("4. Få fram resultat");
+        options.add("5. Radera spelare");
         options.add("6. Byte till engelska");
         return options;
     }
@@ -38,7 +39,7 @@ public class Menu implements MenuService {
         options.add("2. Update player");
         options.add("3. Add player");
         options.add("4. Get your results");
-        options.add("5. Get others results");
+        options.add("5. Delete player");
         options.add("6. Switch to svenska");
         return options;
     }
@@ -95,61 +96,63 @@ public class Menu implements MenuService {
         }
 
     }
-    public void handleMenuOption(PlayersRepo playersRepo, PlayersService playersService, Scanner scanner) {
+
+    public void handleMenuOption(PlayersRepo playersRepo, PlayersService playersService, ResultatRepo resultatRepo, Players players, Scanner scanner) {
 
         int option = scanner.nextInt();
         scanner.nextLine();
         switch (option) {
             case 1:
-                menuGame(playersRepo,scanner);
+                menuGame(playersRepo, scanner);
                 break;
             case 2:
                 playersService.updatePlayer(playersRepo, scanner);
                 break;
             case 3:
-                playersService.addNewPlayer(playersRepo,scanner);
+                playersService.addNewPlayer(playersRepo, scanner);
                 break;
             case 4:
-                System.out.println("CASE 4");
+                playersService.printYourStatistics(playersRepo, resultatRepo, currentPlayer, scanner);
+                playersService.printOverallStatistics(playersRepo,resultatRepo,currentPlayer,scanner);
                 break;
             case 5:
-                System.out.println("CASE 5");
+                playersService.deletePlayer(playersRepo, scanner);
                 break;
             case 6:
-              handleMenuOptionEnglish(playersRepo, playersService, scanner);
+                handleMenuOptionEnglish(playersRepo, playersService, scanner);
                 break;
 
             default:
                 System.out.println("Invalid option.");
         }
     }
+
     public void handleMenuOptionEnglish(PlayersRepo playersRepo, PlayersService playersService, Scanner scanner) {
         System.out.println("Welcome to the english menu.");
-        System.out.println("Option 1");
-        System.out.println("Option 2");
-        System.out.println("3");
-        System.out.println("4");
-        System.out.println("5");
+        System.out.println("Play game");
+        System.out.println("Update player");
+        System.out.println("Add new player");
+        System.out.println("Get your results");
+        System.out.println("Delete player");
         System.out.println("6");
 
         int option = scanner.nextInt();
         scanner.nextLine();
         switch (option) {
             case 1:
-                System.out.println("Play game");
-                challenge.basicGame();
+                challenge.basicGame(currentPlayer);
                 break;
             case 2:
                 playersService.updatePlayer(playersRepo, scanner);
                 break;
             case 3:
-                System.out.println("CASE 3");
+                playersService.addNewPlayer(playersRepo, scanner);
                 break;
             case 4:
                 System.out.println("CASE 4");
                 break;
             case 5:
-                System.out.println("CASE 5");
+                playersService.deletePlayer(playersRepo, scanner);
                 break;
             case 6:
                 getMenuOptions();
@@ -160,44 +163,33 @@ public class Menu implements MenuService {
         }
     }
 
-    public void menuGame (PlayersRepo playersRepo, Scanner scanner) {
+    public void menuGame(PlayersRepo playersRepo, Scanner scanner) {
 
         int choice;
 
         do {
             System.out.println("You are entering game menu");
             System.out.println("""
-                    Choose option below: 
-                    1 - Play basic game
-                    2 - Game with highlighted words
-                    3 - Game XXXX
-                    4 - Game YYYY
-                    5 - Game ZZZZj""");
+                     Choose option below: 
+                     1 - Play basic game
+                     2 - Game with highlighted words
+                    """);
             choice = scanner.nextInt();
 
             switch (choice) {
                 case 1:
-                    challenge.basicGame();
+                    challenge.basicGame(currentPlayer);
                     break;
                 case 2:
-                    challenge.colourGame();
-                    break;
-                case 3:
-                    System.out.println("XXXXX");
-                    break;
-                case 4:
-                    System.out.println("YYYYY");
-                    break;
-                case 5:
-                    System.out.println("ZZZZZ");
+                    challenge.colourGame(currentPlayer);
                     break;
                 default:
                     System.out.println("Invalid option.");
             }
-        } while(choice != 0);
+        } while (choice != 0);
     }
 
-    public void login(PlayersRepo playersRepo, PlayersService playersService, Scanner input) {
+    public void login(PlayersRepo playersRepo, PlayersService playersService, ResultatRepo resultatRepo, Players players, Scanner input) {
         boolean runProgram = true;
         do {
             System.out.println("Enter your username: ");
@@ -215,8 +207,9 @@ public class Menu implements MenuService {
             } else {
                 System.out.println("Welcome, " + foundPLayer.getNickname());
                 System.out.println("Your current role is " + foundPLayer.getRole());
+                currentPlayer = foundPLayer;
                 displayMenu();
-                handleMenuOption(playersRepo , playersService, input);
+                handleMenuOption(playersRepo, playersService, resultatRepo,players, input);
                 runProgram = false;
             }
         } while (runProgram);

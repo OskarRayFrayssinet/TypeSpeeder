@@ -2,7 +2,7 @@ package se.ju23.typespeeder.classer;
 import java.time.LocalDateTime;
 
 public class Patch {
-    private String patchVersion;
+    private String patchVersion = "1.0.ABRAKADARBA";
     public LocalDateTime releaseDateTime;
 
     public Patch() {
@@ -18,7 +18,7 @@ public class Patch {
         this.releaseDateTime = releaseDateTime;
     }
 
-    // Getters and setters
+
     public String getPatchVersion() {
         return patchVersion;
     }

@@ -10,15 +10,20 @@ public class Resultat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
+
     @Column(name = "mistakes", nullable = false)
     private int mistakes;
+
     @Column(name = "time", nullable = false)
     private Long time;
+
     @Column(name = "resultat",  nullable = false)
     private int resultat;
+/*
 
     @Column(name = "player_id", nullable = false, updatable = false,insertable = false)
     private int playerid;
+*/
 
     @ManyToOne
     @JoinColumn(name = "player_id", referencedColumnName = "id", nullable = false)
@@ -71,13 +76,6 @@ public class Resultat {
         this.id = id;
     }
 
-    public int getPlayerid() {
-        return playerid;
-    }
-
-    public void setPlayerid(int playerid) {
-        this.playerid = playerid;
-    }
 
     public void setPlayers(Players players) {
         this.players = players;

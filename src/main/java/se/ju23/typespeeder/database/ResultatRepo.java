@@ -7,6 +7,8 @@ import java.util.List;
 
 @Repository
 public interface ResultatRepo extends JpaRepository<Resultat, Integer> {
+    Resultat findById(int id);
+    boolean existsById(int id);
 
 
 }
