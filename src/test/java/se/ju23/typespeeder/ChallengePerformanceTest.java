@@ -2,6 +2,7 @@ package se.ju23.typespeeder;
 
 
 import org.junit.jupiter.api.Test;
+import se.ju23.typespeeder.challenge.Challenge;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
