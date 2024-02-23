@@ -175,6 +175,7 @@ public class Menu implements MenuService {
                      Choose option below: 
                      1 - Play basic game
                      2 - Game with highlighted words
+                     3 - Exit.
                     """);
             choice = scanner.nextInt();
 
@@ -185,6 +186,8 @@ public class Menu implements MenuService {
                 case 2:
                     challenge.colourGame(currentPlayer);
                     break;
+                case 3:
+                    return;
                 default:
                     System.out.println("Invalid option.");
             }
