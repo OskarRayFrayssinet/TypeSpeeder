@@ -106,14 +106,14 @@ public class Challenge {
 
     public void postGamePlayerStatsUpdate(double[] results) {
         int playerLevel = daoManager.getPlayer().getLevel();
-        int xpGainThreshHold = (70 + (playerLevel * 2));
+        int xpGainThreshHold = calcXpGainThreshHold();
 
         if (results[4] < xpGainThreshHold){
             results[4] = -(xpGainThreshHold - ((double) xpGainThreshHold / 5));
         }
 
         int playerXp = daoManager.getPlayer().getXp();
-        int levelGainThreshHold = (1000 * (1 + (xpGainThreshHold / 100)));
+        int levelGainThreshHold = calcLevelGainThreshHold();
 
         int newTotalXpAmount = (int) (results[4] + playerXp);
 
@@ -123,14 +123,29 @@ public class Challenge {
             systemIO.addString("Level up! Du är nu level: " + (playerLevel + 1) + "\n");
         }
 
-        daoManager.updatePlayerStats((int) results[4], calcNewRanking());
+        int rank = calcCurrentGameRanking(results[4]);
+
+        daoManager.addGame(rank);
+
+        daoManager.updatePlayerStats((int) results[4], rank);
     }
-    public int calcNewRanking() {
-        int ranking = 1;
-        daoManager.getPlayer().setRanking(ranking);
-        return ranking;
+    public int calcXpGainThreshHold() {
+        int playerLevel = daoManager.getPlayer().getLevel();
+        return 70 + (playerLevel * 2);
     }
-    public double[] postChallengeSummary() {
+    public int calcLevelGainThreshHold() {
+        return 1000 * (1 + (calcXpGainThreshHold() / 100));
+    }
+    public int calcCurrentGameRanking(double xpGain) {
+        double[] thresholds = {135, 125, 110, 95, 85, 75, 65, 55};
+        for (int i = 0; i < thresholds.length; i++) {
+            if (xpGain >= thresholds[i]) {
+                return thresholds.length - i + 1;
+            }
+        }
+        return 0;
+    }
+    public double[] ChallengeScoreCalc() {
         double[] results = new double[5];
         double percentScore = results[0] =  inputVsGoalCheck();
 
@@ -140,7 +155,7 @@ public class Challenge {
         double time = results[2] = (double) timerInMillis / 1000;
         double timeScore = results[3] =(time * 2) > 20 ? 0 : 20 - (time * 2);
         double xpGain = results[4] = (percentScore/1.5) + (streak * 4) +
-                timeScore + difficulty * 2;
+                timeScore + (difficulty * 2.5);
 
         postGamePlayerStatsUpdate(results);
 
@@ -159,11 +174,27 @@ public class Challenge {
                     --TOP PLAYERS--
                 NAME~-~-RANKING~-~-LEVEL""");
         for (Player topTenPlayer : topTenPlayers) {
+            int rank = daoManager.getAverageRankFromPlayer(topTenPlayer.getId());
             topTen.append(String.format("%n%-12s%-9s%-5s", topTenPlayer.getDisplayName(),
-                            topTenPlayer.getRanking(), topTenPlayer.getLevel()));
+                            numberToRankConversion(rank), topTenPlayer.getLevel()));
         }
         topTen.append("\n");
         return topTen.toString();
+    }
+    public String numberToRankConversion(int rank) {
+        String rankClass = "Unranked";
+        switch (rank) {
+            case 8 -> rankClass = "OP";
+            case 7 -> rankClass = "S";
+            case 6 -> rankClass = "A";
+            case 5 -> rankClass = "B";
+            case 4 -> rankClass = "C";
+            case 3 -> rankClass = "D";
+            case 2 -> rankClass = "E";
+            case 1 -> rankClass = "F";
+            case 0 -> rankClass = "Unranked";
+        }
+        return rankClass;
     }
     public void lettersToType() {
         generateTypingString();
@@ -172,9 +203,6 @@ public class Challenge {
     public void startChallenge() {
         lettersToType();
         startTimer();
-    }
-    public void settings(){
-
     }
 
     public void startTimer() {

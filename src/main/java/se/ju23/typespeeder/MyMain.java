@@ -15,7 +15,12 @@ public class MyMain implements CommandLineRunner {
     @Autowired
     private TypeGoalTextRepo typeGoalTextRepo;
     @Autowired
-    public MyMain(PlayerRepo playerRepo, TypeGoalTextRepo typeGoalTextRepo) {
+    private RankingsRepo rankingsRepo;
+    @Autowired
+    private AdminMessageRepo adminMessageRepo;
+    @Autowired
+    public MyMain(PlayerRepo playerRepo, TypeGoalTextRepo typeGoalTextRepo,
+                  RankingsRepo rankingsRepo, AdminMessageRepo adminMessageRepo) {
         this.playerRepo = playerRepo;
         this.typeGoalTextRepo = typeGoalTextRepo;
         systemIO = new SystemIO();
@@ -27,12 +32,14 @@ public class MyMain implements CommandLineRunner {
         menu.setDaoManager(daoManager);
         daoManager.setPlayerRepo(playerRepo);
         daoManager.setTypeGoalTextRepo(typeGoalTextRepo);
+        daoManager.setRankingsRepo(rankingsRepo);
+        daoManager.setAdminMessageRepo(adminMessageRepo);
         challenge.setDaoManager(daoManager);
     }
 
     @Override
     public void run(String... args) {
-        Controller controller = new Controller(menu, systemIO, challenge);
+        Controller controller = new Controller(menu, systemIO, challenge, daoManager);
         controller.run();
     }
 }

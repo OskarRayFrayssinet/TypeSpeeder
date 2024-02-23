@@ -26,6 +26,7 @@ public class Menu implements MenuService {
         return menuOptions;
     }
     public String displayMenu() {
+        refreshPlayerInfo();
         for (String menuOption : menuOptions) {
             systemIO.addString("\n" + menuOption);
         }
@@ -43,6 +44,9 @@ public class Menu implements MenuService {
             setLanguageToEnglish();
         }
         return choice;
+    }
+    public void refreshPlayerInfo() {
+        loggedInPlayer = daoManager.getPlayer();
     }
     public int chooseDifficulty() {
         int difficulty;
@@ -132,8 +136,11 @@ public class Menu implements MenuService {
     }
     public void settingsMenu() {
         systemIO.addString("""
-                1. Kontoinställningar
-                2. Se din statistik
+                
+                1. Ändra användarnamn
+                2. Ändra visningsnamn
+                3. Ändra lösenord
+                4. Se din statistik
                 0. Backa
                 >""");
     }

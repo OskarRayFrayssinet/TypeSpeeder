@@ -18,7 +18,7 @@ public class SystemIO {
         while (true) {
             try {
                 return Integer.parseInt(getString());
-            } catch (InputMismatchException e) {
+            } catch (InputMismatchException | NumberFormatException e) {
                 addString(e + "\tVänligen skriv in ett heltal:\n>");
             }
         }

@@ -18,6 +18,23 @@ public class Player {
     private int xp;
     @Column(name = "gamesplayed")
     private int gamesPlayed;
+    private boolean isAdmin;
+    @Column(name = "is_admin")
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public void setGamesPlayed(int gamesPlayed) {
         this.gamesPlayed = gamesPlayed;
