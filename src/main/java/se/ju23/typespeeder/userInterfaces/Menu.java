@@ -13,7 +13,6 @@ import java.util.List;
     Playable playable;
     Translatable translatable;
     public String[] currentLanguage = {"2", "", ""};
-    private String language = "";
     private int tries = 3;
     @Autowired
     public void setPlayable(Playable playable) {
@@ -171,7 +170,7 @@ import java.util.List;
     }
     @Override
     public void setLanguage() {
-        if (currentLanguage[0] == "1") {
+        if (currentLanguage[0].equals("1")) {
             currentLanguage[0] = "2";
             currentLanguage[2] = "3";
         } else {

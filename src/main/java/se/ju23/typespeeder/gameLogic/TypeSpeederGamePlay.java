@@ -199,11 +199,11 @@ public class TypeSpeederGamePlay implements Playable {
         List<Users> users = usersRepo.findAll();
 
         List<Users> topListOfUsers = new ArrayList<>(users);
-        StringBuilder result = new StringBuilder(ConsoleColor.CYAN + "    \u001B[1mSCOREBOARD BASED ON LEVEL \n    player                        Level     XP\n" + ConsoleColor.RESET);
+        StringBuilder result = new StringBuilder(ConsoleColor.CYAN + "    \u001B[1mSCOREBOARD BASED ON LEVEL \n    player                            Level     XP\n" + ConsoleColor.RESET);
         int pos = 1;
         topListOfUsers.sort((p1,p2) -> Integer.compare(p2.getLevel(), p1.getLevel()));
         for (Users u : topListOfUsers){
-            result.append(String.format(ConsoleColor.CYAN + "\u001B[1m%5d %-5s%-17s%9.0f%9.0f%n" + ConsoleColor.RESET, pos, u.getAlias(), " (" +  u.getEmail() + ")", (double)u.getLevel(),(double)u.getXp()));
+            result.append(String.format(ConsoleColor.CYAN + "\u001B[1m%5d %-9s%-17s%9.0f%9.0f%n" + ConsoleColor.RESET, pos, u.getAlias(), " (" +  u.getEmail() + ")", (double)u.getLevel(),(double)u.getXp()));
             if (pos++ ==10) break;
         }
 
