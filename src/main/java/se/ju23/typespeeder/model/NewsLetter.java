@@ -1,3 +1,10 @@
+/*
+ * Class: Newsletter
+ * Description: A class that creates a newsletter.
+ * Created by: Kerem Bjävenäs Tazedal
+ * Email: kerem.tazedal@iths.se
+ * Date: 2024-02-18
+ */
 package se.ju23.typespeeder.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

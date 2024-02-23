@@ -1,3 +1,10 @@
+/*
+ * Class: DictionaryService
+ * Description: A support class for the class Dictionary.
+ * Author: Kerem Bjävenäs Tazedal
+ * Email: kerem.tazedal@iths.se
+ * Date: 2024-02-18
+ */
 package se.ju23.typespeeder.service;
 import org.springframework.stereotype.Service;
 import se.ju23.typespeeder.model.Dictionary;

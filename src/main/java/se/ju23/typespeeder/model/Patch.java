@@ -1,3 +1,10 @@
+/*
+ * Class: Patch
+ * Description: A class that creates ingame patch news.
+ * Created by: Kerem Bjävenäs Tazedal
+ * Email: kerem.tazedal@iths.se
+ * Date: 2024-02-18
+ */
 package se.ju23.typespeeder.model;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
@@ -48,6 +55,6 @@ public class Patch {
 
     @Override
     public String toString() {
-        return "Patchversion: " + patchVersion + "Publiceringsdatum: " + getFormattedPublishDateTime();
+        return "\nPatchversion: " + patchVersion + " Publiceringsdatum: " + getFormattedPublishDateTime();
     }
 }
