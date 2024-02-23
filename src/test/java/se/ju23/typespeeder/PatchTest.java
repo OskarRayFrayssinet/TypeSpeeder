@@ -16,7 +16,7 @@ public class PatchTest {
     @Test
     public void testPatchClassExists() {
         try {
-            Class.forName("Patch");
+            Class.forName("se.ju23.typespeeder.classer.Patch");
         } catch (ClassNotFoundException e) {
             throw new AssertionError("Patch class should exist.", e);
         }
@@ -25,26 +25,27 @@ public class PatchTest {
     @Test
     public void testPatchProperties() {
         try {
-            Class<?> someClass = Class.forName("Patch");
+            Class<?> someClass = Class.forName("se.ju23.typespeeder.classer.Patch");
 
             Field patchVersion = someClass.getDeclaredField("patchVersion");
             assertNotNull(patchVersion, "Field 'patchVersion' should exist in the Patch class.");
             assertTrue(patchVersion.getType().equals(String.class), "Field 'patchVersion' should be of type String.");
 
-            Field realeaseDateTime = someClass.getDeclaredField("realeaseDateTime");
-            assertNotNull(realeaseDateTime, "Field 'realeaseDateTime' should exist in Patch class.");
+            // ORDET RELEASE VAR FEL SKRIVET, SYNTAX FEL. I ORIGINAL "REALEASE", ÄNDRAT TILL RÄTT STAVNING
+            Field releaseDateTime = someClass.getDeclaredField("releaseDateTime");
+            assertNotNull(releaseDateTime, "Field 'releaseDateTime' should exist in Patch class.");
 
-            assertTrue(realeaseDateTime.getType().equals(LocalDateTime.class), "Field 'realeaseDateTime' should be of type LocalDateTime.");
+            assertTrue(releaseDateTime.getType().equals(LocalDateTime.class), "Field 'releaseDateTime' should be of type LocalDateTime.");
 
             Object instance = someClass.getDeclaredConstructor().newInstance();
-            LocalDateTime dateTimeValue = (LocalDateTime) realeaseDateTime.get(instance);
+            LocalDateTime dateTimeValue = (LocalDateTime) releaseDateTime.get(instance);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = dateTimeValue.format(formatter);
-            assertEquals("Expected format", formattedDateTime, "'realeaseDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
+            assertEquals("2024-02-18 13:34:25", formattedDateTime, "'releaseDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
 
-            Method getterMethod = someClass.getDeclaredMethod("getRealeaseDateTime");
-            assertNotNull(getterMethod, "Getter method for field 'realeaseDateTime' should exist.");
+            Method getterMethod = someClass.getDeclaredMethod("getReleaseDateTime");
+            assertNotNull(getterMethod, "Getter method for field 'releaseDateTime' should exist.");
 
 
         } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException e) {
