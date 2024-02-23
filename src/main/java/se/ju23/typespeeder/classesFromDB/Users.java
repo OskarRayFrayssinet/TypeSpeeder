@@ -13,7 +13,7 @@ import java.util.Collection;
     private int userId;
     @Basic
     @Column(name = "email", nullable = false, length = 200)
-    private String email; //Username
+    private String email;
     @Basic
     @Column(name = "password", nullable = false, length = 45)
     private String password;
@@ -29,6 +29,9 @@ import java.util.Collection;
 
     @OneToMany(mappedBy = "usersByUserId")
     private Collection<Attempt> attemptsByUserId;
+
+    public Users() {
+    }
 
     public int getUserId() {
         return userId;

@@ -33,7 +33,17 @@ import java.util.Scanner;
                 return inputString;
             }
         }
-
+    }
+    @Override
+    public String getEnter() {
+        while (true) {
+            String inputString = scanner.nextLine().trim().toLowerCase();
+            if (inputString.equalsIgnoreCase("")){
+                return inputString;
+            } else {
+                System.out.println("Press ENTER to start game");
+            }
+        }
     }
     @Override
     public String getYesOrNo() {
@@ -59,7 +69,7 @@ import java.util.Scanner;
 
     public void addString(String message){
         String a = message;
-        if (playable.getCurrentLanguage(0).equals("1")){
+        if (menuService.getCurrentLanguage(0).equals("1")){
             try {
                 a = translatable.translate(message,"sv");
             } catch (Exception e) {
@@ -73,7 +83,7 @@ import java.util.Scanner;
 
     }
     //Game Text Output
-    public void addStringWithoutTranslation(String message){
+    public void addGameText(String message){
         System.out.print(message);
     }
 

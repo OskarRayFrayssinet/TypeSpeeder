@@ -1,25 +1,48 @@
 package se.ju23.typespeeder.gameLogic;
 
+import java.util.List;
+
 public interface Playable {
 
     Status checkUser(String username, String password);
 
+    void calculateTotalPointsForGame(String userAnswer);
+
+
+    String returnChallengeResult();
+
+    String scoreBoardBasedOnThree();
+
+
+    String scoreBoardBasedOnLevel();
+
+
+    void setCurrentSolution(List<String> currentSolution1);
+
+    String returnUserInfo();
+
+    String beforeGameStartsText();
+
+
+
     Status standbyInMainMenu(int input);
 
-    void setLanguage();
+
+    void setGameDifficulty(int gameDifficulty1);
 
     Status standbyInSettingsMenu(int input);
-    Status playAgain(boolean b);
-    String getCurrentEmail(int place);
-    void setCurrentEmail(String newCurrentEmail);
-    String printGames();
+
+    void setCurrentTaskId(int currentTaskId);
+
+    String getCurrentUsername(int place);
+    void setCurrentUsername(String newCurrentEmail);
 
     void setNewAlias(String input);
 
 
     void setNewUsername(String newEmail);
 
-    boolean checkCurrentEmail(String input);
+    boolean checkCurrentUsername(String input);
 
     boolean checkIfUserNameIsBusy(String input);
 
@@ -27,16 +50,19 @@ public interface Playable {
 
     boolean checkCurrentPassword(String input);
 
-    String getCurrentLanguage(int place);
 
-    Status playingGame(int input);
-    String activeInGame(int id);
-    int getCurrentId();
-    String noUserFoundText();
+    void setTimeResult(double timeResult);
+
+    void setNumOfWords(int words);
+
+
+
+    int getCurrentUserId();
+
     String getCurrentAlias(int place);
 
     String getPassword(int place);
 
-    int getCurrentXp();
+
     int getCurrentLevel();
 }

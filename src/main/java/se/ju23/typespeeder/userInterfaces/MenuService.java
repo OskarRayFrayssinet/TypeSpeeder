@@ -19,6 +19,10 @@ public interface MenuService {
 
     List<String> getMenuOptions();
 
+    void setLanguage();
+
+    String getCurrentLanguage(int place);
+
     int getNumberOfTries();
 
 }

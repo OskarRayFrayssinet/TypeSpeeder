@@ -2,19 +2,17 @@ package se.ju23.typespeeder.userInterfaces;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.colors.ConsoleColor;
 import se.ju23.typespeeder.gameLogic.Playable;
 import se.ju23.typespeeder.gameLogic.Translatable;
-import se.ju23.typespeeder.gameLogic.Translator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Component public class Menu implements MenuService {
     Playable playable;
     Translatable translatable;
-
+    public String[] currentLanguage = {"2", "", ""};
     private String language = "";
     private int tries = 3;
     @Autowired
@@ -32,71 +30,41 @@ import java.util.logging.Logger;
     @Override
     //Login menu first to be shown
     public String printLoginText() {
-        String toReturn = null;
+        String toReturn;
 
-        if (playable.getCurrentEmail(0).equals("2")){
+        if (playable.getCurrentUsername(0).equals("2")){
             toReturn = "Password: ";
-        } else if (playable.getCurrentEmail(0).equals("1")){
+        } else if (playable.getCurrentUsername(0).equals("1")){
             tries--;
-            playable.setCurrentEmail("");
+            playable.setCurrentUsername("");
             toReturn = "\u001B[1mCheck your details or contact admin if troubled" +
                     "\nTries left before shutdown: " + tries + "\n\u001B[0m";
         } else {
-            playable.setCurrentEmail("2");
+            playable.setCurrentUsername("2");
             toReturn = "--Login menu--\nUsername: ";
         }
 
         return toReturn;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
 
-    @Override
-    public String printChangeLanguageText(){
-        if (playable.getCurrentLanguage(2).equals("3")){
-            return "Changed";
-        } else if (playable.getCurrentLanguage(0).equals("1")) {
-            return "Byta spelspråk till Engelska? y/n: ";
-        } else {
-            return "Change game language to Swedish? y/n: ";
-        }
-    }
+
     @Override
     //Main menu
     //Only in English
     public void displayMenu() {
-        String textToReturn = null;
-        String translatedText;
         StringBuilder stringBuilder = new StringBuilder();
         for (String option : getMenuOptions()){
             stringBuilder.append(option);
         }
-
+        //egentligen ska den returnera en string men för testet.. :)
         System.out.println(stringBuilder);
-
-/*
-        if (language.equals("1")){
-            try {
-                translatedText = translatable.translate(stringBuilder.toString(), "sv");
-                textToReturn = translatedText.replaceAll("(\\d+)\\.\\s*", "\n$1. ");
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            textToReturn = stringBuilder.toString();
-        }
-       */
-
-
-
-
     }
     @Override
     public String getUserSettingsMenu(){
+
         List<String> menuOptions = new ArrayList<>();
+
         menuOptions.add("\n0. Go back\n");
         menuOptions.add("1. Change Alias\n");
         menuOptions.add("2. Change Password\n");
@@ -115,7 +83,7 @@ import java.util.logging.Logger;
         if (playable.getCurrentAlias(1).equals("1")){
             menuOptions.add("\u001B[1mAlias changed to: " + playable.getCurrentAlias(0) + "\nYOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
         } else {
-            menuOptions.add("New Alias: ");
+            menuOptions.add("New Alias(Go back 'b'): ");
 
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -129,15 +97,15 @@ import java.util.logging.Logger;
     public String getPasswordChangeText(){
         List<String> menuOptions = new ArrayList<>();
         if (playable.getPassword(1).equals("1")){
-            menuOptions.add("\u001B[1mPASSWORD CHANGED\n" +
-                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
+            menuOptions.add(ConsoleColor.BG_BRIGHT_CYAN + "\u001B[1mPASSWORD CHANGED\n" +
+                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n" + ConsoleColor.RESET);
         } else {
             if (playable.getPassword(1).equals(playable.getPassword(0))){
-                menuOptions.add("New password: ");
+                menuOptions.add("New password (Go back 'b'): ");
             } else if (playable.getPassword(2).equals("2")){
                 menuOptions.add("Wrong password");
             } else {
-                menuOptions.add("Current password: ");
+                menuOptions.add("Current password (Go back 'b'): ");
             }
 
         }
@@ -150,16 +118,16 @@ import java.util.logging.Logger;
     @Override
     public String getUsernameChangeText(){
         List<String> menuOptions = new ArrayList<>();
-        if (playable.getCurrentEmail(1).equals("1")){
-            menuOptions.add("\u001B[1mUSERNAME CHANGED\n" +
-                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
+        if (playable.getCurrentUsername(1).equals("1")){
+            menuOptions.add(ConsoleColor.CYAN + "\u001B[1mUSERNAME CHANGED\n" +
+                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n" + ConsoleColor.RESET);
         } else {
-            if (playable.getCurrentEmail(1).equals(playable.getCurrentEmail(0))/* && playable.getCurrentEmail(2).isEmpty()*/){
-                menuOptions.add("New Username: ");
-            } else if (playable.getCurrentEmail(2).equals("2")){
+            if (playable.getCurrentUsername(1).equals(playable.getCurrentUsername(0))){
+                menuOptions.add("New Username (Go back 'b'): ");
+            } else if (playable.getCurrentUsername(2).equals("2")){
                 menuOptions.add("\u001B[1mWrong Username Or already taken\u001B[0m\n");
             } else {
-                menuOptions.add("Type your current Username: ");
+                menuOptions.add("Type your current Username (Go back 'b'): ");
             }
 
         }
@@ -173,15 +141,47 @@ import java.util.logging.Logger;
 
     @Override
     public List<String> getMenuOptions() {
+        currentLanguage[2] = "";
         List<String> menuOptions = new ArrayList<>();
+        if (currentLanguage[0].equals("1")){
+            menuOptions.add("\nSvenska valt");
+        } else {
+            menuOptions.add("\nEnglish chosen");
+        }
         menuOptions.add("\n0.Sign out and exit\n");
-        menuOptions.add("1. Game Languange\n");
-        menuOptions.add("2. Select game\n");
-        menuOptions.add("3. Show your stats\n");
-        menuOptions.add("4. Change user info\n");
+        menuOptions.add("1. Choose language (Swedish/English)\n");
+        menuOptions.add("2. Select game hard\n");
+        menuOptions.add("3. Select game easy\n");
+        menuOptions.add("4. Show ranking list\n");
+        menuOptions.add("5. Account settings\n");
+        menuOptions.add("6. Show newsletter\n");
         menuOptions.add("Your choice: ");
 
         return menuOptions;
+    }
+    @Override
+    public String printChangeLanguageText(){
+        if (getCurrentLanguage(2).equals("3")){
+            return "Changed\n";
+        } else if (getCurrentLanguage(0).equals("1")) {
+            return "Byta spelspråk till Engelska? y/n: ";
+        } else {
+            return "Change game language to Swedish? y/n: ";
+        }
+    }
+    @Override
+    public void setLanguage() {
+        if (currentLanguage[0] == "1") {
+            currentLanguage[0] = "2";
+            currentLanguage[2] = "3";
+        } else {
+            currentLanguage[0] = "1";
+            currentLanguage[2] = "3";
+        }
+    }
+    @Override
+    public String getCurrentLanguage(int place) {
+        return currentLanguage[place];
     }
     public int getNumberOfTries(){
         return tries;

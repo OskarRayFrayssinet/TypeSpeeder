@@ -13,13 +13,15 @@ import java.sql.SQLException;
     private final Playable tg;
     private final IO io;
     private final Controllable c;
+    private final IChallenge challenge;
 
 
     @Autowired
-    public MyMain(Playable tg, IO io, Controllable c){
+    public MyMain(Playable tg, IO io, Controllable c,IChallenge challenge){
         this.tg = tg;
         this.io = io;
         this.c = c;
+        this.challenge = challenge;
     }
     @Override
     public void run(String... args) throws SQLException, InterruptedException {
