@@ -6,6 +6,7 @@ import se.ju23.typespeeder.database.PlayersRepo;
 import se.ju23.typespeeder.database.Resultat;
 import se.ju23.typespeeder.database.ResultatRepo;
 
+import java.sql.SQLOutput;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
@@ -157,6 +158,7 @@ public class PlayersService {
     public void printOverallStatistics(PlayersRepo playersRepo, ResultatRepo resultatRepo, Players players, Scanner scanner) {
         List<Players> allPlayers = playersRepo.findAll();
 
+
         if (!allPlayers.isEmpty()) {
             allPlayers.sort(Comparator.comparingDouble(this::calculateAverageResult).reversed());
 
@@ -172,11 +174,13 @@ public class PlayersService {
                     int totalMistakes = 0;
                     long totalTime = 0;
                     int totalResult = 0;
+                    int level = 0;
 
                     for (Resultat resultat : resultatList) {
                         totalMistakes += resultat.getMistakes();
                         totalTime += resultat.getTime();
                         totalResult += resultat.getResultat();
+                        level = players.getLevel();
                     }
                     double averageResult = totalResult / (double) resultatList.size();
                     double averageTime = totalTime / (double) resultatList.size();
@@ -184,6 +188,8 @@ public class PlayersService {
                     System.out.println("Total Mistakes: " + totalMistakes);
                     System.out.println("Average Time: " + averageTime);
                     System.out.println("Average Result: " + averageResult);
+                    System.out.println("Current level: " + level);
+                    System.out.println("Level up possible when reaching 10 points");
                 } else {
                     System.out.println("No results found");
                 }
@@ -205,6 +211,27 @@ public class PlayersService {
         return 0.0;
     }
 
+    private void levelUp(PlayersRepo playersRepo, ResultatRepo resultatRepo, Scanner scanner) {
+        List<Players> allPLayers = playersRepo.findAll();
+
+        for (Players player : allPLayers) {
+            List<Resultat> resultatList = player.getResultat();
+            if(resultatList != null && !resultatList.isEmpty()) {
+                int totalResultat = 0;
+                for (Resultat resultat : resultatList) {
+                    totalResultat += resultat.getResultat();
+                    double averageResultat = totalResultat / (double) resultatList.size();
+
+                    if(averageResultat > 10) {
+                        int newLevel = player.getLevel() + 1;
+                        player.setLevel(newLevel);
+                        playersRepo.save(player);
+                        System.out.println("Player " + player.getNickname() + " leveled up to " + newLevel);
+                    }
+                }
+            }
+        }
+    }
 }
 
 

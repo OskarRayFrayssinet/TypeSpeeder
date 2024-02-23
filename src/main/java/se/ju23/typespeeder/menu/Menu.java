@@ -119,7 +119,7 @@ public class Menu implements MenuService {
                 playersService.deletePlayer(playersRepo, scanner);
                 break;
             case 6:
-                handleMenuOptionEnglish(playersRepo, playersService, scanner);
+                handleMenuOptionEnglish(playersRepo, playersService, resultatRepo, scanner);
                 break;
 
             default:
@@ -127,14 +127,14 @@ public class Menu implements MenuService {
         }
     }
 
-    public void handleMenuOptionEnglish(PlayersRepo playersRepo, PlayersService playersService, Scanner scanner) {
+    public void handleMenuOptionEnglish(PlayersRepo playersRepo, PlayersService playersService, ResultatRepo resultatRepo, Scanner scanner) {
         System.out.println("Welcome to the english menu.");
-        System.out.println("Play game");
-        System.out.println("Update player");
-        System.out.println("Add new player");
-        System.out.println("Get your results");
-        System.out.println("Delete player");
-        System.out.println("6");
+        System.out.println("1. Play game");
+        System.out.println("2. Update player");
+        System.out.println("3. Add new player");
+        System.out.println("4. Get your results");
+        System.out.println("5. Delete player");
+        System.out.println("6. Switch to Swedish");
 
         int option = scanner.nextInt();
         scanner.nextLine();
@@ -155,7 +155,9 @@ public class Menu implements MenuService {
                 playersService.deletePlayer(playersRepo, scanner);
                 break;
             case 6:
-                getMenuOptions();
+                language = "svenska";
+                displayMenu();
+                handleMenuOption(playersRepo, playersService, resultatRepo, currentPlayer,scanner );
                 break;
 
             default:

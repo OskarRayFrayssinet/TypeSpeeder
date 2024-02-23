@@ -3,9 +3,7 @@ package se.ju23.typespeeder.challenge;
 import se.ju23.typespeeder.MyRunner;
 import se.ju23.typespeeder.classer.TerminalColors;
 import se.ju23.typespeeder.database.Players;
-import se.ju23.typespeeder.database.PlayersRepo;
 import se.ju23.typespeeder.database.Resultat;
-import se.ju23.typespeeder.database.ResultatRepo;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -59,15 +57,6 @@ public class Challenge implements iChallenge {
             seconds %= 60;
             System.out.println("Time taken: " + minutes + " minutes " + seconds + " seconds");
 
-           /* Players players = new Players("Abba", "Abba", "Abba", 1, "admin");
-            MyRunner.playersRepo.save(players);
-
-            Resultat resultat = new Resultat(1, seconds, 4, players);
-            MyRunner.resultatRepo.save(resultat);*/
-
-            //Resultat resultat = new Resultat(0,seconds,4, players);
-            // MyRunner.resultatRepo.save(resultat);
-
         } else {
             System.out.println("Time calculation failed. Start and end times are not properly set.");
 
@@ -116,7 +105,8 @@ public class Challenge implements iChallenge {
     public void colourGame(Players players) {
         startTime = Instant.now();
         System.out.println("Type the following characters: ");
-        List<String> originalWords = generateRandomEnglishWords(10);
+        System.out.println("If the first word starts with [33m, consider it as highlighted");
+        List<String> originalWords = generateRandomEnglishWords(40);
         List<String> highlightedWords = generateRandomEnglishWordsWithColour(4);
 
         StringBuilder wordString = new StringBuilder();
@@ -180,30 +170,37 @@ public class Challenge implements iChallenge {
         return accuracy;
     }
 
-    public int calculateAccuracyColouredGame(String[] typedWords, List<String> originalWords) {
+    public double calculateAccuracyColouredGame(String[] typedWords, List<String> originalWords) {
+        List<String> yellowHighlightedWords = new ArrayList<>();
+        int correctHighlightedWords = 0;
 
-        int totalWordsCount = typedWords.length;
-        int correctWordsCount = 0;
 
-        for (int i = 0; i < totalWordsCount && i < originalWords.size(); i++) {
-            String typedWord = typedWords[i];
-            String originalWord = originalWords.get(i);
+        for (String originalWord : originalWords) {
 
-            if (originalWord.contains(TerminalColors.YELLOW)) {
-                originalWord = originalWord.replace(TerminalColors.YELLOW, "")
-                        .replace(TerminalColors.RESET, "");
-            }
-
-            if (!typedWord.equals(originalWord)) {
-                correctWordsCount++;
+            String cleanOriginalWord = originalWord.replaceAll("\u001B\\[[;\\d]*m", "");
+            if (originalWord.startsWith(TerminalColors.YELLOW)) {
+                yellowHighlightedWords.add(cleanOriginalWord);
             }
         }
-        double accuracy = (double) correctWordsCount / originalWords.size() * 100.0;
+
+        for (String typedWord : typedWords) {
+
+            for (String yellowWord : yellowHighlightedWords) {
+                if (typedWord.equalsIgnoreCase(yellowWord)) {
+                    correctHighlightedWords++;
+                    break;
+                }
+            }
+        }
+
+        int totalHighlightedWords = yellowHighlightedWords.size();
+        double accuracy = totalHighlightedWords == 0 ? 0.0 :
+                (double) correctHighlightedWords / totalHighlightedWords * 100.0;
 
         accuracy = Math.round(accuracy * 100.0) / 100.0;
-        System.out.println("Accuracy: " + accuracy);
+        System.out.println("Accuracy for highlighted words: " + accuracy + "%");
 
-        return (int) accuracy;
+        return accuracy;
     }
 
     public void calculateTime(Players players) {
@@ -214,12 +211,70 @@ public class Challenge implements iChallenge {
             seconds %= 60;
             System.out.println("Time taken: " + minutes + " minutes " + seconds + " seconds");
 
-            Resultat resultat = new Resultat(0,seconds,4, players);
+            Resultat resultat = new Resultat(0, seconds, 4, players);
             MyRunner.resultatRepo.save(resultat);
 
         } else {
             System.out.println("Time calculation failed. Start and end times are not properly set.");
 
         }
+    }
+    public double savedCountWodsMethod(String[] typedWords, List<String> originalWords){
+        int totalHighlightedWords = 0;
+        int correctHighlightedWords = 0;
+
+        for (int i = 0; i < typedWords.length && i < originalWords.size(); i++) {
+            String typedWord = typedWords[i];
+            String originalWord = originalWords.get(i);
+
+            String cleanedOriginalWord = originalWord.replaceAll("\u001B\\[[;\\d]*m", "");
+
+            if (originalWord.contains(TerminalColors.YELLOW)) {
+                totalHighlightedWords++;
+
+                // Compare typed word with cleaned original word (without ANSI escape sequences)
+                if (typedWord.equalsIgnoreCase(cleanedOriginalWord)) {
+                    correctHighlightedWords++;
+                }
+            }
+        }
+
+        double accuracy = totalHighlightedWords == 0 ? 0.0 :
+                (double) correctHighlightedWords / totalHighlightedWords * 100.0;
+
+        accuracy = Math.round(accuracy * 100.0) / 100.0;
+        System.out.println("Accuracy: " + accuracy + "%");
+
+        return (int) accuracy;
+    }
+
+    public double savedCountWordsMethod2(String[] typedWords, List<String> originalWords) {
+        int totalHighlightedWords = 0;
+        int correctHighlightedWords = 0;
+
+        for (int i = 0; i < typedWords.length && i < originalWords.size(); i++) {
+            String typedWord = typedWords[i];
+            String originalWord = originalWords.get(i);
+
+            // Remove ANSI escape sequences from original word
+            originalWord = originalWord.replaceAll("\u001B\\[[;\\d]*m", "");
+
+            // Check if the original word starts with YELLOW
+            if (originalWord.startsWith(TerminalColors.YELLOW)) {
+                totalHighlightedWords++;
+
+                if (typedWord.equalsIgnoreCase(originalWord)) {
+                    correctHighlightedWords++;
+                }
+            }
+        }
+
+        double accuracy = totalHighlightedWords == 0 ? 0.0 :
+                (double) correctHighlightedWords / totalHighlightedWords * 100.0;
+
+        accuracy = Math.round(accuracy * 100.0) / 100.0;
+        System.out.println("Accuracy for highlighted words: " + accuracy + "%");
+
+        return accuracy;
     }
 }
