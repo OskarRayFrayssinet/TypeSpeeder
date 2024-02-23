@@ -1,5 +1,7 @@
 package se.ju23.typespeeder;
 
+import java.util.Optional;
+
 public class Controller {
     MenuService menu;
     SystemIO systemIO;
@@ -28,7 +30,7 @@ public class Controller {
         String menuChoice;
         do {
             switch (menuChoice = menu.displayMenu()) {
-                case "5" -> menu.setLoggedInPlayer(null);
+                case "0" -> menu.setLoggedInPlayer(null);
                 case "1" -> {
                     challenge.setDifficulty(menu.chooseDifficulty());
                     menu.challengeCountDown();
@@ -38,7 +40,7 @@ public class Controller {
                 }
                 case "2" -> systemIO.addString(challenge.getTop10rankings());
                 case "3" -> settings();
-                case "4" -> menu.patchNotesAndNewsMenu();
+                case "4" -> patchNotesAndNews();
                 case "6" -> systemIO.addString("\nSkriv svenska eller engelska för att välja språk.");
 
             }
@@ -64,9 +66,62 @@ public class Controller {
                 case 2 -> changeDisplayName();
                 case 3 -> changePassword();
                 case 4 -> showPlayerStatistics();
+                case 5, 6 -> createAdminMessage(menuChoice);
             }
         } while (menuChoice != 0);
     }
+    public void patchNotesAndNews() {
+        int menuChoice;
+        do {
+            menu.patchNotesAndNewsMenu();
+            switch (menuChoice = systemIO.readIntOnly()) {
+                case 1 -> showNews();
+                case 2 -> showPatchNotes();
+            }
+        } while (menuChoice != 0);
+    }
+    public void createAdminMessage(int newsOrPatch){
+        if (!daoManager.getPlayer().isAdmin()){
+            return;
+        }
+        String messageType = newsOrPatch == 5 ? "patch" : "news";
+
+        String version = "N/A";
+
+        if (newsOrPatch == 5){
+            systemIO.addString("Ange version\n>");
+            version = systemIO.getString();
+        }
+
+        systemIO.addString("Ange rubrik\n>");
+        String headLine = systemIO.getString();
+
+        systemIO.addString("Ange textstycke\n>");
+        String content = systemIO.getString();
+
+        daoManager.createPatchNoteOrNewsletter(content, headLine, messageType, version);
+    }
+
+    private void showPatchNotes() {
+        Optional<AdminMessage> optionalAdminMessage = daoManager.fetchLatestPatchNotes();
+        if (optionalAdminMessage.isPresent()){
+            AdminMessage adminMessage = optionalAdminMessage.get();
+            Patch patch = new Patch(adminMessage.getVersion(), adminMessage.getDateTime(),
+                    adminMessage.getMessage(), adminMessage.getHeadLine());
+            systemIO.addString(patch.toString() + "\n");
+        }
+    }
+
+    private void showNews() {
+        Optional<AdminMessage> optionalAdminMessage = daoManager.fetchLatestNews();
+        if (optionalAdminMessage.isPresent()){
+            AdminMessage adminMessage = optionalAdminMessage.get();
+            NewsLetter news = new NewsLetter(adminMessage.getMessage(), adminMessage.getDateTime(),
+                    adminMessage.getHeadLine());
+            systemIO.addString(news.toString() + "\n");
+        }
+    }
+
     public void changePassword() {
         systemIO.addString("Ange ditt nya lösenord\n>");
         String newPassword = systemIO.getString();

@@ -1,13 +1,12 @@
 package se.ju23.typespeeder;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-
+@Table(name = "adminmessages")
 @Entity
-public class AdminMessage {
+public class AdminMessage implements Message{
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int id;
     private String message;
@@ -17,11 +16,13 @@ public class AdminMessage {
     private String patchOrNews;
     @Column(name = "date_time")
     private LocalDateTime dateTime;
+    private String version;
 
-    public AdminMessage(String message, String headLine, String patchOrNews) {
+    public AdminMessage(String message, String headLine, String patchOrNews, String version) {
         this.message = message;
         this.headLine = headLine;
         this.patchOrNews = patchOrNews;
+        this.version = version;
         this.dateTime = LocalDateTime.now();
     }
 
@@ -29,9 +30,12 @@ public class AdminMessage {
 
     }
 
-    public static void createPatchNoteOrNewsletter(String message, String headLine, String patchOrNews, DAOManager daoManager) {
-        AdminMessage adminMessage = new AdminMessage(message, headLine, patchOrNews);
-        daoManager.createAdminMessage(adminMessage);
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public LocalDateTime getDateTime() {

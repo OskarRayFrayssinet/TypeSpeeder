@@ -12,6 +12,7 @@ public class Menu implements MenuService {
     private ArrayList<String> logInMenuOptions;
     private String wrongUsernameMessage;
     private String exitMessage;
+    private String logOutMenuChoice;
     private Player loggedInPlayer;
     private SystemIO systemIO;
     private PlayerRepo playerRepo;
@@ -30,7 +31,8 @@ public class Menu implements MenuService {
         for (String menuOption : menuOptions) {
             systemIO.addString("\n" + menuOption);
         }
-        systemIO.addString("\n6. Välj språk (svenska/engelska):");
+        systemIO.addString("\n5. Välj språk (svenska/engelska):");
+        systemIO.addString("\n" + logOutMenuChoice);
         systemIO.addString("\n>");
         String choice = systemIO.getString();
 
@@ -141,8 +143,14 @@ public class Menu implements MenuService {
                 2. Ändra visningsnamn
                 3. Ändra lösenord
                 4. Se din statistik
-                0. Backa
-                >""");
+                """);
+        if (loggedInPlayer.isAdmin()){
+            systemIO.addString("""
+                    5. Skapa ny patchnote
+                    6. Skapa nytt nyhetsbrev
+                    """);
+        }
+        systemIO.addString("0. Backa\n>");
     }
     public void patchNotesAndNewsMenu() {
         systemIO.addString("""
@@ -192,7 +200,7 @@ public class Menu implements MenuService {
         menuOptions.add("2. Visa rankningslista");
         menuOptions.add("3. Inställningar");
         menuOptions.add("4. Patch notes och nyheter");
-        menuOptions.add("5. Logga ut");
+        logOutMenuChoice = "0. Logga ut";
 
         startMenuOptions = new ArrayList<>();
         startMenuOptions.add("""

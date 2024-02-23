@@ -10,8 +10,15 @@ public class DAOManager {
     private Player player;
     private AdminMessageRepo adminMessageRepo;
 
-    public void createAdminMessage(AdminMessage adminMessage){
+    public void createPatchNoteOrNewsletter(String message, String headLine, String patchOrNews, String version) {
+        AdminMessage adminMessage = new AdminMessage(message, headLine, patchOrNews, version);
         adminMessageRepo.save(adminMessage);
+    }
+    public Optional<AdminMessage> fetchLatestPatchNotes() {
+        return adminMessageRepo.findLatestPatchNotes();
+    }
+    public Optional<AdminMessage> fetchLatestNews() {
+        return adminMessageRepo.findLatestNews();
     }
     public Player getPlayer() {
         return player;
