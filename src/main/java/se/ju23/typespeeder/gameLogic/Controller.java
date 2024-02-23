@@ -118,6 +118,10 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
                     } else {
                         io.addString(menuService.getUserNameChangeText());
                         String newAlias = io.getString();
+                        if (newAlias.length() > 44){
+                            io.addString("To many characters\n");
+                            run();
+                        }
                         if (newAlias.equalsIgnoreCase("b")){
                             run();
                         } else {
@@ -140,6 +144,10 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
                         if (checked) {
                             io.addString(menuService.getPasswordChangeText());
                             String newPassword = io.getString();
+                            if (newPassword.length() > 44){
+                                io.addString("To many characters\n");
+                                run();
+                            }
                             if (newPassword.equalsIgnoreCase("b")){
                                 run();
                             }
@@ -163,6 +171,10 @@ import se.ju23.typespeeder.userInterfaces.MenuService;
                         if (checked) {
                             io.addString(menuService.getUsernameChangeText());
                             String newEmail = io.getString();
+                            if (newEmail.length() > 199){
+                                io.addString("To many characters\n");
+                                run();
+                            }
                             if (newEmail.equalsIgnoreCase("b")){
                                 run();
                             }

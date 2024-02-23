@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -31,6 +32,9 @@ public class Patch {
         String text = null;
         Path currentWorkingdir = Paths.get("").toAbsolutePath();
         String path = currentWorkingdir + File.separator + "Patch.txt";
+        if (!Files.exists(Paths.get(path))) {
+            createPatchFile(path); // Create the file if it doesn't exist
+        }
         text = readTextFromFile(path);
 
         return text;
@@ -40,6 +44,9 @@ public class Patch {
         LocalDateTime a = null;
         Path currentWorkingdir = Paths.get("").toAbsolutePath();
         String patho = currentWorkingdir + File.separator + "Patch.txt";
+        if (!Files.exists(Paths.get(patho))) {
+            createPatchFile(patho); // Create the file if it doesn't exist
+        }
         try {
             Path path = Paths.get(patho);
             BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
@@ -49,6 +56,20 @@ public class Patch {
 
         }
         return a;
+    }
+    private static void createPatchFile(String filePath) {
+        try {
+            Files.createFile(Paths.get(filePath));
+            System.out.println("Created Patch.txt at: " + filePath);
+            // Skriv standardinnehållet till filen
+            String defaultContent = getString();
+            Files.write(Paths.get(filePath), defaultContent.getBytes(), StandardOpenOption.WRITE);
+        } catch (IOException e) {
+            System.err.println("An error occurred while creating the file: " + e.getMessage());
+        }
+    }
+    public static String getString(){
+        return "BETA VERSION 1.0.1 (Newsletter bugs fixed)";
     }
     public String readTextFromFile(String filePath) {
         StringBuilder content = new StringBuilder();
