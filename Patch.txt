@@ -1,1 +1,1 @@
-BETA VERSION 1.0.0
+BETA VERSION 1.0.1 (Newsletter bugs fixed)
