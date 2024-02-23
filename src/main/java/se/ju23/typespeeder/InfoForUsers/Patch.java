@@ -30,7 +30,7 @@ public class Patch {
     public String getPatchVersion(){
         String text = null;
         Path currentWorkingdir = Paths.get("").toAbsolutePath();
-        String path = currentWorkingdir + File.separator + "src"  + File.separator + "Patch.txt";
+        String path = currentWorkingdir + File.separator + "Patch.txt";
         text = readTextFromFile(path);
 
         return text;
@@ -39,7 +39,7 @@ public class Patch {
     public static LocalDateTime getReleaseDateTime() {
         LocalDateTime a = null;
         Path currentWorkingdir = Paths.get("").toAbsolutePath();
-        String patho = currentWorkingdir + File.separator + "src"  + File.separator + "Patch.txt";
+        String patho = currentWorkingdir + File.separator + "Patch.txt";
         try {
             Path path = Paths.get(patho);
             BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
