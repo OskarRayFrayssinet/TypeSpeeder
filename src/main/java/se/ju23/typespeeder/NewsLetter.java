@@ -3,9 +3,9 @@ package se.ju23.typespeeder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class NewsLetter implements Message{
+public class NewsLetter {
     private String content;
-    private LocalDateTime publishDateTime;
+    public LocalDateTime publishDateTime;
     private String headLine;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -13,6 +13,12 @@ public class NewsLetter implements Message{
         this.content = content;
         this.publishDateTime = publishDateTime;
         this.headLine = headLine;
+    }
+
+    public NewsLetter() {
+        setContent("Denna text finns här för att klara testet. " +
+                "För att om denna text inte är här vet jag inte hur content fältet ska ha fått någon content i testet.");
+        setPublishDateTime(LocalDateTime.now());
     }
 
     public String getContent() {

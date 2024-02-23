@@ -3,18 +3,22 @@ package se.ju23.typespeeder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Patch implements Message{
+public class Patch {
     private String patchVersion;
-    private LocalDateTime releaseDateTime;
+    public LocalDateTime realeaseDateTime;
     private String patchNotes;
     private String headLine;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public Patch(String patchVersion, LocalDateTime releaseDateTime, String patchNotes, String headLine) {
+    public Patch(String patchVersion, LocalDateTime realeaseDateTime, String patchNotes, String headLine) {
         this.patchVersion = patchVersion;
-        this.releaseDateTime = releaseDateTime;
+        this.realeaseDateTime = realeaseDateTime;
         this.patchNotes = patchNotes;
         this.headLine = headLine;
+    }
+
+    public Patch() {
+        setRealeaseDateTime(LocalDateTime.now());
     }
 
     public String getHeadLine() {
@@ -33,12 +37,12 @@ public class Patch implements Message{
         this.patchVersion = patchVersion;
     }
 
-    public LocalDateTime getReleaseDateTime() {
-        return releaseDateTime;
+    public LocalDateTime getRealeaseDateTime() {
+        return realeaseDateTime;
     }
 
-    public void setReleaseDateTime(LocalDateTime releaseDateTime) {
-        this.releaseDateTime = releaseDateTime;
+    public void setRealeaseDateTime(LocalDateTime realeaseDateTime) {
+        this.realeaseDateTime = realeaseDateTime;
     }
 
     public String getPatchNotes() {
@@ -50,7 +54,7 @@ public class Patch implements Message{
     }
     @Override
     public String toString() {
-        return headLine + "\tVersion: " + patchVersion + "\n" + "Publicerad " + releaseDateTime.format(formatter)
+        return headLine + "\tVersion: " + patchVersion + "\n" + "Publicerad " + realeaseDateTime.format(formatter)
                 + "\n" + patchNotes;
     }
 }

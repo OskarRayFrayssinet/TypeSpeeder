@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 @Table(name = "adminmessages")
 @Entity
-public class AdminMessage implements Message{
+public class AdminMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int id;

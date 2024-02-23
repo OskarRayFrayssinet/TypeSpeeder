@@ -28,23 +28,36 @@ public class Controller {
     }
     public void mainMenu(){
         String menuChoice;
+        menu.refreshPlayerInfo();
         do {
             switch (menuChoice = menu.displayMenu()) {
                 case "0" -> menu.setLoggedInPlayer(null);
-                case "1" -> {
-                    challenge.setDifficulty(menu.chooseDifficulty());
-                    menu.challengeCountDown();
-                    challenge.runChallenge();
-                    systemIO.addString(menu.postGameResults(challenge.ChallengeScoreCalc()));
-                    continueOrExit();
-                }
+                case "1" -> game();
                 case "2" -> systemIO.addString(challenge.getTop10rankings());
                 case "3" -> settings();
                 case "4" -> patchNotesAndNews();
-                case "6" -> systemIO.addString("\nSkriv svenska eller engelska för att välja språk.");
+                case "5" -> systemIO.addString("\nSkriv svenska eller engelska för att välja språk.");
 
             }
-        } while (!menuChoice.equals("5"));
+        } while (!menuChoice.equals("0"));
+    }
+    public int chooseGameMode(){
+        int menuChoice;
+        do {
+            menu.gameModeMenu();
+            menuChoice = systemIO.readIntOnly();
+
+        } while (menuChoice < 1 || menuChoice > 3);
+
+        return menuChoice;
+    }
+    public void game(){
+        int gameMode = chooseGameMode();
+        challenge.setDifficulty(menu.chooseDifficulty());
+        menu.challengeCountDown();
+        challenge.runChallenge(gameMode);
+        systemIO.addString(menu.postGameResults(challenge.ChallengeScoreCalc()));
+        continueOrExit();
     }
     public void continueOrExit(){
         int choice;

@@ -19,4 +19,6 @@ public interface MenuService {
     void patchNotesAndNewsMenu();
     void continueOrExit();
     String getExitMessage();
+    void refreshPlayerInfo();
+    void gameModeMenu();
 }

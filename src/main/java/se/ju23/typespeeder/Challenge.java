@@ -2,13 +2,11 @@ package se.ju23.typespeeder;
 
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class Challenge {
-    private ArrayList<String> typeGoal;
+    private ArrayList<String> typeGoal = new ArrayList<>();
     private String typeInput;
     private long startTimerInMillis;
     private long endTimerInMillis;
@@ -38,9 +36,34 @@ public class Challenge {
         this.daoManager = daoManager;
     }
 
-    public void generateTypingString() {
+    public void generateTypingString(int gameMode) {
         typeGoal = new ArrayList<>();
         typeGoal = (ArrayList<String>) daoManager.fetchGoalText(isSwedish, difficulty);
+
+        int length = typeGoal.toString().length();
+        if (gameMode > 1) {
+            for (int i = 0; i < length/10; i++) {
+                int randomIndex = (int) (Math.random() * typeGoal.size());
+                typeGoal.set(randomIndex, capitalizeRandomLetter(typeGoal.get(randomIndex)));
+            }
+        }
+        if (gameMode == 3) {
+            char[] specialChars = { '!', '@', '#', '$', '%', '^','&', '*',
+                    '(', ')', '-', '_', '+', '=', '{','}', '[', ']', '|',
+                    ';', ':', '<', '>', ',', '.', '/', '?' };
+            int size = typeGoal.size();
+            for (int i = -2; i < size/3; i++) {
+                int index = (int) (Math.random() * specialChars.length);
+                typeGoal.add(String.valueOf(specialChars[index]));
+            }
+            Collections.shuffle(typeGoal);
+        }
+    }
+    public static String capitalizeRandomLetter(String word) {
+        int index = (int) (Math.random() * word.length());
+        char[] chars = word.toCharArray();
+        chars[index] = Character.toUpperCase(chars[index]);
+        return new String(chars);
     }
     private Double checkAccuracy(String input, String goal) {
         int length = Math.max(input.length(), goal.length());
@@ -162,7 +185,9 @@ public class Challenge {
         return results;
     }
 
-    public void runChallenge() {
+    public void runChallenge(int gameMode) {
+        generateTypingString(gameMode);
+        lettersToType();
         startChallenge();
         typeInput = systemIO.getString();
         endTimer();
@@ -197,11 +222,9 @@ public class Challenge {
         return rankClass;
     }
     public void lettersToType() {
-        generateTypingString();
         systemIO.addString(String.join(" ", typeGoal) + "\n>");
     }
     public void startChallenge() {
-        lettersToType();
         startTimer();
     }
 

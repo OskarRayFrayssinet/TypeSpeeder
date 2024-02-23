@@ -3,6 +3,7 @@ package se.ju23.typespeeder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -12,7 +13,7 @@ public class Menu implements MenuService {
     private ArrayList<String> logInMenuOptions;
     private String wrongUsernameMessage;
     private String exitMessage;
-    private String logOutMenuChoice;
+    private String gameModeMenu;
     private Player loggedInPlayer;
     private SystemIO systemIO;
     private PlayerRepo playerRepo;
@@ -27,14 +28,17 @@ public class Menu implements MenuService {
         return menuOptions;
     }
     public String displayMenu() {
-        refreshPlayerInfo();
+        menuOptions = getMenuOptions();
         for (String menuOption : menuOptions) {
             systemIO.addString("\n" + menuOption);
         }
-        systemIO.addString("\n5. Välj språk (svenska/engelska):");
-        systemIO.addString("\n" + logOutMenuChoice);
         systemIO.addString("\n>");
-        String choice = systemIO.getString();
+
+        String choice = "0";
+        try {
+             choice = systemIO.getString();
+        } catch (NoSuchElementException e) {
+        }
 
         if (choice.equals("svenska")) {
             choice = "Svenska valt.";
@@ -155,7 +159,7 @@ public class Menu implements MenuService {
     public void patchNotesAndNewsMenu() {
         systemIO.addString("""
                 1. Visa nyhetsbrev
-                2. Visa Patch notes
+                2. Visa se.ju23.typespeeder.Patch notes
                 0. Backa
                 >""");
     }
@@ -168,6 +172,9 @@ public class Menu implements MenuService {
 
     public Player getLoggedInPlayer() {
         return loggedInPlayer;
+    }
+    public void gameModeMenu(){
+        systemIO.addString(gameModeMenu);
     }
 
     public void setLoggedInPlayer(Player loggedInPlayer) {
@@ -200,7 +207,8 @@ public class Menu implements MenuService {
         menuOptions.add("2. Visa rankningslista");
         menuOptions.add("3. Inställningar");
         menuOptions.add("4. Patch notes och nyheter");
-        logOutMenuChoice = "0. Logga ut";
+        menuOptions.add("5. Välj språk (svenska/engelska):");
+        menuOptions.add("0. Logga ut");
 
         startMenuOptions = new ArrayList<>();
         startMenuOptions.add("""
@@ -223,6 +231,14 @@ public class Menu implements MenuService {
         wrongUsernameMessage = "Felaktigt användarid, försök igen. \nAnge användarid:\n>";
 
         exitMessage = "\nTack för att du spelade TypeSpeeder! Programmet avslutas...";
+
+        gameModeMenu = """
+                Välj spelvariant:
+                1. endast små bokstäver
+                2. Blandat stoRa Och sMå bOKstäver
+                3. bLandade! bokstäVer: (och) speCialtecken?
+                >""";
+
     }
     public void setLanguageToEnglish(){
         Challenge.setSwedish(false);
