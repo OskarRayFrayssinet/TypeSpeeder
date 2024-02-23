@@ -150,8 +150,8 @@ import java.util.List;
         }
         menuOptions.add("\n0.Sign out and exit\n");
         menuOptions.add("1. Choose language (Swedish/English)\n");
-        menuOptions.add("2. Select game hard\n");
-        menuOptions.add("3. Select game easy\n");
+        menuOptions.add("2. Select game \u001B[31mHARD\u001B[0m\n");
+        menuOptions.add("3. Select game \u001B[32mEASY\u001B[0m\n");
         menuOptions.add("4. Show ranking list\n");
         menuOptions.add("5. Account settings\n");
         menuOptions.add("6. Show newsletter\n");

@@ -71,9 +71,11 @@ public class Challenge implements IChallenge {
         listOfCurrentGames = tasksList;
         gameListSize = tasksList.size();
         if (gameDifficulty == 1){
-            return ConsoleColor.GREEN + "EASY GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD +  "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET ;
+            return ConsoleColor.GREEN + "EASY GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD +
+                    "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET + "Your choice";
         } else {
-            return ConsoleColor.RED + "HARD GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD + "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET ;
+            return ConsoleColor.RED + "HARD GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD +
+                    "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET + "Your choice: ";
         }
 
     }
