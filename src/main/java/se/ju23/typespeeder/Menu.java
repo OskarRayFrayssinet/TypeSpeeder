@@ -1,6 +1,5 @@
 package se.ju23.typespeeder;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -8,7 +7,7 @@ import java.util.*;
 
 import static se.ju23.typespeeder.Challenge.startChallenge;
 
-@SpringBootApplication
+
 @Component
 public class Menu implements MenuService {
     private static UserService userService;
@@ -24,6 +23,7 @@ public class Menu implements MenuService {
     public static String passWord;
     public static boolean loggedIn=false;
 
+
     public static void displayMenu() throws IOException {
         UserService userService = TypeSpeederApplication.userService;
 
@@ -34,33 +34,35 @@ public class Menu implements MenuService {
         MenuOptions.add("4. Ändra språk");
         MenuOptions.add("5. Updatera profil");
         MenuOptions.add("6. Logga ut");
-        for (String list: MenuOptions){
-            System.out.println(list);
+        for (String option : MenuOptions) {
+            System.out.println(option);
         }
         System.out.print("Ange siffran för ditt val: ");
 
 
+        try {
+            int menuChoice = input.nextInt();
+            input.nextLine();
 
+            if (loggedInUser == null && menuChoice == 0) {
+                logIn();
+            } else {
+                switch (menuChoice) {
+                    case 6 -> logOut();
+                    case 1 -> startChallenge();
+                    case 2 -> Challenge.showRankingList();
+                    case 3 -> NewsLetter.showNewsAndUpdates();
+                    case 4 -> changeLanguage();
+                    case 5 -> updateUser();
 
-        int menuChoice = input.nextInt();
-        input.nextLine();
-
-        if (loggedInUser == null && menuChoice == 0) {
-             logIn();
-        } else {
-            switch (menuChoice) {
-                case 6 -> logOut();
-                case 1 -> startChallenge();
-                case 2 -> Challenge.showRankingList();
-                case 3 -> showNewsAndUpdates();
-                case 4 -> changeLanguage();
-                case 5 -> updateUser();
-
-                default -> System.out.println("Felaktig inmatning, försök igen.");
+                    default -> System.out.println("Felaktig inmatning, försök igen.");
+                }
             }
+        } catch (InputMismatchException e){
+            System.out.println("Felaktig inmatning, ange en siffra.");
+            input.nextLine();
         }
     }
-
 
 
     public static void logIn() {
@@ -129,34 +131,18 @@ public class Menu implements MenuService {
        Menu.userService = userService;
     }
 
- //   @Autowired
-   // private static UserService userService;
-
-
-    public static void showNewsAndUpdates() throws IOException {
-        System.out.println("Nyheter och uppdateringar:");
-        System.out.println("Nu finns möjlighet att spela spelet på engelska!");
-
-        System.out.println("Vill du återgå till huvudmenyn? (ja/nej): ");
-        String goBack = input.nextLine().toLowerCase();
-
-        if ("ja".equals(goBack)) {
-            displayMenu();
-        } else {
-            System.out.println("Programmet avslutas.");
-        }
-    }
-
 
     public static void changeLanguage() throws IOException {
-        System.out.print("Välj språk (sv/en): ");
+        long startTime = System.nanoTime();
+
+        System.out.print("Välj språk (svenska/engelska):");
         String language = input.nextLine().toLowerCase();
 
         System.out.println("Valt språk: " + language);
-        if ("en".equalsIgnoreCase(language)) {
+        if ("engelska".equalsIgnoreCase(language)) {
             messages = ResourceBundle.getBundle("messages", new Locale(language, "US"));
             System.out.println(messages.getString("language.changed"));
-        } else if ("sv".equalsIgnoreCase(language)) {
+        } else if ("svenska".equalsIgnoreCase(language)) {
             messages = ResourceBundle.getBundle("messages", new Locale(language, "SE"));
             System.out.println(messages.getString("language.changed"));
         } else {
@@ -165,12 +151,6 @@ public class Menu implements MenuService {
         }
 
         startGameAfterLanguageSelection();
-       /* System.out.println(messages.getString("return.menu"));
-        String goBack = input.nextLine().toLowerCase();
-        if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {
-            displayMenu();
-        }*/
-
     }
 
     public static void startGameAfterLanguageSelection() throws IOException {
