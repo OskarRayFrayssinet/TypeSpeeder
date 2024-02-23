@@ -185,7 +185,6 @@ public class Challenge implements iChallenge {
         int totalWordsCount = typedWords.length;
         int correctWordsCount = 0;
 
-
         for (int i = 0; i < totalWordsCount && i < originalWords.size(); i++) {
             String typedWord = typedWords[i];
             String originalWord = originalWords.get(i);
@@ -214,12 +213,6 @@ public class Challenge implements iChallenge {
             long minutes = seconds / 60;
             seconds %= 60;
             System.out.println("Time taken: " + minutes + " minutes " + seconds + " seconds");
-
-           /* Players players = new Players("Abba", "Abba", "Abba", 1, "admin");
-            MyRunner.playersRepo.save(players);
-
-            Resultat resultat = new Resultat(1, seconds, 4, players);
-            MyRunner.resultatRepo.save(resultat);*/
 
             Resultat resultat = new Resultat(0,seconds,4, players);
             MyRunner.resultatRepo.save(resultat);

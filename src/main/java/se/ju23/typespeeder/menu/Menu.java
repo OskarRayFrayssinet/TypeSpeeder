@@ -113,6 +113,7 @@ public class Menu implements MenuService {
                 break;
             case 4:
                 playersService.printYourStatistics(playersRepo, resultatRepo, currentPlayer, scanner);
+                playersService.printOverallStatistics(playersRepo,resultatRepo,currentPlayer,scanner);
                 break;
             case 5:
                 playersService.deletePlayer(playersRepo, scanner);

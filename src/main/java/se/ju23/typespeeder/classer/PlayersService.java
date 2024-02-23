@@ -6,6 +6,7 @@ import se.ju23.typespeeder.database.PlayersRepo;
 import se.ju23.typespeeder.database.Resultat;
 import se.ju23.typespeeder.database.ResultatRepo;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -103,7 +104,7 @@ public class PlayersService {
                 int playerId = Integer.parseInt(choice);
                 playersRepo.deleteById(playerId);
                 System.out.println("Spelare med id " + playerId + "tagits bort");
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 Players playerToDelete = playersRepo.findByNickname(choice);
                 if (playerToDelete != null) {
                     playersRepo.delete(playerToDelete);
@@ -116,6 +117,7 @@ public class PlayersService {
         } while (carryOn);
 
     }
+
     public void printYourStatistics(PlayersRepo playersRepo, ResultatRepo resultatRepo, Players players, Scanner scanner) {
         if (players != null) {
             System.out.println("Here are the results for " + players.getNickname());
@@ -123,9 +125,24 @@ public class PlayersService {
             if (foundPlayer != null) {
                 List<Resultat> resultatList = foundPlayer.getResultat();
                 if (resultatList != null && !resultatList.isEmpty()) {
+                    int totalMistakes = 0;
+                    long totalTime = 0;
+                    int totalResult = 0;
+
                     for (Resultat resultat : resultatList) {
-                        System.out.println(resultat);
+                        totalMistakes += resultat.getMistakes();
+                        totalTime += resultat.getTime();
+                        totalResult += resultat.getResultat();
                     }
+
+                    double averageResult = totalResult / (double) resultatList.size();
+                    double averageTime = totalTime / (double) resultatList.size();
+
+                    System.out.println("Aggregate Results for " + players.getNickname() + ":");
+                    System.out.println("Total Mistakes: " + totalMistakes);
+                    System.out.println("Average Time: " + averageTime);
+                    System.out.println("Average Result: " + averageResult);
+
                 } else {
                     System.out.println("No results found");
                 }
@@ -137,4 +154,57 @@ public class PlayersService {
         }
     }
 
+    public void printOverallStatistics(PlayersRepo playersRepo, ResultatRepo resultatRepo, Players players, Scanner scanner) {
+        List<Players> allPlayers = playersRepo.findAll();
+
+        if (!allPlayers.isEmpty()) {
+            allPlayers.sort(Comparator.comparingDouble(this::calculateAverageResult).reversed());
+
+            System.out.println("==========================================");
+            System.out.println("Below is the current leaderboard according to average result:");
+
+            for (Players player : allPlayers) {
+                System.out.println("=============================================");
+                System.out.println("Player: " + player.getNickname());
+
+                List<Resultat> resultatList = player.getResultat();
+                if (resultatList != null && !resultatList.isEmpty()) {
+                    int totalMistakes = 0;
+                    long totalTime = 0;
+                    int totalResult = 0;
+
+                    for (Resultat resultat : resultatList) {
+                        totalMistakes += resultat.getMistakes();
+                        totalTime += resultat.getTime();
+                        totalResult += resultat.getResultat();
+                    }
+                    double averageResult = totalResult / (double) resultatList.size();
+                    double averageTime = totalTime / (double) resultatList.size();
+
+                    System.out.println("Total Mistakes: " + totalMistakes);
+                    System.out.println("Average Time: " + averageTime);
+                    System.out.println("Average Result: " + averageResult);
+                } else {
+                    System.out.println("No results found");
+                }
+            }
+        } else {
+            System.out.println("No players found");
+        }
+    }
+
+    private double calculateAverageResult(Players player) {
+        List<Resultat> resultatList = player.getResultat();
+        if (resultatList != null && !resultatList.isEmpty()) {
+            int totalResult = 0;
+            for (Resultat resultat : resultatList) {
+                totalResult += resultat.getResultat();
+            }
+            return totalResult / (double) resultatList.size();
+        }
+        return 0.0;
+    }
+
 }
+
+
