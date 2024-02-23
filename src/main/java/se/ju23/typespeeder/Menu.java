@@ -133,8 +133,7 @@ public class Menu implements MenuService {
     public void settingsMenu() {
         systemIO.addString("""
                 1. Kontoinställningar
-                2. Ändra språk
-                3. Se din statistik
+                2. Se din statistik
                 0. Backa
                 >""");
     }
