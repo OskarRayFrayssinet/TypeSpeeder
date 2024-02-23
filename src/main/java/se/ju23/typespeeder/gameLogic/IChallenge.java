@@ -6,29 +6,20 @@ import java.util.List;
 public interface IChallenge {
     String printListOfGames();
 
+    String printListOfEasyGames();
+
     String chooseGame(int id);
-
-
-
-
 
     void calculateTimeToDouble();
 
-
-
-
-
-
+    int getRandomWordsAccordingToLevel();
 
     void startChallenge();
 
     void endChallenge();
-
-
-    int getCurrentGameTaskId();
-
     void setCurrentGameTaskId();
 
     void getAndSetCurrentLanguage();
 
+    int getGameListSize();
 }

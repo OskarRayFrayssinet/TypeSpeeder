@@ -2,6 +2,7 @@ package se.ju23.typespeeder.classesFromDB;
 
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -9,16 +10,13 @@ import java.util.Objects;
 public class Attempt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-
     @Column(name = "attempt_id", nullable = false)
     private int attemptId;
     @Basic
     @Column(name = "user_id", insertable=false, updatable=false)
-    //@Column(name = "user_id", nullable = false)
     private int userId;
     @Basic
     @Column(name = "task_id", insertable=false, updatable=false)
-    //@Column(name = "task_id", nullable = false)
     private int taskId;
     @Basic
     @Column(name = "total_points", nullable = false)
@@ -29,7 +27,9 @@ public class Attempt {
     @Basic
     @Column(name = "user_outcome")
     private String userOutcome;
-
+    @Basic
+    @Column(name = "at_time", nullable = false)
+    private Timestamp atTime;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private Users usersByUserId;
@@ -41,12 +41,13 @@ public class Attempt {
     @OneToMany(mappedBy = "attemptByAttemptId")
     private Collection<PointParam> pointParamsByAttemptId;
 
-    public Attempt(double totalPoints, String solution, String userOutcome, Users usersByUserId, Tasks tasksByTaskId) {
+    public Attempt(double totalPoints, String solution, String userOutcome, Users usersByUserId, Tasks tasksByTaskId, Timestamp currentTime) {
         this.totalPoints = totalPoints;
         this.solution = solution;
         this.userOutcome = userOutcome;
         this.usersByUserId = usersByUserId;
         this.tasksByTaskId = tasksByTaskId;
+        this.atTime = currentTime;
     }
 
     public Attempt(String solution, int taskId, double totalPoints, String userOutcome, int userId) {
@@ -109,6 +110,13 @@ public class Attempt {
     public void setUserOutcome(String userOutcome) {
         this.userOutcome = userOutcome;
     }
+    public Timestamp getAtTime() {
+        return atTime;
+    }
+
+    public void setAtTime(Timestamp atTime) {
+        this.atTime = atTime;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -123,6 +131,7 @@ public class Attempt {
         if (totalPoints != attempt.totalPoints) return false;
         if (!Objects.equals(solution, attempt.solution)) return false;
         if (!Objects.equals(userOutcome, attempt.userOutcome)) return false;
+        if (atTime != null ? !atTime.equals(attempt.atTime) : attempt.atTime != null) return false;
 
         return true;
     }
@@ -135,6 +144,7 @@ public class Attempt {
         result = (int) (31 * result + totalPoints);
         result = 31 * result + (solution != null ? solution.hashCode() : 0);
         result = 31 * result + (userOutcome != null ? userOutcome.hashCode() : 0);
+        result = 31 * result + (atTime != null ? atTime.hashCode() : 0);
         return result;
     }
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.classesFromDB.Tasks;
 import se.ju23.typespeeder.classesFromDB.TasksRepo;
+import se.ju23.typespeeder.colors.ConsoleColor;
 import se.ju23.typespeeder.userInterfaces.MenuService;
 
 import java.time.Duration;
@@ -19,11 +20,15 @@ public class Challenge implements IChallenge {
     public String currentGameText = "";
     public LocalTime startGame = LocalTime.now();
     public LocalTime endGame = LocalTime.now();
+    public int gameDifficulty = 0;
+    public int gameListSize = 0;
+    public int chosenGame = 0;
     Translatable translator;
     Playable playable;
     MenuService menuService;
     @Autowired
     TasksRepo tasksRepo;
+    public List<Tasks> listOfCurrentGames = new ArrayList<>();
 
     @Autowired
     public void setPlayable(Playable playable) {
@@ -43,24 +48,43 @@ public class Challenge implements IChallenge {
     public Challenge() {
 
     }
-
     @Override
     public String printListOfGames() {
-        List<Tasks> tasksList = tasksRepo.findAll();
+        gameDifficulty = 2;
+        setGameDifficulty();
+        List<Tasks> tasksList = tasksRepo.findByDifficulty("HARD");
+        return getGameList(tasksList);
+    }
+    @Override
+    public String printListOfEasyGames(){
+        gameDifficulty = 1;
+        setGameDifficulty();
+        List<Tasks> tasksList = tasksRepo.findByDifficulty("EASY");
+        return getGameList(tasksList);
+    }
+
+    private String getGameList(List<Tasks> tasksList) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < tasksList.size(); i++) {
             stringBuilder.append((i + 1)).append(". ").append(tasksList.get(i).getTaskName()).append("\n");
         }
-        return "0. Go back\n" + stringBuilder;
+        listOfCurrentGames = tasksList;
+        gameListSize = tasksList.size();
+        if (gameDifficulty == 1){
+            return ConsoleColor.GREEN + "EASY GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD +  "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET ;
+        } else {
+            return ConsoleColor.RED + "HARD GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD + "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET ;
+        }
+
     }
 
+
     @Override
-    public String chooseGame(int id) {
+    public String chooseGame(int input) {
 
         getAndSetCurrentLanguage();
-        currentGameTaskId = id;
-        setCurrentGameTaskId();
-        findTaskByid();
+        chosenGame = input;
+        findTaskByName();
         generateAndMarkWords();
 
         return lettersToType();
@@ -68,31 +92,43 @@ public class Challenge implements IChallenge {
     }
 
 
-    private void findTaskByid() {
-        List<Tasks> tasksList = tasksRepo.findByTaskId(currentGameTaskId);
-        for (Tasks tasks : tasksList) {
-            currentGameText = tasks.getActualTask();
+    private void findTaskByName() {
+        for (int i = 0; i < listOfCurrentGames.size(); i++) {
+           currentGameText = listOfCurrentGames.get(chosenGame - 1).getActualTask();
+           currentGameTaskId = listOfCurrentGames.get(chosenGame - 1).getTaskId();
 
         }
+        setCurrentGameTaskId();
     }
 
     private void generateAndMarkWords() {
-        String translatedText;
         StringBuilder stringBuilder = new StringBuilder();
-        if (currentLanguage.equals("1")) {
-            try {
-                translatedText = translator.translate(currentGameText, "sv");
-                currentGameText = translatedText;
-            } catch (Exception e) {
-                throw new RuntimeException();
+
+        if (!containsOnlySingleLetters(currentGameText)) {
+            if (currentLanguage.equals("1")) {
+                try {
+                    currentGameText = translator.translate(currentGameText, "sv");
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
             }
         }
         List<String> textInWords = Arrays.asList(currentGameText.split("\\s+"));
         List<String> textWithYellowWords = addYellowHighlight(textInWords, generateRandomWords(currentGameText));
+
         for (String t : textWithYellowWords) {
             stringBuilder.append(t).append(" ");
         }
         stringToPrint = stringBuilder.toString();
+    }
+    private boolean containsOnlySingleLetters(String text) {
+        String[] words = text.split("\\s+");
+        for (String word : words) {
+            if (word.length() != 1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public String lettersToType() {
@@ -107,7 +143,6 @@ public class Challenge implements IChallenge {
     }
 
     private List<String> addYellowHighlight(List<String> textInWords, List<String> randomWords) {
-        long start = System.nanoTime();
         List<String> temp = new ArrayList<>();
         for (String a : randomWords) {
             boolean markedWords = false;
@@ -136,26 +171,27 @@ public class Challenge implements IChallenge {
                 }
             }
         }
-        long end = System.nanoTime();
-        System.out.println((end-start));
         currentSolution = yellowWords;
         setCurrentSolution();
-        //TODO TA BORT DET HÄR SEN
-        System.out.println("gula ord" + yellowWords);
         return textInWords;
     }
-//TODO FÖR VARJE LEVEL currentLevel ÖKAR SKA RANDOM ORD ÖKA MED 2
     private List<String> generateRandomWords(String text) {
+        int wordsIndicies;
         String[] words = text.split("\\s+");
         Random random = new Random();
         List<String> randomWordsList = new ArrayList<>();
+        if (gameDifficulty == 2){
+            wordsIndicies = getRandomWordsAccordingToLevel();
+        } else {
+            wordsIndicies = 3;
+        }
 
-        int[] indices = new int[getRandomWordsAccordingToLevel()];//en array för att lagra dom slumpmässiga orden. hur många ord som lagras beror på level enligt insatt metod
-        Set<Integer> chosenIndices = new HashSet<>(); //här sparas alla ord i en hashset för att säkerställa att det inte finns samma ord mer än en gång
-        for (int i = 0; i < getRandomWordsAccordingToLevel(); i++) {
-            int index = random.nextInt(words.length); //väljer random index i words Arrayen, dessa blir slumpmässiga ord som ska med i spelet
-            while (chosenIndices.contains(index)) { //om ordet finns i
-                index = random.nextInt(words.length);//om det finns samma ord på ett annat index så hämtar denna en ny index att kolla ord på
+        int[] indices = new int[wordsIndicies];
+        Set<Integer> chosenIndices = new HashSet<>();
+        for (int i = 0; i < wordsIndicies; i++) {
+            int index = random.nextInt(words.length);
+            while (chosenIndices.contains(index)) {
+                index = random.nextInt(words.length);
             }
             chosenIndices.add(index);
             indices[i] = index;
@@ -175,13 +211,16 @@ public class Challenge implements IChallenge {
         }
         return randomWordsList;
     }
-    //TODO OPTIMERA HÄR ENKELT
-    private int getRandomWordsAccordingToLevel(){
+
+    @Override
+    public int getRandomWordsAccordingToLevel(){
         int numberOfWords = 3;
         int level = getCurrentLevel();
         if (level > 0){
             numberOfWords += (level * 2);
         }
+        playable.setNumOfWords(numberOfWords);
+
         return numberOfWords;
     }
 
@@ -204,11 +243,7 @@ public class Challenge implements IChallenge {
         endGame = LocalTime.now();
         calculateTimeToDouble();
     }
-@Override
-    public int getCurrentGameTaskId() {
-        return currentGameTaskId;
-    }
-@Override
+    @Override
     public void setCurrentGameTaskId() {
         playable.setCurrentTaskId(currentGameTaskId);
     }
@@ -219,4 +254,11 @@ public class Challenge implements IChallenge {
 
     }
 
+    public void setGameDifficulty() {
+        playable.setGameDifficulty(gameDifficulty);
+    }
+    @Override
+    public int getGameListSize() {
+        return gameListSize;
+    }
 }

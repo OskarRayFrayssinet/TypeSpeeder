@@ -1,11 +1,12 @@
 package se.ju23.typespeeder.gameLogic;
 
 
+
 import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.InfoForUsers.NewsLetter;
+import se.ju23.typespeeder.InfoForUsers.Patch;
 import se.ju23.typespeeder.userInterfaces.IO;
 import se.ju23.typespeeder.userInterfaces.MenuService;
-
-import java.sql.SQLException;
 
 @Component public class Controller implements Controllable {
     Playable playable;
@@ -22,8 +23,8 @@ import java.sql.SQLException;
     }
 
     @Override
-    public void run() throws SQLException, InterruptedException {
-
+    public void run(){
+        System.out.println(new Patch());
 
         while (true) {
 
@@ -41,27 +42,35 @@ import java.sql.SQLException;
             } else {
                 menuService.displayMenu();
 
-                //io.addString(menuService.displayMenu());
+
                 int input = io.getInt();
-                status = playable.standbyInMainMenu(input);
+                if (input > 6){
+                    status = Status.VERIFIED;
+                } else {
+                    status = playable.standbyInMainMenu(input);
+                }
+
             }
 
 
             switch (status){
                 case IN_GAME_SETTINGS -> {
+                    io.addString(playable.returnUserInfo());
                     io.addString(menuService.getUserSettingsMenu());
                     int input = io.getInt();
-                    if(input == 0){
+                    if(input == 0 || input > 3){
                         status = Status.VERIFIED;
                     } else {
                         status = playable.standbyInSettingsMenu(input);
                     }
                 }
-                case ACTIVE_IN_GAME -> {
+                case ACTIVE_IN_GAME_HARD -> {
                     io.addString(challenge.printListOfGames());
                     int input = io.getInt();
                     if (input == 0){
                         status = Status.VERIFIED;
+                    } else if (input > challenge.getGameListSize()) {
+                        io.addString("No found, try again");
                     } else {
                         io.addString(playable.beforeGameStartsText());
                         io.getEnter();
@@ -70,20 +79,38 @@ import java.sql.SQLException;
                         String answer = io.getString();
                         challenge.endChallenge();
                         playable.calculateTotalPointsForGame(answer);
-                        io.addString(playable.printChallengeResult());
-
-
+                        io.addString(playable.returnChallengeResult());
                     }
                 }
+                case ACTIVE_IN_GAME_EASY -> {
+
+                    io.addString(challenge.printListOfEasyGames());
+                    int input = io.getInt();
+                    if (input == 0){
+                        status = Status.VERIFIED;
+                    }else if (input > challenge.getGameListSize()) {
+                        io.addString("No found, try again2");
+                    } else {
+                        io.addString(playable.beforeGameStartsText());
+                        io.getEnter();
+                        io.addGameText(challenge.chooseGame(input));
+                        challenge.startChallenge();
+                        String answer = io.getString();
+                        challenge.endChallenge();
+                        playable.calculateTotalPointsForGame(answer);
+                        io.addString(playable.returnChallengeResult());
+                    }
+
+
+                }
                 case NO_USER_FOUND -> io.addString(menuService.printLoginText());
+                case IN_STATS -> io.addGameText(playable.scoreBoardBasedOnThree() +
+                playable.scoreBoardBasedOnLevel());
+                case NEWSLETTER -> io.addString(String.valueOf(new NewsLetter()));
             }
+
             switch (status){
                 case EXIT -> io.exit();
-                case CONTINUANCE ->{
-                    io.clear();
-                    menuService.displayMenu();
-                    //io.addString(menuService.displayMenu());
-                }
                 case CHANGING_ALIAS -> {
 
                     if (playable.getCurrentAlias(1).equals("1")){
@@ -91,8 +118,13 @@ import java.sql.SQLException;
                     } else {
                         io.addString(menuService.getUserNameChangeText());
                         String newAlias = io.getString();
-                        playable.setNewAlias(newAlias);
-                        io.addString(menuService.getUserNameChangeText());
+                        if (newAlias.equalsIgnoreCase("b")){
+                            run();
+                        } else {
+                            playable.setNewAlias(newAlias);
+                            io.addString(menuService.getUserNameChangeText());
+                        }
+
                     }
                 }
                 case CHANGING_PASSWORD -> {
@@ -101,10 +133,16 @@ import java.sql.SQLException;
                     } else {
                         io.addString(menuService.getPasswordChangeText());
                         String checkCurrentPassword = io.getString();
+                        if (checkCurrentPassword.equalsIgnoreCase("b")){
+                            run();
+                        }
                         boolean checked = playable.checkCurrentPassword(checkCurrentPassword);
                         if (checked) {
                             io.addString(menuService.getPasswordChangeText());
                             String newPassword = io.getString();
+                            if (newPassword.equalsIgnoreCase("b")){
+                                run();
+                            }
                             playable.setNewPassword(newPassword);
                             io.addString(menuService.getPasswordChangeText());
                         } else {
@@ -113,15 +151,21 @@ import java.sql.SQLException;
                     }
                 }
                 case CHANGING_USERNAME -> {
-                    if (playable.getCurrentEmail(1).equals("1")){
+                    if (playable.getCurrentUsername(1).equals("1")){
                         io.addString(menuService.getUsernameChangeText());
                     } else {
                         io.addString(menuService.getUsernameChangeText());
                         String checkCurrentEmail = io.getString();
-                        boolean checked = playable.checkCurrentEmail(checkCurrentEmail);
+                        if (checkCurrentEmail.equalsIgnoreCase("b")){
+                            run();
+                        }
+                        boolean checked = playable.checkCurrentUsername(checkCurrentEmail);
                         if (checked) {
                             io.addString(menuService.getUsernameChangeText());
                             String newEmail = io.getString();
+                            if (newEmail.equalsIgnoreCase("b")){
+                                run();
+                            }
                             boolean checkIfBusy = playable.checkIfUserNameIsBusy(newEmail);
                             if (checkIfBusy){
                                 playable.setNewUsername(newEmail);

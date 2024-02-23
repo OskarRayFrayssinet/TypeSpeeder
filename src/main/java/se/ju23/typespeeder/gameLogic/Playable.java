@@ -1,6 +1,5 @@
 package se.ju23.typespeeder.gameLogic;
 
-import java.time.LocalTime;
 import java.util.List;
 
 public interface Playable {
@@ -10,13 +9,17 @@ public interface Playable {
     void calculateTotalPointsForGame(String userAnswer);
 
 
-    String printChallengeResult();
+    String returnChallengeResult();
 
-    List<String> printLeaderBoard();
+    String scoreBoardBasedOnThree();
 
-    double calculatedPoints();
+
+    String scoreBoardBasedOnLevel();
+
 
     void setCurrentSolution(List<String> currentSolution1);
+
+    String returnUserInfo();
 
     String beforeGameStartsText();
 
@@ -25,19 +28,21 @@ public interface Playable {
     Status standbyInMainMenu(int input);
 
 
+    void setGameDifficulty(int gameDifficulty1);
+
     Status standbyInSettingsMenu(int input);
 
     void setCurrentTaskId(int currentTaskId);
 
-    String getCurrentEmail(int place);
-    void setCurrentEmail(String newCurrentEmail);
+    String getCurrentUsername(int place);
+    void setCurrentUsername(String newCurrentEmail);
 
     void setNewAlias(String input);
 
 
     void setNewUsername(String newEmail);
 
-    boolean checkCurrentEmail(String input);
+    boolean checkCurrentUsername(String input);
 
     boolean checkIfUserNameIsBusy(String input);
 
@@ -48,17 +53,16 @@ public interface Playable {
 
     void setTimeResult(double timeResult);
 
-    void setStartGame(LocalTime startGame1);
+    void setNumOfWords(int words);
 
-    void setEndGame(LocalTime endGame1);
 
 
     int getCurrentUserId();
-    String noUserFoundText();
+
     String getCurrentAlias(int place);
 
     String getPassword(int place);
 
-    int getCurrentXp();
+
     int getCurrentLevel();
 }
