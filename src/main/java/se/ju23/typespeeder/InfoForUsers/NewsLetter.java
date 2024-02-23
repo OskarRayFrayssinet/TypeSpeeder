@@ -31,7 +31,7 @@ public class NewsLetter {
     public String getContent(){
         String text = null;
         Path currentWorkingdir = Paths.get("").toAbsolutePath();
-        String path = currentWorkingdir + File.separator + "src"  + File.separator + "Newsletter.txt";
+        String path = currentWorkingdir + File.separator + "Newsletter.txt";
         text = readTextFromFile(path);
 
         return text;
@@ -40,7 +40,7 @@ public class NewsLetter {
     public static LocalDateTime getPublishDateTime() {
         LocalDateTime a = null;
         Path currentWorkingdir = Paths.get("").toAbsolutePath();
-        String patho = currentWorkingdir + File.separator + "src"  + File.separator + "Newsletter.txt";
+        String patho = currentWorkingdir + File.separator + "Newsletter.txt";
         try {
             Path path = Paths.get(patho);
             BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
