@@ -1,9 +1,13 @@
+/*
+ * Class: Dictionary
+ * Description: A class that creates a dictionary object.
+ * Created by: Kerem Bjävenäs Tazedal
+ * Email: kerem.tazedal@iths.se
+ * Date: 2024-02-14
+ */
 package se.ju23.typespeeder.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 
 public class Dictionary {
     private String language;

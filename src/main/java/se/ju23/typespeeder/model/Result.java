@@ -1,3 +1,10 @@
+/*
+ * Class: RankingTableByLevel
+ * Description: A class that creates result based on the players performance.
+ * Created by: Kerem Bjävenäs Tazedal
+ * Email: kerem.tazedal@iths.se
+ * Date: 2024-02-14
+ */
 package se.ju23.typespeeder.model;
 import jakarta.persistence.*;
 
