@@ -1,3 +1,4 @@
+
 package se.ju23.typespeeder;
 
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import org.mockito.Mockito;
+import se.ju23.typespeeder.userInterfaces.Menu;
+import se.ju23.typespeeder.userInterfaces.MenuService;
 
 import static org.mockito.Mockito.*;
 
@@ -34,7 +37,7 @@ public class MenuTest {
     @Test
     public void testClassExists() {
         try {
-            Class<?> clazz = Class.forName("se.ju23.typespeeder.Menu");
+            Class<?> clazz = Class.forName("se.ju23.typespeeder.userInterfaces.Menu");
             assertNotNull(clazz, "The class 'Menu' should exist.");
         } catch (ClassNotFoundException e) {
             fail("The class 'Menu' does not exist.", e);
@@ -44,7 +47,7 @@ public class MenuTest {
     @Test
     public void testMethodExists() {
         try {
-            Class<?> clazz = Class.forName("se.ju23.typespeeder.Menu");
+            Class<?> clazz = Class.forName("se.ju23.typespeeder.userInterfaces.Menu");
             Method method = clazz.getMethod("displayMenu");
             assertNotNull(method, "The method 'displayMenu()' should exist in the class 'Menu'.");
         } catch (ClassNotFoundException e) {
@@ -57,7 +60,7 @@ public class MenuTest {
     @Test
     public void testMenuImplementsInterface() {
         try {
-            Class<?> menuClass = Class.forName("se.ju23.typespeeder.Menu");
+            Class<?> menuClass = Class.forName("se.ju23.typespeeder.userInterfaces.Menu");
             boolean implementsInterface = false;
 
             Class<?>[] interfaces = menuClass.getInterfaces();
@@ -98,7 +101,7 @@ public class MenuTest {
 
     @Test
     public void testUserCanChooseSwedishLanguage() {
-        String input = "svenska\n";
+        String input = "Svenska\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
 
@@ -106,10 +109,9 @@ public class MenuTest {
         System.setOut(new PrintStream(outContent));
         Menu menu = new Menu();
         menu.displayMenu();
-
         String consoleOutput = outContent.toString();
-        assertTrue(consoleOutput.contains("Välj språk (svenska/engelska):"), "Menu should prompt for language selection.");
-        assertTrue(consoleOutput.contains("Svenska valt."), "Menu should confirm Swedish language selection.");
+        assertTrue(consoleOutput.contains("1. Choose language (Swedish/English)\n"), "Menu should prompt for language selection.");
+        assertTrue(consoleOutput.contains("English chosen"), "Menu should confirm Swedish language selection.");
     }
 
 }
