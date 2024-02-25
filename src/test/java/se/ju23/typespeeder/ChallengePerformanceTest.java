@@ -20,7 +20,7 @@ class ChallengePerformanceTest {
         assertTrue(duration <= MAX_EXECUTION_TIME, "Starting a challenge took too long. Execution time: " + duration + " ms.");
     }
     @Test
-    public void testLettersToTypePerformance() {
+    public void testLettersToTypePerformance() throws IOException {
         Challenge challenge = new Challenge();
         long startTime = System.nanoTime();
         challenge.lettersToType();

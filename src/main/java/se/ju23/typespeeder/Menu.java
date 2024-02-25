@@ -7,6 +7,7 @@ import java.util.*;
 
 import static se.ju23.typespeeder.Challenge.returnToMenu;
 import static se.ju23.typespeeder.Challenge.startChallenge;
+import static se.ju23.typespeeder.Challenge.*;
 
 
 @Component
@@ -23,7 +24,6 @@ public class Menu implements MenuService {
     public static String userName;
     public static String passWord;
     public static boolean loggedIn=false;
-
 
     public static void displayMenu() throws IOException {
         UserService userService = TypeSpeederApplication.userService;
@@ -45,16 +45,16 @@ public class Menu implements MenuService {
             int menuChoice = input.nextInt();
             input.nextLine();
 
-            if (loggedInUser == null && menuChoice == 0) {
-                logIn();
-            } else {
-                switch (menuChoice) {
-                    case 6 -> logOut();
-                    case 1 -> startChallenge();
-                    case 2 -> Challenge.showRankingList();
-                    case 3 -> NewsLetter.showNewsAndUpdates();
-                    case 4 -> Challenge.changeLanguage();
-                    case 5 -> updateUser();
+        if (loggedInUser == null && menuChoice == 0) {
+             logIn();
+        } else {
+            switch (menuChoice) {
+                case 6 -> logOut();
+                case 1 -> startChallenge();
+                case 2 -> PlayerRanking.showRankingList();
+                case 3 -> NewsLetter.showNewsAndUpdates();
+                case 4 -> Challenge.changeLanguage();
+                case 5 -> updateUser();
 
                     default -> System.out.println("Felaktig inmatning, försök igen.");
                 }
@@ -64,6 +64,7 @@ public class Menu implements MenuService {
             input.nextLine();
         }
     }
+
 
 
     public static void logIn() {
@@ -108,7 +109,7 @@ public class Menu implements MenuService {
                     String goBack = input.nextLine().toLowerCase();
 
                     if ("ja".equals(goBack)) {
-                        returnToMenu();
+                        displayMenu();
                     } else {
                         System.out.println("Programmet avslutas.");
 
