@@ -4,10 +4,7 @@ import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.*;
 
 import static se.ju23.typespeeder.TypeSpeederApplication.userService;
 
@@ -32,6 +29,42 @@ public class Challenge {
     public static int levelNumber;
     public static ArrayList<PlayerRanking>rankingList = new ArrayList<>();
 
+
+
+    public static void changeLanguage() throws IOException {
+        long startTime = System.nanoTime();
+
+        System.out.print("Välj språk (sv/en):");
+        String language = input.nextLine().toLowerCase();
+
+        System.out.println("Valt språk: " + language);
+        if ("en".equalsIgnoreCase(language)) {
+            messages = ResourceBundle.getBundle("messages", new Locale(language, "US"));
+            System.out.println(messages.getString("language.changed"));
+        } else if ("sv".equalsIgnoreCase(language)) {
+            messages = ResourceBundle.getBundle("messages", new Locale(language, "SE"));
+            System.out.println(messages.getString("language.changed"));
+        } else {
+            System.out.println("Ogiltigt språkval. Använder systemets standardspråk.");
+            messages = ResourceBundle.getBundle("messages", Locale.getDefault());
+        }
+
+        startGameAfterLanguageSelection();
+    }
+
+    public static void startGameAfterLanguageSelection() throws IOException {
+        System.out.print(messages.getString("you.want.play"));
+        String playGame = input.nextLine().toLowerCase();
+        if ("ja".equalsIgnoreCase(playGame) || "yes".equalsIgnoreCase(playGame)) {
+            startChallenge();
+        } else {
+            returnToMenu();
+        }
+    }
+
+
+
+
     public static void startChallenge() throws IOException {
         boolean continueGame = true;
         while(continueGame){
@@ -41,10 +74,12 @@ public class Challenge {
             countWords = 0;
             countOrder = 0;
             String language = input.nextLine();
+
             System.out.println(messages.getString("game.instructions"));
             System.out.println(messages.getString("time.starts"));
             System.out.print(messages.getString("press.enter.to.play"));
             input.nextLine();
+
             openTextFile();
             timer();
             System.out.println();
@@ -54,9 +89,12 @@ public class Challenge {
             stopTimer = true;
             checkSpelling();
             checkOrder();
+            timer();
             returnToMenu();
         }
+
     }
+
 
     public void lettersToType() {
     }
@@ -77,8 +115,8 @@ public class Challenge {
         }
         colorWords = colorWordsBuilder.toString();
     }
-    public static void timer(){
-        Thread timer = new Thread(()->{
+         public static void timer(){
+            Thread timer = new Thread(()->{
             startTime = System.currentTimeMillis();
             while (!stopTimer) {
                 try {
@@ -89,10 +127,10 @@ public class Challenge {
             }
             timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
 
-           // System.out.println(messages.getString("your.time" + timeSeconds + "seconds"));
-            System.out.println("Din tid blev: " + timeSeconds + " sekunder");
         });
         timer.start();
+            System.out.print(messages.getString("your.time") + timeSeconds);
+            System.out.println(messages.getString("seconds"));
     }
     public static void checkSpelling(){
         String [] words = colorWords.split("\\s+");
@@ -110,8 +148,8 @@ public class Challenge {
                 }
             }
         }
-        //System.out.println(messages.getString("correct.words" + countWords));
-        System.out.println("Antal rättstavade ord: " + countWords);
+       System.out.println(messages.getString("correct.words") + countWords);
+
     }
     public static void checkOrder(){
         String[] gameList = game.split("\\s+");
@@ -123,8 +161,8 @@ public class Challenge {
                 //break;
             }
         }
-       System.out.println("Antal ord i korrekt ordning: " + countOrder);
-        //System.out.println(messages.getString("right.order" + countOrder));
+
+        System.out.println(messages.getString("right.order") + countOrder);
     }
 
     public static void printRankingList(ArrayList<PlayerRanking> topList) {
@@ -213,7 +251,7 @@ public class Challenge {
             }
         }
     }
-    public static void returnToMenu() throws IOException {
+         public static void returnToMenu() throws IOException {
         System.out.print(messages.getString("return.menu"));
         String goBack = input.nextLine().toLowerCase();
         if ("ja".equalsIgnoreCase(goBack) || "yes".equalsIgnoreCase(goBack)) {

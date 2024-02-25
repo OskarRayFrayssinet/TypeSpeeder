@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.util.*;
 
+import static se.ju23.typespeeder.Challenge.returnToMenu;
 import static se.ju23.typespeeder.Challenge.startChallenge;
 
 
@@ -52,7 +53,7 @@ public class Menu implements MenuService {
                     case 1 -> startChallenge();
                     case 2 -> Challenge.showRankingList();
                     case 3 -> NewsLetter.showNewsAndUpdates();
-                    case 4 -> changeLanguage();
+                    case 4 -> Challenge.changeLanguage();
                     case 5 -> updateUser();
 
                     default -> System.out.println("Felaktig inmatning, försök igen.");
@@ -107,7 +108,7 @@ public class Menu implements MenuService {
                     String goBack = input.nextLine().toLowerCase();
 
                     if ("ja".equals(goBack)) {
-                        displayMenu();
+                        returnToMenu();
                     } else {
                         System.out.println("Programmet avslutas.");
 
@@ -132,17 +133,17 @@ public class Menu implements MenuService {
     }
 
 
-    public static void changeLanguage() throws IOException {
+  /*  public static void changeLanguage() throws IOException {
         long startTime = System.nanoTime();
 
-        System.out.print("Välj språk (svenska/engelska):");
+        System.out.print("Välj språk (sv/en):");
         String language = input.nextLine().toLowerCase();
 
         System.out.println("Valt språk: " + language);
-        if ("engelska".equalsIgnoreCase(language)) {
+        if ("en".equalsIgnoreCase(language)) {
             messages = ResourceBundle.getBundle("messages", new Locale(language, "US"));
             System.out.println(messages.getString("language.changed"));
-        } else if ("svenska".equalsIgnoreCase(language)) {
+        } else if ("sv".equalsIgnoreCase(language)) {
             messages = ResourceBundle.getBundle("messages", new Locale(language, "SE"));
             System.out.println(messages.getString("language.changed"));
         } else {
@@ -161,7 +162,7 @@ public class Menu implements MenuService {
         } else {
             displayMenu();
         }
-    }
+    }*/
 
 
 

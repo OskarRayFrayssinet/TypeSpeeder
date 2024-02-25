@@ -12,7 +12,7 @@ public class NewsLetter {
 
 
 
-    public NewsLetter(String content, LocalDateTime publishDateTime){
+    public NewsLetter(String content, LocalDateTime publishDateTime)throws IOException{
         this.content=content;
         this.publishDateTime=publishDateTime;
     }
