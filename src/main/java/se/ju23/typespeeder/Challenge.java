@@ -28,6 +28,7 @@ public class Challenge {
     public static float score;
     public static int levelNumber;
     public static ArrayList<PlayerRanking>rankingList = new ArrayList<>();
+    public static Thread timer;
 
 
 
@@ -81,15 +82,37 @@ public class Challenge {
             input.nextLine();
 
             openTextFile();
-            timer();
+
+
+            Thread timerThread = new Thread(() -> {
+                startTime = System.currentTimeMillis();
+                while (!stopTimer) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
+
+                System.out.print(messages.getString("your.time") + timeSeconds);
+                System.out.println(messages.getString("seconds"));
+            });
+
+            timerThread.start();
+
             System.out.println();
             System.out.print(messages.getString("write.here"));
             game = input.nextLine();
             System.out.println(game);
             stopTimer = true;
+            try {
+                timerThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             checkSpelling();
             checkOrder();
-            timer();
             returnToMenu();
         }
 
@@ -115,7 +138,7 @@ public class Challenge {
         }
         colorWords = colorWordsBuilder.toString();
     }
-         public static void timer(){
+       /*  public static void timer(){
             Thread timer = new Thread(()->{
             startTime = System.currentTimeMillis();
             while (!stopTimer) {
@@ -127,11 +150,13 @@ public class Challenge {
             }
             timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
 
+                System.out.print(messages.getString("your.time") + timeSeconds);
+                System.out.println(messages.getString("seconds"));
         });
+
         timer.start();
-            System.out.print(messages.getString("your.time") + timeSeconds);
-            System.out.println(messages.getString("seconds"));
-    }
+
+    }*/
     public static void checkSpelling(){
         String [] words = colorWords.split("\\s+");
         for (String word : words) {
