@@ -159,7 +159,7 @@ public class Menu implements MenuService {
     public void patchNotesAndNewsMenu() {
         systemIO.addString("""
                 1. Visa nyhetsbrev
-                2. Visa se.ju23.typespeeder.Patch notes
+                2. Patch notes
                 0. Backa
                 >""");
     }
