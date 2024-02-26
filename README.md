@@ -22,7 +22,9 @@ Two files are now added to the project:
 * NewsLetterTest.java
 * PatchTest.java
 
-* Profilering:
+
+
+
  
 Profilering gällande version 0.2.0 påvisar den metod som belastar programmet bortom själva Application Spring Boot är då metoden checkCredentials som drar runt 4 procent av CPU och utgörs på 300 ms. 
  ![image](https://github.com/Kerem1989/TypeSpeeder/assets/98690898/84ae3470-6d2b-47ce-89e5-e80233499921)
