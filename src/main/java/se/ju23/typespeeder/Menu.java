@@ -27,41 +27,42 @@ public class Menu implements MenuService {
 
     public static void displayMenu() throws IOException {
         UserService userService = TypeSpeederApplication.userService;
-
-        MenuOptions.clear();
-        MenuOptions.add("1. Starta spelet");
-        MenuOptions.add("2. Rankningslista");
-        MenuOptions.add("3. Nyheter och updateringar");
-        MenuOptions.add("4. Ändra språk");
-        MenuOptions.add("5. Updatera profil");
-        MenuOptions.add("6. Logga ut");
-        for (String option : MenuOptions) {
-            System.out.println(option);
-        }
-        System.out.print("Ange siffran för ditt val: ");
-
-
-        try {
-            int menuChoice = input.nextInt();
-            input.nextLine();
-
-        if (loggedInUser == null && menuChoice == 0) {
-             logIn();
-        } else {
-            switch (menuChoice) {
-                case 6 -> logOut();
-                case 1 -> startChallenge();
-                case 2 -> PlayerRanking.showRankingList();
-                case 3 -> NewsLetter.showNewsAndUpdates();
-                case 4 -> Challenge.changeLanguage();
-                case 5 -> updateUser();
-
-                    default -> System.out.println("Felaktig inmatning, försök igen.");
-                }
+        while (true){
+            MenuOptions.clear();
+            MenuOptions.add("1. Starta spelet");
+            MenuOptions.add("2. Rankningslista");
+            MenuOptions.add("3. Nyheter och updateringar");
+            MenuOptions.add("4. Ändra språk");
+            MenuOptions.add("5. Updatera profil");
+            MenuOptions.add("6. Logga ut");
+            for (String option : MenuOptions) {
+                System.out.println(option);
             }
-        } catch (InputMismatchException e){
-            System.out.println("Felaktig inmatning, ange en siffra.");
-            input.nextLine();
+            System.out.print("Ange siffran för ditt val: ");
+
+
+            try {
+                int menuChoice = input.nextInt();
+                input.nextLine();
+
+            if (loggedInUser == null && menuChoice == 0) {
+                logIn();
+            } else {
+                switch (menuChoice) {
+                    case 6 -> logOut();
+                    case 1 -> startChallenge();
+                    case 2 -> PlayerRanking.showRankingList();
+                    case 3 -> NewsLetter.showNewsAndUpdates();
+                    case 4 -> Challenge.changeLanguage();
+                    case 5 -> updateUser();
+
+                        default -> System.out.println("Felaktig inmatning, försök igen.");
+                    }
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Felaktig inmatning, ange en siffra.");
+                input.nextLine();
+            }
         }
     }
 

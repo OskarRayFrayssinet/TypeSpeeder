@@ -76,27 +76,30 @@ public class Challenge {
     }
 
     public static void startChallenge() throws IOException {
-        System.out.println(messages.getString("game.type"));
-        System.out.println(messages.getString("word"));
-        System.out.println(messages.getString("characters"));
-        System.out.print(messages.getString("choose.number"));
-        gameChoice = input.nextInt();
-        input.nextLine();
-        switch (gameChoice){
-            case 1 -> typeWords();
-            case 2 -> lettersToType();
-            default -> System.out.println("Felaktig inmatning, försök igen.");
+        while (true){
+            System.out.println(messages.getString("game.type"));
+            System.out.println(messages.getString("word"));
+            System.out.println(messages.getString("characters"));
+            System.out.print(messages.getString("choose.number"));
+            try{
+                gameChoice = input.nextInt();
+                input.nextLine();
+                switch (gameChoice){
+                    case 1 -> typeWords();
+                    case 2 -> lettersToType();
+                    default -> System.out.println("Felaktig inmatning, försök igen.");
+                }
+            } catch(InputMismatchException e) {
+                System.out.println("Ogiltlig inmatning. Försök igen->");
+                input.nextLine();
+            }
         }
+
 
     }
     public static void typeWords() throws IOException {
         boolean continueGame = true;
-        System.out.println(messages.getString("choose.level"));
-        System.out.println(messages.getString("easy"));
-        System.out.println(messages.getString("hard"));
-        System.out.print(messages.getString("choose.number"));
-        difficulty = input.nextInt();
-        input.nextLine();
+        gameLevel();
         while(continueGame){
             stopTimer = false;
             game = "";
@@ -108,37 +111,39 @@ public class Challenge {
             System.out.print(messages.getString("press.enter.to.play"));
             input.nextLine();
             openTextFile();
-
-
-            Thread timerThread = new Thread(() -> {
-                startTime = System.currentTimeMillis();
-                while (!stopTimer) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
-
-                System.out.print(messages.getString("your.time") + timeSeconds);
-                System.out.println(messages.getString("seconds"));
-            });
-
-            timerThread.start();
-
+            timer();
+            timer.start();
             System.out.println();
             System.out.print(messages.getString("write.here"));
             game = input.nextLine();
             stopTimer = true;
             try {
-                timerThread.join();
+                timer.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             checkSpelling();
             checkOrder();
             returnToMenu();
+        }
+    }
+    public static void gameLevel(){
+        boolean level = true;
+        while (level) {
+            System.out.println(messages.getString("choose.level"));
+            System.out.println(messages.getString("easy"));
+            System.out.println(messages.getString("hard"));
+            System.out.print(messages.getString("choose.number"));
+            try {
+                difficulty = input.nextInt();
+                input.nextLine();
+                if (difficulty==1||difficulty==2){
+                    level=false;
+                }
+            }catch(InputMismatchException e) {
+                System.out.println("Ogiltlig inmatning. Försök igen->");
+                input.nextLine();
+            }
         }
     }
 
@@ -154,12 +159,18 @@ public class Challenge {
             System.out.println(messages.getString("time.starts"));
             System.out.print(messages.getString("press.enter.to.play"));
             input.nextLine();
-            openTextFile();
+            openGame2();
             timer();
+            timer.start();
             System.out.println();
             System.out.print(messages.getString("write.here"));
             game2 = input.nextLine();
             stopTimer = true;
+            try {
+                timer.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             checkLetters();
             checkOrder();
             returnToMenu();
@@ -171,13 +182,13 @@ public class Challenge {
         StringBuilder colorWordsBuilder = new StringBuilder();
         if (gameChoice == 1) {
             File file;
-            if(difficulty==1) {
+            if (difficulty == 1) {
                 file = new File("./src/main/resources/TextFile");
                 scanner = new Scanner(file);
                 while (scanner.hasNextLine()) {
                     textFile += scanner.nextLine();
                 }
-            } else {
+            } else if (difficulty == 2) {
                 BufferedReader reader;
                 file = new File("./src/main/resources/TextFile2");
                 reader = new BufferedReader(new FileReader(file));
@@ -187,6 +198,8 @@ public class Challenge {
                     textFile += lines + "\n";
                     lines = reader.readLine();
                 }
+            } else {
+                System.out.println("Alternativt finns, inte försök igen.");
             }
             String[] words = textFile.split(" ");
             for (String word : words) {
@@ -194,24 +207,28 @@ public class Challenge {
                 colorWordsBuilder.append(color).append(word).append(" ");
                 System.out.print(color + word + " " + RESET);
             }
-
-        } else {
-            File file2 = new File("./src/main/resources/TextFile");
-            scanner = new Scanner(file2);
-            while (scanner.hasNextLine()) {
-                textFile = scanner.nextLine();
-                char[] letters = textFile.toCharArray();
-                for (char letter : letters) {
-                    String color = Math.random() < 0.5 ? RED : GREEN;
-                    colorWordsBuilder.append(color).append(letter).append(" ");
-                    System.out.print(color + letter + " " + RESET);
-                }
-            }
         }
         colorWords = colorWordsBuilder.toString();
     }
-       /*  public static void timer(){
-            Thread timer = new Thread(()->{
+    public static void openGame2() throws FileNotFoundException {
+        String textFile = "";
+        StringBuilder colorWordsBuilder = new StringBuilder();
+        File file2 = new File("./src/main/resources/TextFile");
+        scanner = new Scanner(file2);
+        while (scanner.hasNextLine()) {
+            textFile = scanner.nextLine();
+            char[] letters = textFile.toCharArray();
+            for (char letter : letters) {
+                String color = Math.random() < 0.5 ? RED : GREEN;
+                colorWordsBuilder.append(color).append(letter).append(" ");
+                System.out.print(color + letter + " " + RESET);
+            }
+        }
+        colorWords = colorWordsBuilder.toString();
+
+    }
+    public static void timer(){
+            timer = new Thread(()->{
             startTime = System.currentTimeMillis();
             while (!stopTimer) {
                 try {
@@ -222,13 +239,11 @@ public class Challenge {
             }
             timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
 
-                System.out.print(messages.getString("your.time") + timeSeconds);
+                System.out.print(messages.getString("your.time") + timeSeconds + " ");
                 System.out.println(messages.getString("seconds"));
         });
 
-        timer.start();
-
-    }*/
+    }
     public static void checkSpelling(){
         String [] words = colorWords.split("\\s+");
         for (String word : words) {
@@ -251,7 +266,11 @@ public class Challenge {
         String[] letters = colorWords.split("\\s+");
         for(String letter : letters){
             if (letter.startsWith(RED)) {
-                redLetters.add(letter.substring(RED.length()));
+                String trimmedLetters = letter.substring(RED.length()).trim();
+                String cleanLetters = trimmedLetters.replaceAll("[^a-öA-Ö]", "");
+                if(!cleanLetters.isEmpty()) {
+                    redLetters.add(cleanLetters);
+                }
             }
         }
         System.out.println(redLetters);
