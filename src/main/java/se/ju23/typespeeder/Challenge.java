@@ -39,9 +39,8 @@ public class Challenge {
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
-
-
-
+    public static ArrayList<PlayerRanking>rankingList = new ArrayList<>();
+    public static Thread timer;
 
 
 
@@ -109,11 +108,34 @@ public class Challenge {
             System.out.print(messages.getString("press.enter.to.play"));
             input.nextLine();
             openTextFile();
-            timer();
+
+
+            Thread timerThread = new Thread(() -> {
+                startTime = System.currentTimeMillis();
+                while (!stopTimer) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
+
+                System.out.print(messages.getString("your.time") + timeSeconds);
+                System.out.println(messages.getString("seconds"));
+            });
+
+            timerThread.start();
+
             System.out.println();
             System.out.print(messages.getString("write.here"));
             game = input.nextLine();
             stopTimer = true;
+            try {
+                timerThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             checkSpelling();
             checkOrder();
             returnToMenu();
@@ -142,6 +164,7 @@ public class Challenge {
             checkOrder();
             returnToMenu();
         }
+
     }
     public static void openTextFile() throws IOException {
         String textFile = "";
@@ -187,8 +210,8 @@ public class Challenge {
         }
         colorWords = colorWordsBuilder.toString();
     }
-    public static void timer(){
-        Thread timer = new Thread(()->{
+       /*  public static void timer(){
+            Thread timer = new Thread(()->{
             startTime = System.currentTimeMillis();
             while (!stopTimer) {
                 try {
@@ -198,13 +221,14 @@ public class Challenge {
                 }
             }
             timeSeconds = (System.currentTimeMillis() - startTime) / 1000;
-            System.out.print(messages.getString("your.time") + timeSeconds);
-            System.out.println(messages.getString("seconds"));
 
+                System.out.print(messages.getString("your.time") + timeSeconds);
+                System.out.println(messages.getString("seconds"));
         });
+
         timer.start();
 
-    }
+    }*/
     public static void checkSpelling(){
         String [] words = colorWords.split("\\s+");
         for (String word : words) {
