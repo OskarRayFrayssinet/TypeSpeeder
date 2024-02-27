@@ -1,12 +1,17 @@
 package se.ju23.typespeeder;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Patch {
     static long size = 10000;
+    public String patchVersion;
+    public LocalDateTime realeaseDateTime;
 
+    public  static ArrayList<Patch> time = new ArrayList<>();
 
     static List<Integer> alist = new ArrayList<>();
     static List<Integer> llist = new LinkedList<>();
@@ -18,7 +23,12 @@ public class Patch {
             alist.add(i);
             llist.add(i);
         }
-
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = dateTime.format(formatter);
+        for(Patch local : time){
+            local.setRealeaseDateTime(LocalDateTime.parse(formattedDateTime));
+        }
 
         linkGet();
         linkRemove();
@@ -62,6 +72,11 @@ public class Patch {
         System.out.println("ArrayList get: " + (System.currentTimeMillis() - start));
     }
 
+    public LocalDateTime getRealeaseDateTime() {
+        return realeaseDateTime;
+    }
 
-
+    public void setRealeaseDateTime(LocalDateTime realeaseDateTime) {
+        this.realeaseDateTime = realeaseDateTime;
+    }
 }

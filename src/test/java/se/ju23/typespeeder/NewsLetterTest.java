@@ -29,7 +29,7 @@ class NewsLetterTest {
 
             assertTrue(contentField.getType().equals(String.class), "Field 'content' should be of type String.");
 
-            Object instance = newsLetterClass.getDeclaredConstructor().newInstance();
+            Object instance = newsLetterClass.getDeclaredConstructor(String.class, LocalDateTime.class).newInstance("content", LocalDateTime.now());
             Field field = newsLetterClass.getDeclaredField("content");
             field.setAccessible(true);
             String contentValue = (String) field.get(instance);
@@ -52,7 +52,7 @@ class NewsLetterTest {
 
             assertTrue(publishDateTime.getType().equals(LocalDateTime.class), "Field 'publishDateTime' should be of type LocalDateTime.");
 
-            Object instance = someClass.getDeclaredConstructor().newInstance();
+            Object instance = someClass.getDeclaredConstructor(String.class, LocalDateTime.class).newInstance("Content", LocalDateTime.now());
             LocalDateTime dateTimeValue = (LocalDateTime) publishDateTime.get(instance);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

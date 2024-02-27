@@ -43,7 +43,6 @@ public class Challenge {
     public static Thread timer;
 
 
-
     public static void changeLanguage() throws IOException {
         long startTime = System.nanoTime();
 
@@ -110,7 +109,7 @@ public class Challenge {
             System.out.println(messages.getString("time.starts"));
             System.out.print(messages.getString("press.enter.to.play"));
             input.nextLine();
-            openTextFile();
+            openGame1();
             timer();
             timer.start();
             System.out.println();
@@ -177,7 +176,7 @@ public class Challenge {
         }
 
     }
-    public static void openTextFile() throws IOException {
+    public static void openGame1() throws IOException {
         String textFile = "";
         StringBuilder colorWordsBuilder = new StringBuilder();
         if (gameChoice == 1) {

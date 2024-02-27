@@ -134,41 +134,6 @@ public class Menu implements MenuService {
        Menu.userService = userService;
     }
 
-
-  /*  public static void changeLanguage() throws IOException {
-        long startTime = System.nanoTime();
-
-        System.out.print("Välj språk (sv/en):");
-        String language = input.nextLine().toLowerCase();
-
-        System.out.println("Valt språk: " + language);
-        if ("en".equalsIgnoreCase(language)) {
-            messages = ResourceBundle.getBundle("messages", new Locale(language, "US"));
-            System.out.println(messages.getString("language.changed"));
-        } else if ("sv".equalsIgnoreCase(language)) {
-            messages = ResourceBundle.getBundle("messages", new Locale(language, "SE"));
-            System.out.println(messages.getString("language.changed"));
-        } else {
-            System.out.println("Ogiltigt språkval. Använder systemets standardspråk.");
-            messages = ResourceBundle.getBundle("messages", Locale.getDefault());
-        }
-
-        startGameAfterLanguageSelection();
-    }
-
-    public static void startGameAfterLanguageSelection() throws IOException {
-        System.out.print(messages.getString("you.want.play"));
-        String playGame = input.nextLine().toLowerCase();
-        if ("ja".equalsIgnoreCase(playGame) || "yes".equalsIgnoreCase(playGame)) {
-            startChallenge();
-        } else {
-            displayMenu();
-        }
-    }*/
-
-
-
-
     public static void loadResources() {
         messages = ResourceBundle.getBundle("messages", Locale.getDefault());
     }
